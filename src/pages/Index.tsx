@@ -9,7 +9,7 @@ import AnalysisResult from '@/components/AnalysisResult';
 import { useDocumentAnalysis } from '@/hooks/useDocumentAnalysis';
 import { Message } from '@/types';
 import { toast } from '@/hooks/use-toast';
-import { Loader2Icon, RefreshCwIcon } from 'lucide-react';
+import { Loader2Icon, RefreshCwIcon, UploadIcon } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 
@@ -35,7 +35,7 @@ const Index = () => {
         role: 'assistant',
         content: state.status === 'complete'
           ? "I've analyzed your document. You can explore the results in the panel on the right. Would you like me to focus on any specific part?"
-          : "To analyze a document, please upload it using the file uploader on the right panel.",
+          : "To analyze a document, please upload it using the file upload button below or in the right panel.",
         timestamp: new Date(),
       };
       
@@ -51,6 +51,16 @@ const Index = () => {
         description: "An error occurred while analyzing the document."
       });
     });
+
+    // Add a system message about file upload
+    const uploadMessage: Message = {
+      id: crypto.randomUUID(),
+      role: 'assistant',
+      content: `Uploading document: ${file.name}`,
+      timestamp: new Date(),
+    };
+    
+    setMessages(prev => [...prev, uploadMessage]);
   };
 
   useEffect(() => {
@@ -59,6 +69,16 @@ const Index = () => {
         title: "Analysis Complete",
         description: "Document analysis has been completed successfully!"
       });
+      
+      // Add a message to inform the user of completed analysis
+      const completionMessage: Message = {
+        id: crypto.randomUUID(),
+        role: 'assistant',
+        content: "I've completed analyzing your document. You can see the results in the right panel. Feel free to ask me any questions about it.",
+        timestamp: new Date(),
+      };
+      
+      setMessages(prev => [...prev, completionMessage]);
     }
   }, [state.status]);
 
@@ -77,6 +97,43 @@ const Index = () => {
         </div>
         
         <MessageList messages={messages} />
+        
+        <div className="px-4 py-2 border-t flex items-center gap-2 bg-muted/20">
+          {state.status === 'idle' && (
+            <Button 
+              variant="outline" 
+              size="sm"
+              className="flex items-center gap-1"
+              onClick={() => {
+                const fileInput = document.createElement('input');
+                fileInput.type = 'file';
+                fileInput.accept = '.pdf,.doc,.docx,.txt';
+                fileInput.onchange = (e) => {
+                  const files = (e.target as HTMLInputElement).files;
+                  if (files && files.length > 0) {
+                    handleFileSelect(files[0]);
+                  }
+                };
+                fileInput.click();
+              }}
+            >
+              <UploadIcon size={14} />
+              <span>Upload Document</span>
+            </Button>
+          )}
+          
+          {state.status === 'complete' && (
+            <Button 
+              variant="outline" 
+              size="sm"
+              onClick={resetAnalysis}
+              className="flex items-center gap-1"
+            >
+              <RefreshCwIcon size={14} />
+              <span>New Analysis</span>
+            </Button>
+          )}
+        </div>
         
         <ChatInput 
           onSendMessage={handleSendMessage} 

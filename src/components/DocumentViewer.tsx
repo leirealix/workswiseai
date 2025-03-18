@@ -3,7 +3,6 @@ import { useState } from 'react';
 import { AnalysisResult, DocumentClause } from '@/types';
 import { cn } from '@/lib/utils';
 import { File, FileText } from 'lucide-react';
-import { ScrollArea } from '@/components/ui/scroll-area';
 
 interface DocumentViewerProps {
   fileName: string;

@@ -2,7 +2,6 @@
 import { Message } from '@/types';
 import { cn } from '@/lib/utils';
 import { UserIcon, BotIcon } from 'lucide-react';
-import { ScrollArea } from '@/components/ui/scroll-area';
 
 interface MessageListProps {
   messages: Message[];
@@ -24,7 +23,7 @@ export default function MessageList({ messages }: MessageListProps) {
   }
 
   return (
-    <div className="flex-1 overflow-auto">
+    <div className="flex-1 overflow-auto h-full">
       <div className="space-y-4 p-4">
         {messages.map((message) => (
           <div

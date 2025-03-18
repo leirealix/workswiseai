@@ -22,7 +22,7 @@ export default function AnalysisResult({ result }: AnalysisResultProps) {
         </div>
         
         <div className="flex-1 overflow-auto">
-          <TabsContent value="summary" className="h-full mt-0 animate-fade-in">
+          <TabsContent value="summary" className="h-full mt-0 animate-fade-in overflow-auto">
             <Card className="h-full border-0 rounded-none">
               <CardHeader>
                 <CardTitle className="flex items-center">

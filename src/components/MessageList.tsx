@@ -1,8 +1,9 @@
 
 import { Message } from '@/types';
 import { cn } from '@/lib/utils';
-import { UserIcon, BotIcon, Loader2 } from 'lucide-react';
+import { UserIcon, Loader2 } from 'lucide-react';
 import { useState, useEffect } from 'react';
+import LawyerIcon from './LawyerIcon';
 
 interface MessageListProps {
   messages: Message[];
@@ -14,7 +15,7 @@ export default function MessageList({ messages, isWaiting = false }: MessageList
     return (
       <div className="flex-1 flex flex-col items-center justify-center p-6 text-center">
         <div className="bg-muted/50 rounded-full p-4 mb-4">
-          <BotIcon className="w-8 h-8 text-muted-foreground" />
+          <LawyerIcon className="w-8 h-8 text-muted-foreground" />
         </div>
         <h3 className="text-lg font-medium mb-2">AI Lawyer</h3>
         <p className="text-muted-foreground max-w-md">
@@ -37,7 +38,7 @@ export default function MessageList({ messages, isWaiting = false }: MessageList
           >
             {message.role === 'assistant' && (
               <div className="flex-shrink-0 w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-primary">
-                <BotIcon size={18} />
+                <LawyerIcon size={18} />
               </div>
             )}
 

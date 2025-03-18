@@ -1,5 +1,6 @@
 
 import { FileIcon, FileTextIcon, SearchIcon, BrainCogIcon } from 'lucide-react';
+import LawyerIcon from './LawyerIcon';
 
 export default function WelcomeAnimation() {
   return (
@@ -8,7 +9,7 @@ export default function WelcomeAnimation() {
         {/* Orbit animation with document icons */}
         <div className="absolute inset-0 flex items-center justify-center">
           <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center animate-pulse">
-            <BrainCogIcon size={32} className="text-primary" />
+            <LawyerIcon size={32} className="text-primary" />
           </div>
         </div>
         

@@ -6,10 +6,11 @@ import { Send, Plus, Search, Mic, MoreHorizontal } from 'lucide-react';
 
 interface ChatInputProps {
   onSendMessage: (message: string) => void;
+  onFileUpload: (file: File) => void;
   isDisabled?: boolean;
 }
 
-export default function ChatInput({ onSendMessage, isDisabled = false }: ChatInputProps) {
+export default function ChatInput({ onSendMessage, onFileUpload, isDisabled = false }: ChatInputProps) {
   const [input, setInput] = useState('');
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -27,8 +28,8 @@ export default function ChatInput({ onSendMessage, isDisabled = false }: ChatInp
     fileInput.onchange = (e) => {
       const files = (e.target as HTMLInputElement).files;
       if (files && files.length > 0) {
-        // This would need to be connected to a file upload handler
         console.log("File selected:", files[0].name);
+        onFileUpload(files[0]);
       }
     };
     fileInput.click();

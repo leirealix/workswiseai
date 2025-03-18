@@ -65,6 +65,11 @@ const Index = () => {
     setMessages(prev => [...prev, uploadMessage]);
   };
 
+  const handleFileUpload = (file: File) => {
+    console.log("File upload triggered with:", file.name);
+    handleFileSelect(file);
+  };
+
   const handleFollowUpQuestion = (question: string) => {
     handleSendMessage(question);
   };
@@ -165,6 +170,7 @@ const Index = () => {
                 
                 <ChatInput 
                   onSendMessage={handleSendMessage} 
+                  onFileUpload={handleFileUpload}
                   isDisabled={state.status === 'uploading' || state.status === 'thinking' || state.status === 'analyzing'} 
                 />
               </>

@@ -53,7 +53,7 @@ export default function AnalysisProgress({ status, progress, steps, error }: Ana
         )}
       </div>
       
-      {steps.length > 0 && status !== 'complete' && status !== 'error' && (
+      {steps.length > 0 && (
         <div className="max-h-32 overflow-y-auto space-y-1 pt-1">
           {steps.map((step, index) => (
             <div 

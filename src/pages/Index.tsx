@@ -139,8 +139,8 @@ const Index = () => {
             
             {!leftPanelCollapsed && (
               <>
-                {/* Analysis progress (only shown during active analysis) */}
-                {(state.status === 'uploading' || state.status === 'thinking' || state.status === 'analyzing') && (
+                {/* Analysis progress - always show if we have thinking steps */}
+                {state.thinkingSteps.length > 0 && (
                   <div className="px-4 py-3">
                     <AnalysisProgress 
                       status={state.status} 

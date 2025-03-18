@@ -45,13 +45,20 @@ const Index = () => {
 
   const handleFileSelect = (file: File) => {
     uploadFile(file).catch(() => {
-      toast.error('An error occurred while analyzing the document.');
+      toast({
+        variant: "destructive",
+        title: "Upload Failed",
+        description: "An error occurred while analyzing the document."
+      });
     });
   };
 
   useEffect(() => {
     if (state.status === 'complete') {
-      toast.success('Document analysis complete!');
+      toast({
+        title: "Analysis Complete",
+        description: "Document analysis has been completed successfully!"
+      });
     }
   }, [state.status]);
 

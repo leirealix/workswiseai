@@ -10,7 +10,7 @@ import WelcomeAnimation from '@/components/WelcomeAnimation';
 import { useDocumentAnalysis } from '@/hooks/useDocumentAnalysis';
 import { Message } from '@/types';
 import { toast } from '@/hooks/use-toast';
-import { Loader2Icon, RefreshCwIcon, UploadIcon, MaximizeIcon, MinimizeIcon } from 'lucide-react';
+import { Loader2Icon, RefreshCwIcon, MaximizeIcon, MinimizeIcon } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { ResizablePanelGroup, ResizablePanel, ResizableHandle } from '@/components/ui/resizable';
@@ -149,31 +149,8 @@ const Index = () => {
                 
                 <MessageList messages={messages} />
                 
-                <div className="px-4 py-2 border-t flex items-center gap-2 bg-muted/20">
-                  {state.status === 'idle' && (
-                    <Button 
-                      variant="outline" 
-                      size="sm"
-                      className="flex items-center gap-1"
-                      onClick={() => {
-                        const fileInput = document.createElement('input');
-                        fileInput.type = 'file';
-                        fileInput.accept = '.pdf,.doc,.docx,.txt';
-                        fileInput.onchange = (e) => {
-                          const files = (e.target as HTMLInputElement).files;
-                          if (files && files.length > 0) {
-                            handleFileSelect(files[0]);
-                          }
-                        };
-                        fileInput.click();
-                      }}
-                    >
-                      <UploadIcon size={14} />
-                      <span>Files</span>
-                    </Button>
-                  )}
-                  
-                  {state.status === 'complete' && (
+                {state.status === 'complete' && (
+                  <div className="px-4 py-2 border-t flex items-center gap-2 bg-muted/20">
                     <Button 
                       variant="outline" 
                       size="sm"
@@ -183,8 +160,8 @@ const Index = () => {
                       <RefreshCwIcon size={14} />
                       <span>New Analysis</span>
                     </Button>
-                  )}
-                </div>
+                  </div>
+                )}
                 
                 <ChatInput 
                   onSendMessage={handleSendMessage} 

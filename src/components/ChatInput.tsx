@@ -1,7 +1,8 @@
 
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { Send } from 'lucide-react';
+import { Input } from '@/components/ui/input';
+import { Send, Plus, Search, Mic, MoreHorizontal } from 'lucide-react';
 
 interface ChatInputProps {
   onSendMessage: (message: string) => void;
@@ -19,27 +20,88 @@ export default function ChatInput({ onSendMessage, isDisabled = false }: ChatInp
     }
   };
 
+  const handleFileUpload = () => {
+    const fileInput = document.createElement('input');
+    fileInput.type = 'file';
+    fileInput.accept = '.pdf,.doc,.docx,.txt';
+    fileInput.onchange = (e) => {
+      const files = (e.target as HTMLInputElement).files;
+      if (files && files.length > 0) {
+        // This would need to be connected to a file upload handler
+        console.log("File selected:", files[0].name);
+      }
+    };
+    fileInput.click();
+  };
+
   return (
     <form 
       onSubmit={handleSubmit} 
-      className="relative flex items-center w-full px-4 py-3 border-t bg-background/80 backdrop-blur-sm custom-transition"
+      className="relative flex flex-col w-full px-4 py-3 border-t bg-background/80 backdrop-blur-sm custom-transition"
     >
-      <input
-        type="text"
-        value={input}
-        onChange={(e) => setInput(e.target.value)}
-        placeholder="Complete any work you request"
-        disabled={isDisabled}
-        className="flex-1 px-4 py-2 bg-white dark:bg-black/20 border border-border rounded-full focus:outline-none focus:ring-2 focus:ring-primary/20 custom-transition"
-      />
-      <Button 
-        type="submit" 
-        size="icon" 
-        disabled={!input.trim() || isDisabled}
-        className="ml-2 rounded-full w-10 h-10 custom-transition hover:bg-primary/90"
-      >
-        <Send size={18} />
-      </Button>
+      <div className="relative w-full">
+        <Input
+          value={input}
+          onChange={(e) => setInput(e.target.value)}
+          placeholder="Complete any work you request"
+          disabled={isDisabled}
+          className="pr-12 py-6 pl-4 rounded-full bg-white dark:bg-black/20 border border-border shadow-sm focus-visible:ring-1 focus-visible:ring-primary/30"
+        />
+        
+        <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
+          <Button 
+            type="submit" 
+            size="icon" 
+            disabled={!input.trim() || isDisabled}
+            className="rounded-full w-10 h-10 hover:bg-primary/90"
+          >
+            <Send size={18} />
+          </Button>
+        </div>
+      </div>
+      
+      <div className="flex gap-2 mt-2 px-2">
+        <Button 
+          type="button" 
+          variant="ghost" 
+          size="sm"
+          className="rounded-full flex items-center gap-1.5 text-muted-foreground hover:text-foreground hover:bg-secondary"
+          onClick={handleFileUpload}
+        >
+          <Plus size={16} />
+          <span>Files</span>
+        </Button>
+        
+        <Button 
+          type="button" 
+          variant="ghost" 
+          size="sm"
+          className="rounded-full flex items-center gap-1.5 text-muted-foreground hover:text-foreground hover:bg-secondary"
+        >
+          <Search size={16} />
+          <span>Research</span>
+        </Button>
+        
+        <div className="flex-1"></div>
+        
+        <Button 
+          type="button" 
+          variant="ghost" 
+          size="icon"
+          className="rounded-full h-8 w-8 text-muted-foreground hover:text-foreground hover:bg-secondary"
+        >
+          <MoreHorizontal size={16} />
+        </Button>
+        
+        <Button 
+          type="button" 
+          variant="ghost" 
+          size="icon"
+          className="rounded-full h-8 w-8 text-muted-foreground hover:text-foreground hover:bg-secondary"
+        >
+          <Mic size={16} />
+        </Button>
+      </div>
     </form>
   );
 }

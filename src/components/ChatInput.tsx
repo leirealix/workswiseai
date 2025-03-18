@@ -2,15 +2,21 @@
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Send, Plus, Search, Mic, MoreHorizontal } from 'lucide-react';
+import { Send, Plus, Search, Mic, MoreHorizontal, RefreshCw } from 'lucide-react';
 
 interface ChatInputProps {
   onSendMessage: (message: string) => void;
   onFileUpload: (file: File) => void;
+  onNewConversation?: () => void;
   isDisabled?: boolean;
 }
 
-export default function ChatInput({ onSendMessage, onFileUpload, isDisabled = false }: ChatInputProps) {
+export default function ChatInput({ 
+  onSendMessage, 
+  onFileUpload, 
+  onNewConversation, 
+  isDisabled = false 
+}: ChatInputProps) {
   const [input, setInput] = useState('');
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -33,6 +39,13 @@ export default function ChatInput({ onSendMessage, onFileUpload, isDisabled = fa
       }
     };
     fileInput.click();
+  };
+
+  const handleNewConversation = () => {
+    if (onNewConversation) {
+      onNewConversation();
+      setInput('');
+    }
   };
 
   return (
@@ -71,6 +84,17 @@ export default function ChatInput({ onSendMessage, onFileUpload, isDisabled = fa
         >
           <Plus size={16} />
           <span>Files</span>
+        </Button>
+        
+        <Button 
+          type="button" 
+          variant="ghost" 
+          size="sm"
+          className="rounded-full flex items-center gap-1.5 text-muted-foreground hover:text-foreground hover:bg-secondary"
+          onClick={handleNewConversation}
+        >
+          <RefreshCw size={16} />
+          <span>New</span>
         </Button>
         
         <Button 

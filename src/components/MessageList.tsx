@@ -74,21 +74,19 @@ export default function MessageList({ messages }: MessageListProps) {
             )}
           </div>
         ))}
-        
-        {/* Typing animation when waiting for AI response */}
-        {isWaiting && (
-          <div className="flex items-start gap-3 animate-pulse">
-            <div className="flex-shrink-0 w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-primary">
-              <BotIcon size={18} />
-            </div>
-            <div className="bg-secondary text-secondary-foreground rounded-xl rounded-tl-none px-4 py-3 flex items-center space-x-2">
-              <span className="w-2 h-2 rounded-full bg-current animate-bounce" style={{ animationDelay: '0ms' }}></span>
-              <span className="w-2 h-2 rounded-full bg-current animate-bounce" style={{ animationDelay: '150ms' }}></span>
-              <span className="w-2 h-2 rounded-full bg-current animate-bounce" style={{ animationDelay: '300ms' }}></span>
-            </div>
-          </div>
-        )}
       </div>
+      
+      {/* Centered typing animation when waiting for AI response */}
+      {isWaiting && (
+        <div className="absolute inset-0 flex items-center justify-center pointer-events-none" style={{ zIndex: 5 }}>
+          <div className="bg-secondary/90 text-secondary-foreground rounded-xl px-6 py-3 flex items-center space-x-2 shadow-lg animate-fade-in">
+            <span className="text-sm font-medium mr-2">AI is thinking</span>
+            <span className="w-2 h-2 rounded-full bg-current animate-bounce" style={{ animationDelay: '0ms' }}></span>
+            <span className="w-2 h-2 rounded-full bg-current animate-bounce" style={{ animationDelay: '150ms' }}></span>
+            <span className="w-2 h-2 rounded-full bg-current animate-bounce" style={{ animationDelay: '300ms' }}></span>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

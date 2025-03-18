@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from 'react';
 import ChatInput from '@/components/ChatInput';
 import MessageList from '@/components/MessageList';
@@ -72,6 +73,15 @@ const Index = () => {
 
   const handleFollowUpQuestion = (question: string) => {
     handleSendMessage(question);
+  };
+
+  const handleNewConversation = () => {
+    setMessages([]);
+    resetAnalysis();
+    toast({
+      title: "Conversation Reset",
+      description: "Started a new conversation"
+    });
   };
 
   useEffect(() => {
@@ -171,6 +181,7 @@ const Index = () => {
                 <ChatInput 
                   onSendMessage={handleSendMessage} 
                   onFileUpload={handleFileUpload}
+                  onNewConversation={handleNewConversation}
                   isDisabled={state.status === 'uploading' || state.status === 'thinking' || state.status === 'analyzing'} 
                 />
               </>

@@ -2,7 +2,6 @@
 import { Message } from '@/types';
 import { cn } from '@/lib/utils';
 import { UserIcon, BotIcon } from 'lucide-react';
-import { ScrollArea } from '@/components/ui/scroll-area';
 
 interface MessageListProps {
   messages: Message[];
@@ -24,41 +23,39 @@ export default function MessageList({ messages }: MessageListProps) {
   }
 
   return (
-    <ScrollArea className="flex-1">
-      <div className="p-4 space-y-4">
-        {messages.map((message) => (
+    <div className="flex-1 overflow-y-auto p-4 space-y-4">
+      {messages.map((message) => (
+        <div
+          key={message.id}
+          className={cn(
+            "flex items-start gap-3 animate-enter",
+            message.role === 'user' ? "justify-end" : "justify-start"
+          )}
+        >
+          {message.role === 'assistant' && (
+            <div className="flex-shrink-0 w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-primary">
+              <BotIcon size={18} />
+            </div>
+          )}
+
           <div
-            key={message.id}
             className={cn(
-              "flex items-start gap-3 animate-enter",
-              message.role === 'user' ? "justify-end" : "justify-start"
+              "px-4 py-3 rounded-xl max-w-[80%]",
+              message.role === 'user'
+                ? "bg-primary text-primary-foreground rounded-tr-none"
+                : "bg-secondary text-secondary-foreground rounded-tl-none"
             )}
           >
-            {message.role === 'assistant' && (
-              <div className="flex-shrink-0 w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-primary">
-                <BotIcon size={18} />
-              </div>
-            )}
-
-            <div
-              className={cn(
-                "px-4 py-3 rounded-xl max-w-[80%]",
-                message.role === 'user'
-                  ? "bg-primary text-primary-foreground rounded-tr-none"
-                  : "bg-secondary text-secondary-foreground rounded-tl-none"
-              )}
-            >
-              {message.content}
-            </div>
-
-            {message.role === 'user' && (
-              <div className="flex-shrink-0 w-8 h-8 rounded-full bg-muted flex items-center justify-center text-muted-foreground">
-                <UserIcon size={18} />
-              </div>
-            )}
+            {message.content}
           </div>
-        ))}
-      </div>
-    </ScrollArea>
+
+          {message.role === 'user' && (
+            <div className="flex-shrink-0 w-8 h-8 rounded-full bg-muted flex items-center justify-center text-muted-foreground">
+              <UserIcon size={18} />
+            </div>
+          )}
+        </div>
+      ))}
+    </div>
   );
 }

@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import ChatInput from '@/components/ChatInput';
 import MessageList from '@/components/MessageList';
@@ -14,7 +13,6 @@ import { Loader2Icon, RefreshCwIcon, UploadIcon, MaximizeIcon, MinimizeIcon } fr
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { ResizablePanelGroup, ResizablePanel, ResizableHandle } from '@/components/ui/resizable';
-import { ScrollArea } from '@/components/ui/scroll-area';
 
 const Index = () => {
   const [messages, setMessages] = useState<Message[]>([]);
@@ -135,64 +133,62 @@ const Index = () => {
             </div>
             
             {!leftPanelCollapsed && (
-              <ScrollArea className="flex-1 flex flex-col">
-                <div className="flex-1 flex flex-col">
-                  {state.thinkingSteps.length > 0 && (
-                    <div className="px-4 py-3">
-                      <AnalysisProgress 
-                        status={state.status} 
-                        progress={0} 
-                        steps={state.thinkingSteps}
-                        onFollowUpSelected={handleFollowUpQuestion}
-                      />
-                    </div>
+              <>
+                {state.thinkingSteps.length > 0 && (
+                  <div className="px-4 py-3">
+                    <AnalysisProgress 
+                      status={state.status} 
+                      progress={0} 
+                      steps={state.thinkingSteps}
+                      onFollowUpSelected={handleFollowUpQuestion}
+                    />
+                  </div>
+                )}
+                
+                <MessageList messages={messages} />
+                
+                <div className="px-4 py-2 border-t flex items-center gap-2 bg-muted/20">
+                  {state.status === 'idle' && (
+                    <Button 
+                      variant="outline" 
+                      size="sm"
+                      className="flex items-center gap-1"
+                      onClick={() => {
+                        const fileInput = document.createElement('input');
+                        fileInput.type = 'file';
+                        fileInput.accept = '.pdf,.doc,.docx,.txt';
+                        fileInput.onchange = (e) => {
+                          const files = (e.target as HTMLInputElement).files;
+                          if (files && files.length > 0) {
+                            handleFileSelect(files[0]);
+                          }
+                        };
+                        fileInput.click();
+                      }}
+                    >
+                      <UploadIcon size={14} />
+                      <span>Upload Document</span>
+                    </Button>
                   )}
                   
-                  <MessageList messages={messages} />
-                  
-                  <div className="px-4 py-2 border-t flex items-center gap-2 bg-muted/20">
-                    {state.status === 'idle' && (
-                      <Button 
-                        variant="outline" 
-                        size="sm"
-                        className="flex items-center gap-1"
-                        onClick={() => {
-                          const fileInput = document.createElement('input');
-                          fileInput.type = 'file';
-                          fileInput.accept = '.pdf,.doc,.docx,.txt';
-                          fileInput.onchange = (e) => {
-                            const files = (e.target as HTMLInputElement).files;
-                            if (files && files.length > 0) {
-                              handleFileSelect(files[0]);
-                            }
-                          };
-                          fileInput.click();
-                        }}
-                      >
-                        <UploadIcon size={14} />
-                        <span>Upload Document</span>
-                      </Button>
-                    )}
-                    
-                    {state.status === 'complete' && (
-                      <Button 
-                        variant="outline" 
-                        size="sm"
-                        onClick={resetAnalysis}
-                        className="flex items-center gap-1"
-                      >
-                        <RefreshCwIcon size={14} />
-                        <span>New Analysis</span>
-                      </Button>
-                    )}
-                  </div>
+                  {state.status === 'complete' && (
+                    <Button 
+                      variant="outline" 
+                      size="sm"
+                      onClick={resetAnalysis}
+                      className="flex items-center gap-1"
+                    >
+                      <RefreshCwIcon size={14} />
+                      <span>New Analysis</span>
+                    </Button>
+                  )}
                 </div>
                 
                 <ChatInput 
                   onSendMessage={handleSendMessage} 
                   isDisabled={state.status === 'uploading' || state.status === 'thinking' || state.status === 'analyzing'} 
                 />
-              </ScrollArea>
+              </>
             )}
           </div>
         </ResizablePanel>

@@ -19,7 +19,7 @@ export default function MessageList({ messages, isWaiting = false }: MessageList
         </div>
         <h3 className="text-lg font-medium mb-2">AI Lawyer</h3>
         <p className="text-muted-foreground max-w-md">
-          Upload a document or ask me to analyze its content. I can help extract key information and generate summaries.
+          I can use various tools, including iManage, emails, legal databases, and more, to help you complete the task.
         </p>
       </div>
     );

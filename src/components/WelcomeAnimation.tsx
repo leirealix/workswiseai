@@ -40,7 +40,7 @@ export default function WelcomeAnimation() {
       
       <h3 className="text-xl font-medium mb-3 animate-fade-in">AI Lawyer</h3>
       <p className="text-center text-muted-foreground max-w-md animate-fade-in" style={{ animationDelay: '0.2s' }}>
-        Upload a document or ask me to complete any work you request. I can help extract key information, generate summaries, and provide legal insights.
+        Ask me to complete any work you request. I can help do due diligence, legal research, extract key information, generate summaries, and provide legal insights.
       </p>
     </div>
   );

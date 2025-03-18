@@ -169,7 +169,7 @@ const Index = () => {
                       }}
                     >
                       <UploadIcon size={14} />
-                      <span>Upload Document</span>
+                      <span>Files</span>
                     </Button>
                   )}
                   
@@ -218,7 +218,7 @@ const Index = () => {
                   {state.status === 'error' && 'Analysis Error'}
                 </h2>
                 <p className="text-sm text-muted-foreground">
-                  {state.status === 'idle' && 'Upload a document to begin analysis'}
+                  {state.status === 'idle' && ''}
                   {state.status === 'uploading' && 'Please wait while we upload your document'}
                   {state.status === 'thinking' && 'AI is processing your document'}
                   {state.status === 'analyzing' && 'Extracting insights from your document'}

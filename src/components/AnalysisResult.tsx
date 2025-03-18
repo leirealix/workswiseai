@@ -3,7 +3,6 @@ import { AnalysisResult as ResultType } from '@/types';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { CalendarIcon, UsersIcon, FileTextIcon, ClipboardCheckIcon } from 'lucide-react';
-import { ScrollArea } from '@/components/ui/scroll-area';
 
 interface AnalysisResultProps {
   result: ResultType;
@@ -22,9 +21,9 @@ export default function AnalysisResult({ result }: AnalysisResultProps) {
           </TabsList>
         </div>
         
-        <div className="flex-1 overflow-hidden">
+        <div className="flex-1 overflow-auto">
           <TabsContent value="summary" className="h-full mt-0 animate-fade-in">
-            <Card className="h-full">
+            <Card className="h-full border-0 rounded-none">
               <CardHeader>
                 <CardTitle className="flex items-center">
                   <ClipboardCheckIcon size={18} className="mr-2 text-primary" />
@@ -34,37 +33,35 @@ export default function AnalysisResult({ result }: AnalysisResultProps) {
                   Key points extracted from the document
                 </CardDescription>
               </CardHeader>
-              <CardContent className="h-[calc(100%-4rem)] overflow-hidden">
-                <ScrollArea className="h-full w-full">
-                  <div className="space-y-4">
-                    <div className="text-sm leading-relaxed">{result.summary}</div>
-                    
-                    <div className="grid grid-cols-2 gap-3 mt-6">
-                      <div className="bg-muted/30 rounded-lg p-3">
-                        <div className="text-xs text-muted-foreground mb-1">Document Type</div>
-                        <div className="text-sm font-medium">Contract Agreement</div>
-                      </div>
-                      <div className="bg-muted/30 rounded-lg p-3">
-                        <div className="text-xs text-muted-foreground mb-1">Total Pages</div>
-                        <div className="text-sm font-medium">5</div>
-                      </div>
-                      <div className="bg-muted/30 rounded-lg p-3">
-                        <div className="text-xs text-muted-foreground mb-1">Total Clauses</div>
-                        <div className="text-sm font-medium">{result.clauses.length}</div>
-                      </div>
-                      <div className="bg-muted/30 rounded-lg p-3">
-                        <div className="text-xs text-muted-foreground mb-1">Agreement Duration</div>
-                        <div className="text-sm font-medium">2 years</div>
-                      </div>
+              <CardContent className="overflow-auto">
+                <div className="space-y-4">
+                  <div className="text-sm leading-relaxed">{result.summary}</div>
+                  
+                  <div className="grid grid-cols-2 gap-3 mt-6">
+                    <div className="bg-muted/30 rounded-lg p-3">
+                      <div className="text-xs text-muted-foreground mb-1">Document Type</div>
+                      <div className="text-sm font-medium">Contract Agreement</div>
+                    </div>
+                    <div className="bg-muted/30 rounded-lg p-3">
+                      <div className="text-xs text-muted-foreground mb-1">Total Pages</div>
+                      <div className="text-sm font-medium">5</div>
+                    </div>
+                    <div className="bg-muted/30 rounded-lg p-3">
+                      <div className="text-xs text-muted-foreground mb-1">Total Clauses</div>
+                      <div className="text-sm font-medium">{result.clauses.length}</div>
+                    </div>
+                    <div className="bg-muted/30 rounded-lg p-3">
+                      <div className="text-xs text-muted-foreground mb-1">Agreement Duration</div>
+                      <div className="text-sm font-medium">2 years</div>
                     </div>
                   </div>
-                </ScrollArea>
+                </div>
               </CardContent>
             </Card>
           </TabsContent>
           
-          <TabsContent value="parties" className="h-full mt-0 animate-fade-in">
-            <Card className="h-full">
+          <TabsContent value="parties" className="h-full mt-0 animate-fade-in overflow-auto">
+            <Card className="h-full border-0 rounded-none">
               <CardHeader>
                 <CardTitle className="flex items-center">
                   <UsersIcon size={18} className="mr-2 text-primary" />
@@ -74,42 +71,40 @@ export default function AnalysisResult({ result }: AnalysisResultProps) {
                   Organizations and entities mentioned in the document
                 </CardDescription>
               </CardHeader>
-              <CardContent className="h-[calc(100%-4rem)] overflow-hidden">
-                <ScrollArea className="h-full w-full">
-                  <div className="space-y-4">
-                    {result.parties.map((party, index) => (
-                      <div key={index} className="bg-muted/30 rounded-lg p-4">
-                        <div className="font-medium">{party}</div>
-                        <div className="text-sm text-muted-foreground mt-1">
-                          {index === 0 ? 'First Party' : 'Second Party'}
+              <CardContent className="overflow-auto">
+                <div className="space-y-4">
+                  {result.parties.map((party, index) => (
+                    <div key={index} className="bg-muted/30 rounded-lg p-4">
+                      <div className="font-medium">{party}</div>
+                      <div className="text-sm text-muted-foreground mt-1">
+                        {index === 0 ? 'First Party' : 'Second Party'}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+                
+                <div className="mt-6">
+                  <h4 className="text-sm font-medium mb-3">Signatories</h4>
+                  <div className="space-y-3">
+                    {result.signatures.map((signature, index) => (
+                      <div key={index} className="flex items-center border rounded-lg p-3">
+                        <div className="w-8 h-8 rounded-full bg-primary/10 text-primary flex items-center justify-center mr-3">
+                          {signature.name.charAt(0)}
+                        </div>
+                        <div>
+                          <div className="font-medium">{signature.name}</div>
+                          <div className="text-xs text-muted-foreground">{signature.role}</div>
                         </div>
                       </div>
                     ))}
                   </div>
-                  
-                  <div className="mt-6">
-                    <h4 className="text-sm font-medium mb-3">Signatories</h4>
-                    <div className="space-y-3">
-                      {result.signatures.map((signature, index) => (
-                        <div key={index} className="flex items-center border rounded-lg p-3">
-                          <div className="w-8 h-8 rounded-full bg-primary/10 text-primary flex items-center justify-center mr-3">
-                            {signature.name.charAt(0)}
-                          </div>
-                          <div>
-                            <div className="font-medium">{signature.name}</div>
-                            <div className="text-xs text-muted-foreground">{signature.role}</div>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                </ScrollArea>
+                </div>
               </CardContent>
             </Card>
           </TabsContent>
           
-          <TabsContent value="dates" className="h-full mt-0 animate-fade-in">
-            <Card className="h-full">
+          <TabsContent value="dates" className="h-full mt-0 animate-fade-in overflow-auto">
+            <Card className="h-full border-0 rounded-none">
               <CardHeader>
                 <CardTitle className="flex items-center">
                   <CalendarIcon size={18} className="mr-2 text-primary" />
@@ -119,48 +114,46 @@ export default function AnalysisResult({ result }: AnalysisResultProps) {
                   Important dates mentioned in the document
                 </CardDescription>
               </CardHeader>
-              <CardContent className="h-[calc(100%-4rem)] overflow-hidden">
-                <ScrollArea className="h-full w-full">
-                  <div className="space-y-4">
-                    {result.keyDates.map((date, index) => (
-                      <div key={index} className="flex items-center justify-between border-b pb-3 last:border-0">
-                        <div>
-                          <div className="font-medium">{date.description}</div>
-                          <div className="text-xs text-muted-foreground mt-1">
-                            {new Date(date.date).toLocaleDateString('en-US', {
-                              year: 'numeric',
-                              month: 'long',
-                              day: 'numeric',
-                            })}
-                          </div>
-                        </div>
-                        <div className="bg-primary/10 text-primary text-xs font-medium px-2 py-1 rounded-full">
-                          {(() => {
-                            const dateObj = new Date(date.date);
-                            const now = new Date();
-                            if (dateObj > now) {
-                              return 'Upcoming';
-                            } else if (
-                              dateObj.getDate() === now.getDate() &&
-                              dateObj.getMonth() === now.getMonth() &&
-                              dateObj.getFullYear() === now.getFullYear()
-                            ) {
-                              return 'Today';
-                            } else {
-                              return 'Past';
-                            }
-                          })()}
+              <CardContent className="overflow-auto">
+                <div className="space-y-4">
+                  {result.keyDates.map((date, index) => (
+                    <div key={index} className="flex items-center justify-between border-b pb-3 last:border-0">
+                      <div>
+                        <div className="font-medium">{date.description}</div>
+                        <div className="text-xs text-muted-foreground mt-1">
+                          {new Date(date.date).toLocaleDateString('en-US', {
+                            year: 'numeric',
+                            month: 'long',
+                            day: 'numeric',
+                          })}
                         </div>
                       </div>
-                    ))}
-                  </div>
-                </ScrollArea>
+                      <div className="bg-primary/10 text-primary text-xs font-medium px-2 py-1 rounded-full">
+                        {(() => {
+                          const dateObj = new Date(date.date);
+                          const now = new Date();
+                          if (dateObj > now) {
+                            return 'Upcoming';
+                          } else if (
+                            dateObj.getDate() === now.getDate() &&
+                            dateObj.getMonth() === now.getMonth() &&
+                            dateObj.getFullYear() === now.getFullYear()
+                          ) {
+                            return 'Today';
+                          } else {
+                            return 'Past';
+                          }
+                        })()}
+                      </div>
+                    </div>
+                  ))}
+                </div>
               </CardContent>
             </Card>
           </TabsContent>
           
-          <TabsContent value="clauses" className="h-full mt-0 animate-fade-in">
-            <Card className="h-full">
+          <TabsContent value="clauses" className="h-full mt-0 animate-fade-in overflow-auto">
+            <Card className="h-full border-0 rounded-none">
               <CardHeader>
                 <CardTitle className="flex items-center">
                   <FileTextIcon size={18} className="mr-2 text-primary" />
@@ -170,24 +163,22 @@ export default function AnalysisResult({ result }: AnalysisResultProps) {
                   Important provisions and clauses in the document
                 </CardDescription>
               </CardHeader>
-              <CardContent className="h-[calc(100%-4rem)] overflow-hidden">
-                <ScrollArea className="h-full w-full">
-                  <div className="space-y-6">
-                    {result.clauses.map((clause) => (
-                      <div key={clause.id} className="border rounded-lg overflow-hidden">
-                        <div className="bg-muted p-3 font-medium text-sm">
-                          {clause.title}
-                          <span className="ml-2 text-xs text-muted-foreground">
-                            Page {clause.page}
-                          </span>
-                        </div>
-                        <div className="p-3 text-sm">
-                          {clause.content}
-                        </div>
+              <CardContent className="overflow-auto">
+                <div className="space-y-6">
+                  {result.clauses.map((clause) => (
+                    <div key={clause.id} className="border rounded-lg overflow-hidden">
+                      <div className="bg-muted p-3 font-medium text-sm">
+                        {clause.title}
+                        <span className="ml-2 text-xs text-muted-foreground">
+                          Page {clause.page}
+                        </span>
                       </div>
-                    ))}
-                  </div>
-                </ScrollArea>
+                      <div className="p-3 text-sm">
+                        {clause.content}
+                      </div>
+                    </div>
+                  ))}
+                </div>
               </CardContent>
             </Card>
           </TabsContent>

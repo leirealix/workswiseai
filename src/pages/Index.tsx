@@ -13,6 +13,7 @@ import { Loader2Icon, RefreshCwIcon, UploadIcon, MaximizeIcon, MinimizeIcon } fr
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { ResizablePanelGroup, ResizablePanel, ResizableHandle } from '@/components/ui/resizable';
+import { ScrollArea } from '@/components/ui/scroll-area';
 
 const Index = () => {
   const [messages, setMessages] = useState<Message[]>([]);
@@ -119,7 +120,7 @@ const Index = () => {
           <div className="h-full flex flex-col border-r">
             <div className="p-4 border-b bg-background/80 backdrop-blur-md flex justify-between items-center">
               <div className={leftPanelCollapsed ? "hidden" : "block"}>
-                <h1 className="text-xl font-semibold">Document Analyzer</h1>
+                <h1 className="text-xl font-semibold">AI Lawyer</h1>
                 <p className="text-sm text-muted-foreground">Chat with AI about your legal documents</p>
               </div>
               <Button 
@@ -208,7 +209,7 @@ const Index = () => {
             <div className="p-4 border-b flex items-center justify-between bg-background/80 backdrop-blur-md">
               <div>
                 <h2 className="text-lg font-medium">
-                  {state.status === 'idle' && 'Document Analysis'}
+                  {state.status === 'idle' && 'Preview'}
                   {state.status === 'uploading' && 'Uploading Document...'}
                   {state.status === 'thinking' && 'Processing Document...'}
                   {state.status === 'analyzing' && 'Analyzing Document...'}

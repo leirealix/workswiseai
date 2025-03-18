@@ -62,8 +62,13 @@ const Index = () => {
     }
   }, [state.status]);
 
+  // For debugging, let's add a console log to verify the component is mounting
+  useEffect(() => {
+    console.log("Index component mounted, current state:", state);
+  }, []);
+
   return (
-    <div className="h-full w-full flex overflow-hidden">
+    <div className="h-full w-full flex overflow-hidden" style={{ height: '100vh' }}>
       {/* Left panel - Chat interface */}
       <div className="w-1/2 h-full flex flex-col border-r">
         <div className="p-4 border-b bg-background/80 backdrop-blur-md">

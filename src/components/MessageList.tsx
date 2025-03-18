@@ -24,8 +24,8 @@ export default function MessageList({ messages }: MessageListProps) {
   }
 
   return (
-    <ScrollArea className="flex-1 p-4">
-      <div className="space-y-4">
+    <ScrollArea className="flex-1 w-full">
+      <div className="space-y-4 p-4">
         {messages.map((message) => (
           <div
             key={message.id}

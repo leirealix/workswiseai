@@ -30,7 +30,7 @@ export default function DocumentViewer({ fileName, result }: DocumentViewerProps
       </div>
       
       <div className="flex-1 overflow-hidden">
-        <ScrollArea className="h-full">
+        <ScrollArea className="h-full w-full">
           <div className="p-4 space-y-6">
             {pages.map((pageNum) => {
               const pageClauses = result.clauses.filter(clause => clause.page === pageNum);

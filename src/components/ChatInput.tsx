@@ -38,7 +38,7 @@ export default function ChatInput({ onSendMessage, onFileUpload, isDisabled = fa
   return (
     <form 
       onSubmit={handleSubmit} 
-      className="relative flex flex-col w-full px-4 py-3 border-t bg-background/80 backdrop-blur-sm custom-transition"
+      className="relative flex flex-col w-full px-4 py-3 border-t bg-background/80 backdrop-blur-sm z-10"
     >
       <div className="relative w-full">
         <Input

@@ -8,7 +8,7 @@ import DocumentViewer from '@/components/DocumentViewer';
 import AnalysisResult from '@/components/AnalysisResult';
 import { useDocumentAnalysis } from '@/hooks/useDocumentAnalysis';
 import { Message } from '@/types';
-import { toast } from '@/components/ui/sonner';
+import { toast } from '@/hooks/use-toast';
 import { Loader2Icon, RefreshCwIcon } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';

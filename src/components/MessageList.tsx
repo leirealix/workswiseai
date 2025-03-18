@@ -23,7 +23,7 @@ export default function MessageList({ messages }: MessageListProps) {
   }
 
   return (
-    <div className="flex-1 overflow-auto h-full">
+    <div className="flex-1 overflow-y-auto h-full" style={{ maxHeight: "calc(100% - 70px)" }}>
       <div className="space-y-4 p-4">
         {messages.map((message) => (
           <div

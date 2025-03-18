@@ -28,7 +28,7 @@ export default function DocumentViewer({ fileName, result }: DocumentViewerProps
         </div>
       </div>
       
-      <div className="flex-1 overflow-auto">
+      <div className="flex-1 overflow-y-auto" style={{ height: selectedClause ? "calc(100% - 140px)" : "calc(100% - 70px)" }}>
         <div className="p-4 space-y-6">
           {pages.map((pageNum) => {
             const pageClauses = result.clauses.filter(clause => clause.page === pageNum);

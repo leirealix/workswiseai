@@ -33,7 +33,7 @@ export default function AnalysisResult({ result }: AnalysisResultProps) {
                   Key points extracted from the document
                 </CardDescription>
               </CardHeader>
-              <CardContent className="overflow-auto">
+              <CardContent className="overflow-y-auto" style={{ maxHeight: "calc(100% - 90px)" }}>
                 <div className="space-y-4">
                   <div className="text-sm leading-relaxed">{result.summary}</div>
                   
@@ -60,7 +60,7 @@ export default function AnalysisResult({ result }: AnalysisResultProps) {
             </Card>
           </TabsContent>
           
-          <TabsContent value="parties" className="h-full mt-0 animate-fade-in overflow-auto">
+          <TabsContent value="parties" className="h-full mt-0 animate-fade-in overflow-y-auto">
             <Card className="h-full border-0 rounded-none">
               <CardHeader>
                 <CardTitle className="flex items-center">
@@ -71,7 +71,7 @@ export default function AnalysisResult({ result }: AnalysisResultProps) {
                   Organizations and entities mentioned in the document
                 </CardDescription>
               </CardHeader>
-              <CardContent className="overflow-auto">
+              <CardContent className="overflow-y-auto" style={{ maxHeight: "calc(100% - 90px)" }}>
                 <div className="space-y-4">
                   {result.parties.map((party, index) => (
                     <div key={index} className="bg-muted/30 rounded-lg p-4">
@@ -103,7 +103,7 @@ export default function AnalysisResult({ result }: AnalysisResultProps) {
             </Card>
           </TabsContent>
           
-          <TabsContent value="dates" className="h-full mt-0 animate-fade-in overflow-auto">
+          <TabsContent value="dates" className="h-full mt-0 animate-fade-in overflow-y-auto">
             <Card className="h-full border-0 rounded-none">
               <CardHeader>
                 <CardTitle className="flex items-center">
@@ -114,7 +114,7 @@ export default function AnalysisResult({ result }: AnalysisResultProps) {
                   Important dates mentioned in the document
                 </CardDescription>
               </CardHeader>
-              <CardContent className="overflow-auto">
+              <CardContent className="overflow-y-auto" style={{ maxHeight: "calc(100% - 90px)" }}>
                 <div className="space-y-4">
                   {result.keyDates.map((date, index) => (
                     <div key={index} className="flex items-center justify-between border-b pb-3 last:border-0">
@@ -152,7 +152,7 @@ export default function AnalysisResult({ result }: AnalysisResultProps) {
             </Card>
           </TabsContent>
           
-          <TabsContent value="clauses" className="h-full mt-0 animate-fade-in overflow-auto">
+          <TabsContent value="clauses" className="h-full mt-0 animate-fade-in overflow-y-auto">
             <Card className="h-full border-0 rounded-none">
               <CardHeader>
                 <CardTitle className="flex items-center">
@@ -163,7 +163,7 @@ export default function AnalysisResult({ result }: AnalysisResultProps) {
                   Important provisions and clauses in the document
                 </CardDescription>
               </CardHeader>
-              <CardContent className="overflow-auto">
+              <CardContent className="overflow-y-auto" style={{ maxHeight: "calc(100% - 90px)" }}>
                 <div className="space-y-6">
                   {result.clauses.map((clause) => (
                     <div key={clause.id} className="border rounded-lg overflow-hidden">

@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import ChatInput from '@/components/ChatInput';
 import MessageList from '@/components/MessageList';
@@ -22,7 +21,6 @@ const Index = () => {
   const [rightPanelExpanded, setRightPanelExpanded] = useState(false);
 
   const handleSendMessage = (content: string) => {
-    // Add user message
     const newMessage: Message = {
       id: crypto.randomUUID(),
       role: 'user',
@@ -32,7 +30,6 @@ const Index = () => {
     
     setMessages(prev => [...prev, newMessage]);
     
-    // Simulate AI response
     setTimeout(() => {
       const aiResponse: Message = {
         id: crypto.randomUUID(),
@@ -56,7 +53,6 @@ const Index = () => {
       });
     });
 
-    // Add a system message about file upload
     const uploadMessage: Message = {
       id: crypto.randomUUID(),
       role: 'assistant',
@@ -67,6 +63,10 @@ const Index = () => {
     setMessages(prev => [...prev, uploadMessage]);
   };
 
+  const handleFollowUpQuestion = (question: string) => {
+    handleSendMessage(question);
+  };
+
   useEffect(() => {
     if (state.status === 'complete') {
       toast({
@@ -74,7 +74,6 @@ const Index = () => {
         description: "Document analysis has been completed successfully!"
       });
       
-      // Add a message to inform the user of completed analysis
       const completionMessage: Message = {
         id: crypto.randomUUID(),
         role: 'assistant',
@@ -86,19 +85,16 @@ const Index = () => {
     }
   }, [state.status]);
 
-  // Toggle the left panel collapse state
   const toggleLeftPanel = () => {
     setLeftPanelCollapsed(!leftPanelCollapsed);
     setRightPanelExpanded(false);
   };
 
-  // Toggle the right panel expanded state
   const toggleRightPanel = () => {
     setRightPanelExpanded(!rightPanelExpanded);
     setLeftPanelCollapsed(rightPanelExpanded ? false : true);
   };
 
-  // For debugging, let's add a console log to verify the component is mounting
   useEffect(() => {
     console.log("Index component mounted, current state:", state);
   }, []);
@@ -109,7 +105,6 @@ const Index = () => {
         direction="horizontal" 
         className="h-full"
       >
-        {/* Left panel - Chat interface */}
         <ResizablePanel 
           defaultSize={50} 
           minSize={20}
@@ -139,13 +134,13 @@ const Index = () => {
             
             {!leftPanelCollapsed && (
               <>
-                {/* Analysis progress - always show if we have thinking steps */}
                 {state.thinkingSteps.length > 0 && (
                   <div className="px-4 py-3">
                     <AnalysisProgress 
                       status={state.status} 
                       progress={0} 
                       steps={state.thinkingSteps}
+                      onFollowUpSelected={handleFollowUpQuestion}
                     />
                   </div>
                 )}
@@ -200,7 +195,6 @@ const Index = () => {
 
         {!leftPanelCollapsed && !rightPanelExpanded && <ResizableHandle withHandle />}
         
-        {/* Right panel - Document and analysis */}
         <ResizablePanel 
           defaultSize={50} 
           minSize={20}
@@ -211,7 +205,6 @@ const Index = () => {
           )}
         >
           <div className="h-full flex flex-col">
-            {/* Status bar */}
             <div className="p-4 border-b flex items-center justify-between bg-background/80 backdrop-blur-md">
               <div>
                 <h2 className="text-lg font-medium">
@@ -257,14 +250,12 @@ const Index = () => {
             </div>
             
             <div className="flex-1 overflow-hidden">
-              {/* Idle state - File uploader */}
               {state.status === 'idle' && (
                 <div className="h-full flex items-center justify-center">
                   <FileUpload onFileSelect={handleFileSelect} />
                 </div>
               )}
               
-              {/* Loading states */}
               {(state.status === 'uploading' || state.status === 'thinking' || state.status === 'analyzing') && (
                 <div className="h-full flex flex-col">
                   <div className={cn(
@@ -284,7 +275,6 @@ const Index = () => {
                     </p>
                   </div>
                   
-                  {/* Thinking process overlay */}
                   {state.thinkingSteps.length > 0 && (
                     <div className="absolute inset-x-0 bottom-0 p-6 glass rounded-t-2xl shadow-lg max-w-md mx-auto transition-all">
                       <h3 className="text-sm font-medium mb-3">Analysis Progress</h3>
@@ -294,7 +284,6 @@ const Index = () => {
                 </div>
               )}
               
-              {/* Results */}
               {state.status === 'complete' && state.file && state.result && (
                 <div className="h-full grid grid-cols-2">
                   <div className="h-full border-r">
@@ -309,7 +298,6 @@ const Index = () => {
                 </div>
               )}
               
-              {/* Error state */}
               {state.status === 'error' && (
                 <div className="h-full flex flex-col items-center justify-center p-6">
                   <div className="w-16 h-16 rounded-full bg-destructive/10 flex items-center justify-center text-destructive mb-4">

@@ -28,7 +28,7 @@ export default function ChatInput({ onSendMessage, isDisabled = false }: ChatInp
         type="text"
         value={input}
         onChange={(e) => setInput(e.target.value)}
-        placeholder="Ask about your document..."
+        placeholder="Complete any work you request"
         disabled={isDisabled}
         className="flex-1 px-4 py-2 bg-white dark:bg-black/20 border border-border rounded-full focus:outline-none focus:ring-2 focus:ring-primary/20 custom-transition"
       />

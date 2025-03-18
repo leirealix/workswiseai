@@ -98,7 +98,7 @@ export default function FileUpload({ onFileSelect }: FileUploadProps) {
           onClick={handleSubmit} 
           className="mt-4 w-full max-w-xs transition-all"
         >
-          Analyze Document
+          Upload to Files
         </Button>
       )}
     </div>

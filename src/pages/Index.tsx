@@ -6,6 +6,7 @@ import ThinkingProcess from '@/components/ThinkingProcess';
 import DocumentViewer from '@/components/DocumentViewer';
 import AnalysisResult from '@/components/AnalysisResult';
 import AnalysisProgress from '@/components/AnalysisProgress';
+import WelcomeAnimation from '@/components/WelcomeAnimation';
 import { useDocumentAnalysis } from '@/hooks/useDocumentAnalysis';
 import { Message } from '@/types';
 import { toast } from '@/hooks/use-toast';
@@ -253,7 +254,7 @@ const Index = () => {
             <div className="flex-1 overflow-hidden">
               {state.status === 'idle' && (
                 <div className="h-full flex items-center justify-center">
-                  <FileUpload onFileSelect={handleFileSelect} />
+                  <WelcomeAnimation />
                 </div>
               )}
               

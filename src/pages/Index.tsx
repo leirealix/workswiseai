@@ -1,5 +1,4 @@
-
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import ChatInput from '@/components/ChatInput';
 import MessageList from '@/components/MessageList';
 import FileUpload from '@/components/FileUpload';
@@ -16,35 +15,59 @@ import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { ResizablePanelGroup, ResizablePanel, ResizableHandle } from '@/components/ui/resizable';
 import { ScrollArea } from '@/components/ui/scroll-area';
+import { sendMessageToAIAgent } from '@/services/aiAgentService';
 
 const Index = () => {
   const [messages, setMessages] = useState<Message[]>([]);
   const { state, uploadFile, resetAnalysis } = useDocumentAnalysis();
   const [leftPanelCollapsed, setLeftPanelCollapsed] = useState(false);
   const [rightPanelExpanded, setRightPanelExpanded] = useState(false);
-
-  const handleSendMessage = (content: string) => {
+  const [isWaitingForAI, setIsWaitingForAI] = useState(false);
+  const conversationIdRef = useRef<string | undefined>(undefined);
+  
+  const handleSendMessage = async (content: string) => {
+    const userMessageId = crypto.randomUUID();
     const newMessage: Message = {
-      id: crypto.randomUUID(),
+      id: userMessageId,
       role: 'user',
       content,
       timestamp: new Date(),
     };
     
     setMessages(prev => [...prev, newMessage]);
+    setIsWaitingForAI(true);
     
-    setTimeout(() => {
+    try {
+      const response = await sendMessageToAIAgent(content, conversationIdRef.current);
+      
+      conversationIdRef.current = response.conversationId;
+      
       const aiResponse: Message = {
         id: crypto.randomUUID(),
         role: 'assistant',
-        content: state.status === 'complete'
-          ? "I've analyzed your document. You can explore the results in the panel on the right. Would you like me to focus on any specific part?"
-          : "To analyze a document, please upload it using the file upload button below or in the right panel.",
+        content: response.content,
         timestamp: new Date(),
       };
       
       setMessages(prev => [...prev, aiResponse]);
-    }, 1500);
+    } catch (error) {
+      console.error('Error getting AI response:', error);
+      const errorMessage: Message = {
+        id: crypto.randomUUID(),
+        role: 'assistant',
+        content: "Sorry, I encountered an error while processing your request. Please try again.",
+        timestamp: new Date(),
+      };
+      setMessages(prev => [...prev, errorMessage]);
+      
+      toast({
+        variant: "destructive",
+        title: "Communication Error",
+        description: "Failed to connect to the AI agent system."
+      });
+    } finally {
+      setIsWaitingForAI(false);
+    }
   };
 
   const handleFileSelect = (file: File) => {
@@ -78,6 +101,7 @@ const Index = () => {
   const handleNewConversation = () => {
     setMessages([]);
     resetAnalysis();
+    conversationIdRef.current = undefined;
     toast({
       title: "Conversation Reset",
       description: "Started a new conversation"
@@ -162,7 +186,7 @@ const Index = () => {
                   </div>
                 )}
                 
-                <MessageList messages={messages} />
+                <MessageList messages={messages} isWaiting={isWaitingForAI} />
                 
                 {state.status === 'complete' && (
                   <div className="px-4 py-2 border-t flex items-center gap-2 bg-muted/20">
@@ -182,7 +206,7 @@ const Index = () => {
                   onSendMessage={handleSendMessage} 
                   onFileUpload={handleFileUpload}
                   onNewConversation={handleNewConversation}
-                  isDisabled={state.status === 'uploading' || state.status === 'thinking' || state.status === 'analyzing'} 
+                  isDisabled={isWaitingForAI || state.status === 'uploading' || state.status === 'thinking' || state.status === 'analyzing'} 
                 />
               </>
             )}

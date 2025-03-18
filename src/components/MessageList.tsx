@@ -6,25 +6,10 @@ import { useState, useEffect } from 'react';
 
 interface MessageListProps {
   messages: Message[];
+  isWaiting?: boolean;
 }
 
-export default function MessageList({ messages }: MessageListProps) {
-  const [isWaiting, setIsWaiting] = useState(false);
-  const lastMessage = messages[messages.length - 1];
-
-  // Detect when we should show the typing animation
-  useEffect(() => {
-    if (messages.length > 0 && lastMessage?.role === 'user') {
-      setIsWaiting(true);
-      // Simulate AI response time
-      const timer = setTimeout(() => {
-        setIsWaiting(false);
-      }, 500);
-      return () => clearTimeout(timer);
-    }
-    setIsWaiting(false);
-  }, [messages, lastMessage]);
-
+export default function MessageList({ messages, isWaiting = false }: MessageListProps) {
   if (messages.length === 0) {
     return (
       <div className="flex-1 flex flex-col items-center justify-center p-6 text-center">

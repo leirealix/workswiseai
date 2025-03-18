@@ -113,6 +113,16 @@
     @apply animate-fade-out;
   }
 
+  /* Typing animation dots */
+  @keyframes typing-dot-bounce {
+    0%, 80%, 100% { transform: translateY(0); }
+    40% { transform: translateY(-6px); }
+  }
+
+  .animate-bounce {
+    animation: typing-dot-bounce 1.4s infinite ease-in-out both;
+  }
+
   /* Transitions */
   .custom-transition {
     @apply transition-all duration-300 ease-in-out;

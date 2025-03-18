@@ -43,7 +43,7 @@ const Index = () => {
       };
       
       setMessages(prev => [...prev, aiResponse]);
-    }, 1000);
+    }, 1500);
   };
 
   const handleFileSelect = (file: File) => {

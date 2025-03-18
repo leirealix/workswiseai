@@ -1,13 +1,30 @@
 
 import { Message } from '@/types';
 import { cn } from '@/lib/utils';
-import { UserIcon, BotIcon } from 'lucide-react';
+import { UserIcon, BotIcon, Loader2 } from 'lucide-react';
+import { useState, useEffect } from 'react';
 
 interface MessageListProps {
   messages: Message[];
 }
 
 export default function MessageList({ messages }: MessageListProps) {
+  const [isWaiting, setIsWaiting] = useState(false);
+  const lastMessage = messages[messages.length - 1];
+
+  // Detect when we should show the typing animation
+  useEffect(() => {
+    if (messages.length > 0 && lastMessage?.role === 'user') {
+      setIsWaiting(true);
+      // Simulate AI response time
+      const timer = setTimeout(() => {
+        setIsWaiting(false);
+      }, 500);
+      return () => clearTimeout(timer);
+    }
+    setIsWaiting(false);
+  }, [messages, lastMessage]);
+
   if (messages.length === 0) {
     return (
       <div className="flex-1 flex flex-col items-center justify-center p-6 text-center">
@@ -57,6 +74,20 @@ export default function MessageList({ messages }: MessageListProps) {
             )}
           </div>
         ))}
+        
+        {/* Typing animation when waiting for AI response */}
+        {isWaiting && (
+          <div className="flex items-start gap-3 animate-pulse">
+            <div className="flex-shrink-0 w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-primary">
+              <BotIcon size={18} />
+            </div>
+            <div className="bg-secondary text-secondary-foreground rounded-xl rounded-tl-none px-4 py-3 flex items-center space-x-2">
+              <span className="w-2 h-2 rounded-full bg-current animate-bounce" style={{ animationDelay: '0ms' }}></span>
+              <span className="w-2 h-2 rounded-full bg-current animate-bounce" style={{ animationDelay: '150ms' }}></span>
+              <span className="w-2 h-2 rounded-full bg-current animate-bounce" style={{ animationDelay: '300ms' }}></span>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

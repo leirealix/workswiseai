@@ -36,8 +36,8 @@ export default function MessageList({ messages, isWaiting = false }: MessageList
   }
 
   return (
-    <ScrollArea className="flex-1 h-full pb-2" style={{ maxHeight: "calc(100vh - 180px)" }}>
-      <div className="space-y-4 p-4">
+    <ScrollArea className="flex-1 h-full">
+      <div className="space-y-4 p-4 pb-6">
         {messages.map((message, index) => {
           const isConsecutive = index > 0 && messages[index - 1].role === message.role;
           
@@ -91,7 +91,7 @@ export default function MessageList({ messages, isWaiting = false }: MessageList
       
       {/* Improved subtle typing animation when waiting for AI response */}
       {isWaiting && (
-        <div className="flex justify-center items-center mt-2 mb-2">
+        <div className="flex justify-center items-center mt-2 mb-4">
           <div className="bg-secondary/70 text-secondary-foreground rounded-full px-4 py-2 flex items-center space-x-1.5 shadow-sm animate-fade-in">
             <span className="text-xs font-medium">Thinking</span>
             <span className="w-1.5 h-1.5 rounded-full bg-current animate-bounce" style={{ animationDelay: '0ms' }}></span>

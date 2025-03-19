@@ -5,6 +5,7 @@ import { cn } from '@/lib/utils';
 import { CheckCircle2Icon, AlertCircleIcon, ClockIcon, ListChecksIcon, HelpCircleIcon } from 'lucide-react';
 import { Alert, AlertTitle, AlertDescription } from '@/components/ui/alert';
 import { Separator } from '@/components/ui/separator';
+import { ScrollArea } from '@/components/ui/scroll-area';
 
 interface AnalysisProgressProps {
   status: 'idle' | 'uploading' | 'thinking' | 'analyzing' | 'complete' | 'error';
@@ -71,28 +72,30 @@ export default function AnalysisProgress({
       </div>
       
       {steps.length > 0 && (
-        <div className="max-h-32 overflow-y-auto space-y-1 pt-1">
-          {steps.map((step, index) => (
-            <div 
-              key={step.id}
-              className={cn(
-                "py-1.5 flex items-center text-xs",
-                step.status === 'in-progress' ? "text-foreground" : "text-muted-foreground"
-              )}
-            >
-              <span className={cn(
-                "w-4 h-4 rounded-full flex items-center justify-center mr-2",
-                step.status === 'pending' ? "border border-muted-foreground/30" : 
-                step.status === 'in-progress' ? "bg-primary/10 text-primary animate-pulse" : 
-                step.status === 'complete' ? "bg-green-500/10 text-green-500" :
-                "bg-destructive/10 text-destructive"
-              )}>
-                {index + 1}
-              </span>
-              <span className="truncate">{step.description}</span>
-            </div>
-          ))}
-        </div>
+        <ScrollArea className="max-h-32 pt-1">
+          <div className="space-y-1">
+            {steps.map((step, index) => (
+              <div 
+                key={step.id}
+                className={cn(
+                  "py-1.5 flex items-center text-xs",
+                  step.status === 'in-progress' ? "text-foreground" : "text-muted-foreground"
+                )}
+              >
+                <span className={cn(
+                  "w-4 h-4 rounded-full flex items-center justify-center mr-2",
+                  step.status === 'pending' ? "border border-muted-foreground/30" : 
+                  step.status === 'in-progress' ? "bg-primary/10 text-primary animate-pulse" : 
+                  step.status === 'complete' ? "bg-green-500/10 text-green-500" :
+                  "bg-destructive/10 text-destructive"
+                )}>
+                  {index + 1}
+                </span>
+                <span className="truncate">{step.description}</span>
+              </div>
+            ))}
+          </div>
+        </ScrollArea>
       )}
 
       {/* Analysis Summary - shown only when analysis is complete */}
@@ -124,18 +127,20 @@ export default function AnalysisProgress({
             <h4 className="font-medium">Ask Follow-up Questions</h4>
           </div>
           
-          <div className="space-y-2">
-            {followUpQuestions.map((question, index) => (
-              <div 
-                key={index}
-                className="text-xs p-2 bg-secondary/30 rounded-md cursor-pointer hover:bg-secondary/50 transition-colors"
-                role="button"
-                onClick={() => onFollowUpSelected && onFollowUpSelected(question)}
-              >
-                {question}
-              </div>
-            ))}
-          </div>
+          <ScrollArea className="max-h-[200px]">
+            <div className="space-y-2 pb-2">
+              {followUpQuestions.map((question, index) => (
+                <div 
+                  key={index}
+                  className="text-xs p-2 bg-secondary/30 rounded-md cursor-pointer hover:bg-secondary/50 transition-colors"
+                  role="button"
+                  onClick={() => onFollowUpSelected && onFollowUpSelected(question)}
+                >
+                  {question}
+                </div>
+              ))}
+            </div>
+          </ScrollArea>
         </div>
       )}
     </div>

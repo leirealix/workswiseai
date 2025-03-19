@@ -174,41 +174,47 @@ const Index = () => {
             </div>
             
             {!leftPanelCollapsed && (
-              <>
-                {state.thinkingSteps.length > 0 && (
-                  <div className="px-4 py-3">
-                    <AnalysisProgress 
-                      status={state.status} 
-                      progress={0} 
-                      steps={state.thinkingSteps}
-                      onFollowUpSelected={handleFollowUpQuestion}
-                    />
+              <ScrollArea className="flex-1 overflow-hidden">
+                <div className="flex flex-col h-full">
+                  {state.thinkingSteps.length > 0 && (
+                    <div className="px-4 py-3">
+                      <AnalysisProgress 
+                        status={state.status} 
+                        progress={0} 
+                        steps={state.thinkingSteps}
+                        onFollowUpSelected={handleFollowUpQuestion}
+                      />
+                    </div>
+                  )}
+                  
+                  <div className="flex-1">
+                    <MessageList messages={messages} isWaiting={isWaitingForAI} />
                   </div>
-                )}
-                
-                <MessageList messages={messages} isWaiting={isWaitingForAI} />
-                
-                {state.status === 'complete' && (
-                  <div className="px-4 py-2 border-t flex items-center gap-2 bg-muted/20">
-                    <Button 
-                      variant="outline" 
-                      size="sm"
-                      onClick={resetAnalysis}
-                      className="flex items-center gap-1"
-                    >
-                      <RefreshCwIcon size={14} />
-                      <span>New Analysis</span>
-                    </Button>
-                  </div>
-                )}
-                
-                <ChatInput 
-                  onSendMessage={handleSendMessage} 
-                  onFileUpload={handleFileUpload}
-                  onNewConversation={handleNewConversation}
-                  isDisabled={isWaitingForAI || state.status === 'uploading' || state.status === 'thinking' || state.status === 'analyzing'} 
-                />
-              </>
+                  
+                  {state.status === 'complete' && (
+                    <div className="px-4 py-2 border-t flex items-center gap-2 bg-muted/20">
+                      <Button 
+                        variant="outline" 
+                        size="sm"
+                        onClick={resetAnalysis}
+                        className="flex items-center gap-1"
+                      >
+                        <RefreshCwIcon size={14} />
+                        <span>New Analysis</span>
+                      </Button>
+                    </div>
+                  )}
+                </div>
+              </ScrollArea>
+            )}
+            
+            {!leftPanelCollapsed && (
+              <ChatInput 
+                onSendMessage={handleSendMessage} 
+                onFileUpload={handleFileUpload}
+                onNewConversation={handleNewConversation}
+                isDisabled={isWaitingForAI || state.status === 'uploading' || state.status === 'thinking' || state.status === 'analyzing'} 
+              />
             )}
           </div>
         </ResizablePanel>

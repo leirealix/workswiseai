@@ -36,7 +36,7 @@ export default function MessageList({ messages, isWaiting = false }: MessageList
   }
 
   return (
-    <ScrollArea className="flex-1 h-full overflow-y-auto">
+    <ScrollArea className="flex-1 h-full">
       <div className="space-y-4 p-4 pb-6 min-h-full">
         {messages.map((message, index) => {
           const isConsecutive = index > 0 && messages[index - 1].role === message.role;

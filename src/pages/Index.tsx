@@ -24,6 +24,7 @@ const Index = () => {
   const [rightPanelExpanded, setRightPanelExpanded] = useState(false);
   const [isWaitingForAI, setIsWaitingForAI] = useState(false);
   const conversationIdRef = useRef<string | undefined>(undefined);
+  const [showComparison, setShowComparison] = useState<boolean>(false);
   
   const handleSendMessage = async (content: string) => {
     const userMessageId = crypto.randomUUID();
@@ -108,6 +109,20 @@ const Index = () => {
     });
   };
 
+  const toggleComparison = () => {
+    setShowComparison(!showComparison);
+  };
+
+  const toggleLeftPanel = () => {
+    setLeftPanelCollapsed(!leftPanelCollapsed);
+    setRightPanelExpanded(false);
+  };
+
+  const toggleRightPanel = () => {
+    setRightPanelExpanded(!rightPanelExpanded);
+    setLeftPanelCollapsed(rightPanelExpanded ? false : true);
+  };
+
   useEffect(() => {
     if (state.status === 'complete') {
       toast({
@@ -125,16 +140,6 @@ const Index = () => {
       setMessages(prev => [...prev, completionMessage]);
     }
   }, [state.status]);
-
-  const toggleLeftPanel = () => {
-    setLeftPanelCollapsed(!leftPanelCollapsed);
-    setRightPanelExpanded(false);
-  };
-
-  const toggleRightPanel = () => {
-    setRightPanelExpanded(!rightPanelExpanded);
-    setLeftPanelCollapsed(rightPanelExpanded ? false : true);
-  };
 
   useEffect(() => {
     console.log("Index component mounted, current state:", state);
@@ -253,15 +258,25 @@ const Index = () => {
               
               <div className="flex items-center gap-2">
                 {state.status === 'complete' && (
-                  <Button 
-                    variant="outline" 
-                    size="sm" 
-                    onClick={resetAnalysis}
-                    className="flex items-center gap-1"
-                  >
-                    <RefreshCwIcon size={14} />
-                    <span>New Analysis</span>
-                  </Button>
+                  <>
+                    <Button 
+                      variant="outline" 
+                      size="sm" 
+                      onClick={toggleComparison}
+                      className="flex items-center gap-1"
+                    >
+                      {showComparison ? "Exit Comparison" : "Compare Documents"}
+                    </Button>
+                    <Button 
+                      variant="outline" 
+                      size="sm" 
+                      onClick={resetAnalysis}
+                      className="flex items-center gap-1"
+                    >
+                      <RefreshCwIcon size={14} />
+                      <span>New Analysis</span>
+                    </Button>
+                  </>
                 )}
                 
                 <Button 
@@ -315,16 +330,44 @@ const Index = () => {
               )}
               
               {state.status === 'complete' && state.file && state.result && (
-                <div className="h-full grid grid-cols-2">
-                  <div className="h-full border-r overflow-hidden">
-                    <DocumentViewer 
-                      fileName={state.file.name}
-                      result={state.result}
-                    />
-                  </div>
-                  <div className="h-full overflow-hidden">
-                    <AnalysisResult result={state.result} />
-                  </div>
+                <div className="h-full">
+                  {showComparison ? (
+                    <ResizablePanelGroup direction="horizontal" className="h-full">
+                      <ResizablePanel defaultSize={50}>
+                        <ScrollArea className="h-full">
+                          <DocumentViewer 
+                            fileName={state.file.name}
+                            result={state.result}
+                            comparison={true}
+                          />
+                        </ScrollArea>
+                      </ResizablePanel>
+                      <ResizableHandle withHandle />
+                      <ResizablePanel defaultSize={50}>
+                        <ScrollArea className="h-full">
+                          <DocumentViewer 
+                            fileName="Comparison Document"
+                            result={state.result}
+                            comparison={true}
+                          />
+                        </ScrollArea>
+                      </ResizablePanel>
+                    </ResizablePanelGroup>
+                  ) : (
+                    <div className="h-full grid grid-cols-2">
+                      <div className="h-full border-r overflow-hidden">
+                        <DocumentViewer 
+                          fileName={state.file.name}
+                          result={state.result}
+                        />
+                      </div>
+                      <div className="h-full overflow-hidden">
+                        <ScrollArea className="h-full">
+                          <AnalysisResult result={state.result} />
+                        </ScrollArea>
+                      </div>
+                    </div>
+                  )}
                 </div>
               )}
               

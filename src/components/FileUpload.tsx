@@ -7,9 +7,10 @@ import { cn } from '@/lib/utils';
 
 interface FileUploadProps {
   onFileSelect: (file: File) => void;
+  multiple?: boolean;
 }
 
-export default function FileUpload({ onFileSelect }: FileUploadProps) {
+export default function FileUpload({ onFileSelect, multiple = false }: FileUploadProps) {
   const [file, setFile] = useState<File | null>(null);
 
   const onDrop = useCallback((acceptedFiles: File[]) => {

@@ -2,7 +2,7 @@
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Send, Plus, Search, Mic, MoreHorizontal, RefreshCw } from 'lucide-react';
+import { Send, Plus, Search, Mic, MoreHorizontal, RefreshCw, FileIcon, XIcon } from 'lucide-react';
 
 interface ChatInputProps {
   onSendMessage: (message: string) => void;
@@ -18,33 +18,52 @@ export default function ChatInput({
   isDisabled = false 
 }: ChatInputProps) {
   const [input, setInput] = useState('');
+  const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    
+    // Upload any pending files first
+    if (selectedFiles.length > 0) {
+      selectedFiles.forEach(file => {
+        onFileUpload(file);
+      });
+    }
+    
+    // Then send the message if there is one
     if (input.trim() && !isDisabled) {
       onSendMessage(input);
       setInput('');
+      // Clear uploaded files after sending
+      setSelectedFiles([]);
     }
   };
 
   const handleFileUpload = () => {
     const fileInput = document.createElement('input');
     fileInput.type = 'file';
+    fileInput.multiple = true;
     fileInput.accept = '.pdf,.doc,.docx,.txt';
     fileInput.onchange = (e) => {
       const files = (e.target as HTMLInputElement).files;
       if (files && files.length > 0) {
-        console.log("File selected:", files[0].name);
-        onFileUpload(files[0]);
+        const fileArray = Array.from(files);
+        console.log("Files selected:", fileArray.map(f => f.name));
+        setSelectedFiles(prev => [...prev, ...fileArray]);
       }
     };
     fileInput.click();
+  };
+
+  const removeFile = (indexToRemove: number) => {
+    setSelectedFiles(prev => prev.filter((_, index) => index !== indexToRemove));
   };
 
   const handleNewConversation = () => {
     if (onNewConversation) {
       onNewConversation();
       setInput('');
+      setSelectedFiles([]);
     }
   };
 
@@ -53,6 +72,33 @@ export default function ChatInput({
       onSubmit={handleSubmit} 
       className="relative flex flex-col w-full px-4 py-3 border-t bg-background/80 backdrop-blur-sm z-10"
     >
+      {/* Display selected files above the input */}
+      {selectedFiles.length > 0 && (
+        <div className="mb-2 p-2 rounded-lg bg-muted/30">
+          <div className="text-xs text-muted-foreground mb-1 pl-1">Selected files:</div>
+          <div className="flex flex-wrap gap-2">
+            {selectedFiles.map((file, index) => (
+              <div 
+                key={index} 
+                className="flex items-center gap-2 bg-background rounded-full pl-2 pr-1 py-1 border text-sm"
+              >
+                <FileIcon size={14} className="text-primary" />
+                <span className="truncate max-w-[120px]">{file.name}</span>
+                <Button
+                  type="button"
+                  variant="ghost" 
+                  size="icon" 
+                  onClick={() => removeFile(index)}
+                  className="h-5 w-5 rounded-full hover:bg-destructive/10 hover:text-destructive"
+                >
+                  <XIcon size={12} />
+                </Button>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+      
       <div className="relative w-full">
         <Input
           value={input}
@@ -66,7 +112,7 @@ export default function ChatInput({
           <Button 
             type="submit" 
             size="icon" 
-            disabled={!input.trim() || isDisabled}
+            disabled={(!input.trim() && selectedFiles.length === 0) || isDisabled}
             className="rounded-full w-10 h-10 hover:bg-primary/90"
           >
             <Send size={18} />

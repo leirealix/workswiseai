@@ -83,12 +83,12 @@ export default function DocumentViewer({ fileName, result, comparison = false }:
                   </Button>
                 </div>
               </div>
-              <div className="p-4 relative" style={{ height: '300px' }}>
+              <div className="p-4 relative min-h-[300px]" style={{ minHeight: '300px' }}>
                 {/* Mock document content */}
                 <div className="h-full w-full flex items-center justify-center bg-muted/10 rounded">
                   <div className="text-muted-foreground">
                     <File size={24} className="mx-auto mb-2" />
-                    <span className="text-xs">Document Preview</span>
+                    <span className="text-xs">Document Preview - Page {currentPage}</span>
                   </div>
                 </div>
                 
@@ -103,10 +103,10 @@ export default function DocumentViewer({ fileName, result, comparison = false }:
                         : "border-primary/40 bg-primary/5 hover:bg-primary/10"
                     )}
                     style={{
-                      left: `${clause.position.x}px`,
-                      top: `${clause.position.y}px`,
-                      width: `${clause.position.width}px`,
-                      height: `${clause.position.height}px`,
+                      left: `${clause.position.x}%`,
+                      top: `${clause.position.y}%`,
+                      width: `${clause.position.width}%`,
+                      height: `${clause.position.height}%`,
                     }}
                     onClick={() => handleClauseClick(clause)}
                   />
@@ -138,12 +138,12 @@ export default function DocumentViewer({ fileName, result, comparison = false }:
                   <div className="border-b px-3 py-2 bg-muted/30 text-xs text-muted-foreground">
                     Page {pageNum}
                   </div>
-                  <div className="p-4 relative" style={{ height: '300px' }}>
+                  <div className="p-4 relative min-h-[300px]" style={{ minHeight: '300px' }}>
                     {/* Mock document content */}
                     <div className="h-full w-full flex items-center justify-center bg-muted/10 rounded">
                       <div className="text-muted-foreground">
                         <File size={24} className="mx-auto mb-2" />
-                        <span className="text-xs">Document Preview</span>
+                        <span className="text-xs">Document Preview - Page {pageNum}</span>
                       </div>
                     </div>
                     
@@ -158,10 +158,10 @@ export default function DocumentViewer({ fileName, result, comparison = false }:
                             : "border-primary/40 bg-primary/5 hover:bg-primary/10"
                         )}
                         style={{
-                          left: `${clause.position.x}px`,
-                          top: `${clause.position.y}px`,
-                          width: `${clause.position.width}px`,
-                          height: `${clause.position.height}px`,
+                          left: `${clause.position.x}%`,
+                          top: `${clause.position.y}%`,
+                          width: `${clause.position.width}%`,
+                          height: `${clause.position.height}%`,
                         }}
                         onClick={() => handleClauseClick(clause)}
                       />

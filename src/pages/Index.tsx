@@ -10,7 +10,7 @@ import WelcomeAnimation from '@/components/WelcomeAnimation';
 import { useDocumentAnalysis } from '@/hooks/useDocumentAnalysis';
 import { Message } from '@/types';
 import { toast } from '@/hooks/use-toast';
-import { Loader2Icon, RefreshCwIcon, MaximizeIcon, MinimizeIcon, Search } from 'lucide-react';
+import { Loader2Icon, RefreshCwIcon, MaximizeIcon, MinimizeIcon } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { ResizablePanelGroup, ResizablePanel, ResizableHandle } from '@/components/ui/resizable';
@@ -90,39 +90,9 @@ const Index = () => {
     setMessages(prev => [...prev, uploadMessage]);
   };
 
-  const handleMultipleFilesSelect = (files: File[]) => {
-    // For now, we'll process the first file with the same analysis system
-    // and acknowledge the other files in the chat
-    if (files.length > 0) {
-      uploadFile(files[0]).catch(() => {
-        toast({
-          variant: "destructive",
-          title: "Upload Failed",
-          description: "An error occurred while analyzing the document."
-        });
-      });
-      
-      const uploadMessage: Message = {
-        id: crypto.randomUUID(),
-        role: 'assistant',
-        content: `Uploading ${files.length} documents. Analyzing ${files[0].name} first.${
-          files.length > 1 ? ` Additional documents: ${files.slice(1).map(f => f.name).join(', ')}` : ''
-        }`,
-        timestamp: new Date(),
-      };
-      
-      setMessages(prev => [...prev, uploadMessage]);
-    }
-  };
-
   const handleFileUpload = (file: File) => {
     console.log("File upload triggered with:", file.name);
     handleFileSelect(file);
-  };
-  
-  const handleMultipleFilesUpload = (files: File[]) => {
-    console.log("Multiple files upload triggered with:", files.map(f => f.name).join(', '));
-    handleMultipleFilesSelect(files);
   };
 
   const handleFollowUpQuestion = (question: string) => {
@@ -247,7 +217,6 @@ const Index = () => {
               <ChatInput 
                 onSendMessage={handleSendMessage} 
                 onFileUpload={handleFileUpload}
-                onFilesUpload={handleMultipleFilesUpload}
                 onNewConversation={handleNewConversation}
                 isDisabled={isWaitingForAI || state.status === 'uploading' || state.status === 'thinking' || state.status === 'analyzing'} 
               />
@@ -304,8 +273,8 @@ const Index = () => {
                       onClick={resetAnalysis}
                       className="flex items-center gap-1"
                     >
-                      <Search size={14} />
-                      <span>Legal Research</span>
+                      <RefreshCwIcon size={14} />
+                      <span>New Analysis</span>
                     </Button>
                   </>
                 )}

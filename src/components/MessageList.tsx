@@ -4,6 +4,7 @@ import { cn } from '@/lib/utils';
 import { UserIcon, Loader2 } from 'lucide-react';
 import { useState, useEffect, useRef } from 'react';
 import LawyerIcon from './LawyerIcon';
+import { ScrollArea } from '@/components/ui/scroll-area';
 
 interface MessageListProps {
   messages: Message[];
@@ -35,7 +36,7 @@ export default function MessageList({ messages, isWaiting = false }: MessageList
   }
 
   return (
-    <div className="flex-1 overflow-y-auto h-full pb-2" style={{ maxHeight: "calc(100% - 70px)" }}>
+    <ScrollArea className="flex-1 h-full pb-2" style={{ maxHeight: "calc(100vh - 180px)" }}>
       <div className="space-y-4 p-4">
         {messages.map((message, index) => {
           const isConsecutive = index > 0 && messages[index - 1].role === message.role;
@@ -99,6 +100,6 @@ export default function MessageList({ messages, isWaiting = false }: MessageList
           </div>
         </div>
       )}
-    </div>
+    </ScrollArea>
   );
 }

@@ -8,15 +8,13 @@ interface ChatInputProps {
   onSendMessage: (message: string) => void;
   onFileUpload: (file: File) => void;
   onNewConversation?: () => void;
-  onOpenResearch?: () => void;
   isDisabled?: boolean;
 }
 
 export default function ChatInput({ 
   onSendMessage, 
   onFileUpload, 
-  onNewConversation,
-  onOpenResearch,
+  onNewConversation, 
   isDisabled = false 
 }: ChatInputProps) {
   const [input, setInput] = useState('');
@@ -47,12 +45,6 @@ export default function ChatInput({
     if (onNewConversation) {
       onNewConversation();
       setInput('');
-    }
-  };
-
-  const handleOpenResearch = () => {
-    if (onOpenResearch) {
-      onOpenResearch();
     }
   };
 
@@ -110,7 +102,6 @@ export default function ChatInput({
           variant="ghost" 
           size="sm"
           className="rounded-full flex items-center gap-1.5 text-muted-foreground hover:text-foreground hover:bg-secondary"
-          onClick={handleOpenResearch}
         >
           <Search size={16} />
           <span>Research</span>

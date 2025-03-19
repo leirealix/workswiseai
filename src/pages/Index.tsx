@@ -7,11 +7,10 @@ import DocumentViewer from '@/components/DocumentViewer';
 import AnalysisResult from '@/components/AnalysisResult';
 import AnalysisProgress from '@/components/AnalysisProgress';
 import WelcomeAnimation from '@/components/WelcomeAnimation';
-import LegalResearch from '@/components/LegalResearch';
 import { useDocumentAnalysis } from '@/hooks/useDocumentAnalysis';
 import { Message } from '@/types';
 import { toast } from '@/hooks/use-toast';
-import { Loader2Icon, RefreshCwIcon, MaximizeIcon, MinimizeIcon, BookOpenIcon } from 'lucide-react';
+import { Loader2Icon, RefreshCwIcon, MaximizeIcon, MinimizeIcon } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { ResizablePanelGroup, ResizablePanel, ResizableHandle } from '@/components/ui/resizable';
@@ -26,8 +25,7 @@ const Index = () => {
   const [isWaitingForAI, setIsWaitingForAI] = useState(false);
   const conversationIdRef = useRef<string | undefined>(undefined);
   const [showComparison, setShowComparison] = useState<boolean>(false);
-  const [showResearch, setShowResearch] = useState<boolean>(true);
-
+  
   const handleSendMessage = async (content: string) => {
     const userMessageId = crypto.randomUUID();
     const newMessage: Message = {
@@ -113,17 +111,6 @@ const Index = () => {
 
   const toggleComparison = () => {
     setShowComparison(!showComparison);
-    setShowResearch(false);
-  };
-
-  const toggleResearch = () => {
-    setShowResearch(!showResearch);
-    setShowComparison(false);
-  };
-
-  const openResearch = () => {
-    setShowResearch(true);
-    setShowComparison(false);
   };
 
   const toggleLeftPanel = () => {
@@ -214,11 +201,11 @@ const Index = () => {
                       <Button 
                         variant="outline" 
                         size="sm"
-                        onClick={openResearch}
+                        onClick={resetAnalysis}
                         className="flex items-center gap-1"
                       >
-                        <BookOpenIcon size={14} />
-                        <span>Legal Research</span>
+                        <RefreshCwIcon size={14} />
+                        <span>New Analysis</span>
                       </Button>
                     </div>
                   )}
@@ -231,7 +218,6 @@ const Index = () => {
                 onSendMessage={handleSendMessage} 
                 onFileUpload={handleFileUpload}
                 onNewConversation={handleNewConversation}
-                onOpenResearch={openResearch}
                 isDisabled={isWaitingForAI || state.status === 'uploading' || state.status === 'thinking' || state.status === 'analyzing'} 
               />
             )}
@@ -253,47 +239,44 @@ const Index = () => {
             <div className="p-4 border-b flex items-center justify-between bg-background/80 backdrop-blur-md">
               <div>
                 <h2 className="text-lg font-medium">
-                  {showResearch ? 'Legal Research' : (
-                    state.status === 'idle' && 'Preview'
-                  )}
-                  {!showResearch && state.status === 'uploading' && 'Uploading Document...'}
-                  {!showResearch && state.status === 'thinking' && 'Processing Document...'}
-                  {!showResearch && state.status === 'analyzing' && 'Analyzing Document...'}
-                  {!showResearch && state.status === 'complete' && 'Analysis Results'}
-                  {!showResearch && state.status === 'error' && 'Analysis Error'}
+                  {state.status === 'idle' && 'Preview'}
+                  {state.status === 'uploading' && 'Uploading Document...'}
+                  {state.status === 'thinking' && 'Processing Document...'}
+                  {state.status === 'analyzing' && 'Analyzing Document...'}
+                  {state.status === 'complete' && 'Analysis Results'}
+                  {state.status === 'error' && 'Analysis Error'}
                 </h2>
                 <p className="text-sm text-muted-foreground">
-                  {showResearch ? 'Find relevant cases, statutes, and legal articles' : (
-                    state.status === 'idle' && ''
-                  )}
-                  {!showResearch && state.status === 'uploading' && 'Please wait while we upload your document'}
-                  {!showResearch && state.status === 'thinking' && 'AI is processing your document'}
-                  {!showResearch && state.status === 'analyzing' && 'Extracting insights from your document'}
-                  {!showResearch && state.status === 'complete' && 'Review the extracted information'}
-                  {!showResearch && state.status === 'error' && 'Something went wrong during analysis'}
+                  {state.status === 'idle' && ''}
+                  {state.status === 'uploading' && 'Please wait while we upload your document'}
+                  {state.status === 'thinking' && 'AI is processing your document'}
+                  {state.status === 'analyzing' && 'Extracting insights from your document'}
+                  {state.status === 'complete' && 'Review the extracted information'}
+                  {state.status === 'error' && 'Something went wrong during analysis'}
                 </p>
               </div>
               
               <div className="flex items-center gap-2">
-                <Button 
-                  variant="outline" 
-                  size="sm" 
-                  onClick={toggleResearch}
-                  className="flex items-center gap-1"
-                >
-                  <BookOpenIcon size={14} />
-                  <span>Legal Research</span>
-                </Button>
-                
-                {state.status === 'complete' && !showResearch && (
-                  <Button 
-                    variant="outline" 
-                    size="sm" 
-                    onClick={toggleComparison}
-                    className="flex items-center gap-1"
-                  >
-                    {showComparison ? "Exit Comparison" : "Compare Documents"}
-                  </Button>
+                {state.status === 'complete' && (
+                  <>
+                    <Button 
+                      variant="outline" 
+                      size="sm" 
+                      onClick={toggleComparison}
+                      className="flex items-center gap-1"
+                    >
+                      {showComparison ? "Exit Comparison" : "Compare Documents"}
+                    </Button>
+                    <Button 
+                      variant="outline" 
+                      size="sm" 
+                      onClick={resetAnalysis}
+                      className="flex items-center gap-1"
+                    >
+                      <RefreshCwIcon size={14} />
+                      <span>New Analysis</span>
+                    </Button>
+                  </>
                 )}
                 
                 <Button 
@@ -308,105 +291,99 @@ const Index = () => {
             </div>
             
             <div className="flex-1 overflow-hidden">
-              {showResearch ? (
-                <LegalResearch onClose={() => setShowResearch(false)} />
-              ) : (
-                <>
-                  {state.status === 'idle' && (
-                    <ScrollArea className="h-full">
-                      <div className="h-full flex items-center justify-center">
-                        <WelcomeAnimation />
+              {state.status === 'idle' && (
+                <ScrollArea className="h-full">
+                  <div className="h-full flex items-center justify-center">
+                    <WelcomeAnimation />
+                  </div>
+                </ScrollArea>
+              )}
+              
+              {(state.status === 'uploading' || state.status === 'thinking' || state.status === 'analyzing') && (
+                <ScrollArea className="h-full">
+                  <div className="h-full flex flex-col">
+                    <div className={cn(
+                      "flex-1 flex flex-col items-center justify-center p-6 transition-opacity duration-500",
+                      state.thinkingSteps.length > 0 ? "opacity-20" : "opacity-100"
+                    )}>
+                      <Loader2Icon size={40} className="text-primary animate-spin mb-4" />
+                      <h3 className="text-lg font-medium mb-1">
+                        {state.status === 'uploading' && 'Uploading Document...'}
+                        {state.status === 'thinking' && 'Processing Document...'}
+                        {state.status === 'analyzing' && 'Analyzing Content...'}
+                      </h3>
+                      <p className="text-sm text-muted-foreground text-center max-w-xs">
+                        {state.status === 'uploading' && 'Preparing your document for analysis'}
+                        {state.status === 'thinking' && 'The AI is examining your document structure'}
+                        {state.status === 'analyzing' && 'Extracting key information and insights'}
+                      </p>
+                    </div>
+                    
+                    {state.thinkingSteps.length > 0 && (
+                      <div className="absolute inset-x-0 bottom-0 p-6 glass rounded-t-2xl shadow-lg max-w-md mx-auto transition-all">
+                        <h3 className="text-sm font-medium mb-3">Analysis Progress</h3>
+                        <ThinkingProcess steps={state.thinkingSteps} />
                       </div>
-                    </ScrollArea>
-                  )}
-                  
-                  {(state.status === 'uploading' || state.status === 'thinking' || state.status === 'analyzing') && (
-                    <ScrollArea className="h-full">
-                      <div className="h-full flex flex-col">
-                        <div className={cn(
-                          "flex-1 flex flex-col items-center justify-center p-6 transition-opacity duration-500",
-                          state.thinkingSteps.length > 0 ? "opacity-20" : "opacity-100"
-                        )}>
-                          <Loader2Icon size={40} className="text-primary animate-spin mb-4" />
-                          <h3 className="text-lg font-medium mb-1">
-                            {state.status === 'uploading' && 'Uploading Document...'}
-                            {state.status === 'thinking' && 'Processing Document...'}
-                            {state.status === 'analyzing' && 'Analyzing Content...'}
-                          </h3>
-                          <p className="text-sm text-muted-foreground text-center max-w-xs">
-                            {state.status === 'uploading' && 'Preparing your document for analysis'}
-                            {state.status === 'thinking' && 'The AI is examining your document structure'}
-                            {state.status === 'analyzing' && 'Extracting key information and insights'}
-                          </p>
-                        </div>
-                        
-                        {state.thinkingSteps.length > 0 && (
-                          <div className="absolute inset-x-0 bottom-0 p-6 glass rounded-t-2xl shadow-lg max-w-md mx-auto transition-all">
-                            <h3 className="text-sm font-medium mb-3">Analysis Progress</h3>
-                            <ThinkingProcess steps={state.thinkingSteps} />
-                          </div>
-                        )}
+                    )}
+                  </div>
+                </ScrollArea>
+              )}
+              
+              {state.status === 'complete' && state.file && state.result && (
+                <div className="h-full">
+                  {showComparison ? (
+                    <ResizablePanelGroup direction="horizontal" className="h-full">
+                      <ResizablePanel defaultSize={50}>
+                        <ScrollArea className="h-full">
+                          <DocumentViewer 
+                            fileName={state.file.name}
+                            result={state.result}
+                            comparison={true}
+                          />
+                        </ScrollArea>
+                      </ResizablePanel>
+                      <ResizableHandle withHandle />
+                      <ResizablePanel defaultSize={50}>
+                        <ScrollArea className="h-full">
+                          <DocumentViewer 
+                            fileName="Comparison Document"
+                            result={state.result}
+                            comparison={true}
+                          />
+                        </ScrollArea>
+                      </ResizablePanel>
+                    </ResizablePanelGroup>
+                  ) : (
+                    <div className="h-full grid grid-cols-2">
+                      <div className="h-full border-r overflow-hidden">
+                        <DocumentViewer 
+                          fileName={state.file.name}
+                          result={state.result}
+                        />
                       </div>
-                    </ScrollArea>
-                  )}
-                  
-                  {state.status === 'complete' && state.file && state.result && (
-                    <div className="h-full">
-                      {showComparison ? (
-                        <ResizablePanelGroup direction="horizontal" className="h-full">
-                          <ResizablePanel defaultSize={50}>
-                            <ScrollArea className="h-full">
-                              <DocumentViewer 
-                                fileName={state.file.name}
-                                result={state.result}
-                                comparison={true}
-                              />
-                            </ScrollArea>
-                          </ResizablePanel>
-                          <ResizableHandle withHandle />
-                          <ResizablePanel defaultSize={50}>
-                            <ScrollArea className="h-full">
-                              <DocumentViewer 
-                                fileName="Comparison Document"
-                                result={state.result}
-                                comparison={true}
-                              />
-                            </ScrollArea>
-                          </ResizablePanel>
-                        </ResizablePanelGroup>
-                      ) : (
-                        <div className="h-full grid grid-cols-2">
-                          <div className="h-full border-r overflow-hidden">
-                            <DocumentViewer 
-                              fileName={state.file.name}
-                              result={state.result}
-                            />
-                          </div>
-                          <div className="h-full overflow-hidden">
-                            <ScrollArea className="h-full">
-                              <AnalysisResult result={state.result} />
-                            </ScrollArea>
-                          </div>
-                        </div>
-                      )}
+                      <div className="h-full overflow-hidden">
+                        <ScrollArea className="h-full">
+                          <AnalysisResult result={state.result} />
+                        </ScrollArea>
+                      </div>
                     </div>
                   )}
-                  
-                  {state.status === 'error' && (
-                    <ScrollArea className="h-full">
-                      <div className="h-full flex flex-col items-center justify-center p-6">
-                        <div className="w-16 h-16 rounded-full bg-destructive/10 flex items-center justify-center text-destructive mb-4">
-                          <RefreshCwIcon size={24} />
-                        </div>
-                        <h3 className="text-lg font-medium mb-2">Analysis Failed</h3>
-                        <p className="text-sm text-muted-foreground text-center max-w-xs mb-6">
-                          {state.error || "Something went wrong during the analysis. Please try again."}
-                        </p>
-                        <Button onClick={resetAnalysis}>Try Again</Button>
-                      </div>
-                    </ScrollArea>
-                  )}
-                </>
+                </div>
+              )}
+              
+              {state.status === 'error' && (
+                <ScrollArea className="h-full">
+                  <div className="h-full flex flex-col items-center justify-center p-6">
+                    <div className="w-16 h-16 rounded-full bg-destructive/10 flex items-center justify-center text-destructive mb-4">
+                      <RefreshCwIcon size={24} />
+                    </div>
+                    <h3 className="text-lg font-medium mb-2">Analysis Failed</h3>
+                    <p className="text-sm text-muted-foreground text-center max-w-xs mb-6">
+                      {state.error || "Something went wrong during the analysis. Please try again."}
+                    </p>
+                    <Button onClick={resetAnalysis}>Try Again</Button>
+                  </div>
+                </ScrollArea>
               )}
             </div>
           </div>

@@ -2,7 +2,7 @@
 import { Message } from '@/types';
 import { cn } from '@/lib/utils';
 import { UserIcon, Loader2 } from 'lucide-react';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import LawyerIcon from './LawyerIcon';
 
 interface MessageListProps {
@@ -11,6 +11,15 @@ interface MessageListProps {
 }
 
 export default function MessageList({ messages, isWaiting = false }: MessageListProps) {
+  const messagesEndRef = useRef<HTMLDivElement>(null);
+  
+  // Auto-scroll to the latest message
+  useEffect(() => {
+    if (messagesEndRef.current) {
+      messagesEndRef.current.scrollIntoView({ behavior: 'smooth' });
+    }
+  }, [messages, isWaiting]);
+
   if (messages.length === 0) {
     return (
       <div className="flex-1 flex flex-col items-center justify-center p-6 text-center">
@@ -26,50 +35,67 @@ export default function MessageList({ messages, isWaiting = false }: MessageList
   }
 
   return (
-    <div className="flex-1 overflow-y-auto h-full" style={{ maxHeight: "calc(100% - 70px)" }}>
+    <div className="flex-1 overflow-y-auto h-full pb-2" style={{ maxHeight: "calc(100% - 70px)" }}>
       <div className="space-y-4 p-4">
-        {messages.map((message) => (
-          <div
-            key={message.id}
-            className={cn(
-              "flex items-start gap-3 animate-enter",
-              message.role === 'user' ? "justify-end" : "justify-start"
-            )}
-          >
-            {message.role === 'assistant' && (
-              <div className="flex-shrink-0 w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-primary">
-                <LawyerIcon size={18} />
-              </div>
-            )}
-
+        {messages.map((message, index) => {
+          const isConsecutive = index > 0 && messages[index - 1].role === message.role;
+          
+          return (
             <div
+              key={message.id}
               className={cn(
-                "px-4 py-3 rounded-xl max-w-[80%]",
-                message.role === 'user'
-                  ? "bg-primary text-primary-foreground rounded-tr-none"
-                  : "bg-secondary text-secondary-foreground rounded-tl-none"
+                "flex items-start gap-3 animate-fade-in",
+                message.role === 'user' ? "justify-end" : "justify-start",
+                isConsecutive ? "mt-1" : "mt-4"
               )}
             >
-              {message.content}
-            </div>
+              {message.role === 'assistant' && !isConsecutive && (
+                <div className="flex-shrink-0 w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-primary">
+                  <LawyerIcon size={18} />
+                </div>
+              )}
 
-            {message.role === 'user' && (
-              <div className="flex-shrink-0 w-8 h-8 rounded-full bg-muted flex items-center justify-center text-muted-foreground">
-                <UserIcon size={18} />
+              {message.role === 'assistant' && isConsecutive && (
+                <div className="w-8 flex-shrink-0"></div>
+              )}
+
+              <div
+                className={cn(
+                  "px-4 py-3 rounded-xl max-w-[85%]",
+                  message.role === 'user'
+                    ? "bg-primary text-primary-foreground rounded-tr-none"
+                    : "bg-secondary text-secondary-foreground rounded-tl-none",
+                  isConsecutive && message.role === 'user' ? "rounded-tr-xl" : "",
+                  isConsecutive && message.role === 'assistant' ? "rounded-tl-xl" : ""
+                )}
+              >
+                {message.content}
               </div>
-            )}
-          </div>
-        ))}
+
+              {message.role === 'user' && !isConsecutive && (
+                <div className="flex-shrink-0 w-8 h-8 rounded-full bg-muted flex items-center justify-center text-muted-foreground">
+                  <UserIcon size={18} />
+                </div>
+              )}
+
+              {message.role === 'user' && isConsecutive && (
+                <div className="w-8 flex-shrink-0"></div>
+              )}
+            </div>
+          );
+        })}
+        
+        <div ref={messagesEndRef} />
       </div>
       
-      {/* Centered typing animation when waiting for AI response */}
+      {/* Improved subtle typing animation when waiting for AI response */}
       {isWaiting && (
-        <div className="absolute inset-0 flex items-center justify-center pointer-events-none" style={{ zIndex: 5 }}>
-          <div className="bg-secondary/90 text-secondary-foreground rounded-xl px-6 py-3 flex items-center space-x-2 shadow-lg animate-fade-in">
-            <span className="text-sm font-medium mr-2">AI is thinking</span>
-            <span className="w-2 h-2 rounded-full bg-current animate-bounce" style={{ animationDelay: '0ms' }}></span>
-            <span className="w-2 h-2 rounded-full bg-current animate-bounce" style={{ animationDelay: '150ms' }}></span>
-            <span className="w-2 h-2 rounded-full bg-current animate-bounce" style={{ animationDelay: '300ms' }}></span>
+        <div className="flex justify-center items-center mt-2 mb-2">
+          <div className="bg-secondary/70 text-secondary-foreground rounded-full px-4 py-2 flex items-center space-x-1.5 shadow-sm animate-fade-in">
+            <span className="text-xs font-medium">Thinking</span>
+            <span className="w-1.5 h-1.5 rounded-full bg-current animate-bounce" style={{ animationDelay: '0ms' }}></span>
+            <span className="w-1.5 h-1.5 rounded-full bg-current animate-bounce" style={{ animationDelay: '150ms' }}></span>
+            <span className="w-1.5 h-1.5 rounded-full bg-current animate-bounce" style={{ animationDelay: '300ms' }}></span>
           </div>
         </div>
       )}

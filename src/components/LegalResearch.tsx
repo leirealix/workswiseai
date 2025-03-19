@@ -1,5 +1,5 @@
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -7,15 +7,64 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Separator } from '@/components/ui/separator';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Search, BookOpen, FileText, Code, Clock, ArrowRight } from 'lucide-react';
+import { toast } from '@/hooks/use-toast';
 
 interface LegalResearchProps {
   onClose: () => void;
 }
 
 export default function LegalResearch({ onClose }: LegalResearchProps) {
-  const [searchQuery, setSearchQuery] = useState('');
+  const [searchQuery, setSearchQuery] = useState('Non-compete clauses in California');
   const [isSearching, setIsSearching] = useState(false);
   const [searchResults, setSearchResults] = useState<Array<{ id: string; title: string; source: string; snippet: string; relevance: number }>>([]);
+  
+  // Default research results that appear immediately
+  const defaultResults = [
+    {
+      id: '1',
+      title: 'Smith v. Jones (2021)',
+      source: 'Supreme Court of California',
+      snippet: 'The court ruled that non-compete clauses are generally unenforceable in California unless they fall within one of the statutory exceptions...',
+      relevance: 0.95
+    },
+    {
+      id: '2',
+      title: 'California Labor Code § 2872',
+      source: 'California State Legislature',
+      snippet: 'Protections for employee inventions created on their own time without employer resources...',
+      relevance: 0.88
+    },
+    {
+      id: '3',
+      title: 'Non-Compete Agreements: A Review of Recent Case Law',
+      source: 'California Law Review (2022)',
+      snippet: 'Recent developments in how courts have interpreted the scope and enforceability of various restrictive covenants...',
+      relevance: 0.82
+    },
+    {
+      id: '4',
+      title: 'ABC Corp v. XYZ Inc. (2020)',
+      source: 'Court of Appeals, 9th Circuit',
+      snippet: 'The court distinguished between general non-compete provisions and more limited customer non-solicitation provisions...',
+      relevance: 0.75
+    },
+    {
+      id: '5',
+      title: 'Protecting Trade Secrets in Employment Relationships',
+      source: 'Harvard Business Law Review (2023)',
+      snippet: 'Analysis of effective strategies for protecting proprietary information within the constraints of employment law...',
+      relevance: 0.70
+    }
+  ];
+  
+  // Load default results when component mounts
+  useEffect(() => {
+    setSearchResults(defaultResults);
+    toast({
+      title: "Legal Research Ready",
+      description: "Showing relevant results for non-compete clauses in California"
+    });
+  }, []);
   
   const handleSearch = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -26,46 +75,8 @@ export default function LegalResearch({ onClose }: LegalResearchProps) {
     // Simulate a search delay
     await new Promise(resolve => setTimeout(resolve, 1500));
     
-    // Mock research results
-    const mockResults = [
-      {
-        id: '1',
-        title: 'Smith v. Jones (2021)',
-        source: 'Supreme Court of California',
-        snippet: 'The court ruled that non-compete clauses are generally unenforceable in California unless they fall within one of the statutory exceptions...',
-        relevance: 0.95
-      },
-      {
-        id: '2',
-        title: 'California Labor Code § 2872',
-        source: 'California State Legislature',
-        snippet: 'Protections for employee inventions created on their own time without employer resources...',
-        relevance: 0.88
-      },
-      {
-        id: '3',
-        title: 'Non-Compete Agreements: A Review of Recent Case Law',
-        source: 'California Law Review (2022)',
-        snippet: 'Recent developments in how courts have interpreted the scope and enforceability of various restrictive covenants...',
-        relevance: 0.82
-      },
-      {
-        id: '4',
-        title: 'ABC Corp v. XYZ Inc. (2020)',
-        source: 'Court of Appeals, 9th Circuit',
-        snippet: 'The court distinguished between general non-compete provisions and more limited customer non-solicitation provisions...',
-        relevance: 0.75
-      },
-      {
-        id: '5',
-        title: 'Protecting Trade Secrets in Employment Relationships',
-        source: 'Harvard Business Law Review (2023)',
-        snippet: 'Analysis of effective strategies for protecting proprietary information within the constraints of employment law...',
-        relevance: 0.70
-      }
-    ];
-    
-    setSearchResults(mockResults);
+    // Use the default results for mock search
+    setSearchResults(defaultResults);
     setIsSearching(false);
   };
   

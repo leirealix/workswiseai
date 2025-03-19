@@ -26,8 +26,8 @@ const Index = () => {
   const [isWaitingForAI, setIsWaitingForAI] = useState(false);
   const conversationIdRef = useRef<string | undefined>(undefined);
   const [showComparison, setShowComparison] = useState<boolean>(false);
-  const [showResearch, setShowResearch] = useState<boolean>(false);
-  
+  const [showResearch, setShowResearch] = useState<boolean>(true);
+
   const handleSendMessage = async (content: string) => {
     const userMessageId = crypto.randomUUID();
     const newMessage: Message = {
@@ -121,6 +121,11 @@ const Index = () => {
     setShowComparison(false);
   };
 
+  const openResearch = () => {
+    setShowResearch(true);
+    setShowComparison(false);
+  };
+
   const toggleLeftPanel = () => {
     setLeftPanelCollapsed(!leftPanelCollapsed);
     setRightPanelExpanded(false);
@@ -209,11 +214,11 @@ const Index = () => {
                       <Button 
                         variant="outline" 
                         size="sm"
-                        onClick={resetAnalysis}
+                        onClick={openResearch}
                         className="flex items-center gap-1"
                       >
-                        <RefreshCwIcon size={14} />
-                        <span>New Analysis</span>
+                        <BookOpenIcon size={14} />
+                        <span>Legal Research</span>
                       </Button>
                     </div>
                   )}
@@ -226,6 +231,7 @@ const Index = () => {
                 onSendMessage={handleSendMessage} 
                 onFileUpload={handleFileUpload}
                 onNewConversation={handleNewConversation}
+                onOpenResearch={openResearch}
                 isDisabled={isWaitingForAI || state.status === 'uploading' || state.status === 'thinking' || state.status === 'analyzing'} 
               />
             )}
@@ -411,4 +417,3 @@ const Index = () => {
 };
 
 export default Index;
-

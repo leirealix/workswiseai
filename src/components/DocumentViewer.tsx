@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { AnalysisResult, DocumentClause } from '@/types';
 import { cn } from '@/lib/utils';
 import { File, FileText } from 'lucide-react';
+import { ScrollArea } from '@/components/ui/scroll-area';
 
 interface DocumentViewerProps {
   fileName: string;
@@ -28,7 +29,7 @@ export default function DocumentViewer({ fileName, result }: DocumentViewerProps
         </div>
       </div>
       
-      <div className="flex-1 overflow-y-auto" style={{ height: selectedClause ? "calc(100% - 140px)" : "calc(100% - 70px)" }}>
+      <ScrollArea className="flex-1">
         <div className="p-4 space-y-6">
           {pages.map((pageNum) => {
             const pageClauses = result.clauses.filter(clause => clause.page === pageNum);
@@ -86,7 +87,7 @@ export default function DocumentViewer({ fileName, result }: DocumentViewerProps
             );
           })}
         </div>
-      </div>
+      </ScrollArea>
       
       {selectedClause && (
         <div className="border-t p-4 bg-secondary/50 animate-slide-in-up">

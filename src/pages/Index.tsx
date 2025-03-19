@@ -277,64 +277,70 @@ const Index = () => {
             
             <div className="flex-1 overflow-hidden">
               {state.status === 'idle' && (
-                <div className="h-full flex items-center justify-center">
-                  <WelcomeAnimation />
-                </div>
+                <ScrollArea className="h-full">
+                  <div className="h-full flex items-center justify-center">
+                    <WelcomeAnimation />
+                  </div>
+                </ScrollArea>
               )}
               
               {(state.status === 'uploading' || state.status === 'thinking' || state.status === 'analyzing') && (
-                <div className="h-full flex flex-col">
-                  <div className={cn(
-                    "flex-1 flex flex-col items-center justify-center p-6 transition-opacity duration-500",
-                    state.thinkingSteps.length > 0 ? "opacity-20" : "opacity-100"
-                  )}>
-                    <Loader2Icon size={40} className="text-primary animate-spin mb-4" />
-                    <h3 className="text-lg font-medium mb-1">
-                      {state.status === 'uploading' && 'Uploading Document...'}
-                      {state.status === 'thinking' && 'Processing Document...'}
-                      {state.status === 'analyzing' && 'Analyzing Content...'}
-                    </h3>
-                    <p className="text-sm text-muted-foreground text-center max-w-xs">
-                      {state.status === 'uploading' && 'Preparing your document for analysis'}
-                      {state.status === 'thinking' && 'The AI is examining your document structure'}
-                      {state.status === 'analyzing' && 'Extracting key information and insights'}
-                    </p>
-                  </div>
-                  
-                  {state.thinkingSteps.length > 0 && (
-                    <div className="absolute inset-x-0 bottom-0 p-6 glass rounded-t-2xl shadow-lg max-w-md mx-auto transition-all">
-                      <h3 className="text-sm font-medium mb-3">Analysis Progress</h3>
-                      <ThinkingProcess steps={state.thinkingSteps} />
+                <ScrollArea className="h-full">
+                  <div className="h-full flex flex-col">
+                    <div className={cn(
+                      "flex-1 flex flex-col items-center justify-center p-6 transition-opacity duration-500",
+                      state.thinkingSteps.length > 0 ? "opacity-20" : "opacity-100"
+                    )}>
+                      <Loader2Icon size={40} className="text-primary animate-spin mb-4" />
+                      <h3 className="text-lg font-medium mb-1">
+                        {state.status === 'uploading' && 'Uploading Document...'}
+                        {state.status === 'thinking' && 'Processing Document...'}
+                        {state.status === 'analyzing' && 'Analyzing Content...'}
+                      </h3>
+                      <p className="text-sm text-muted-foreground text-center max-w-xs">
+                        {state.status === 'uploading' && 'Preparing your document for analysis'}
+                        {state.status === 'thinking' && 'The AI is examining your document structure'}
+                        {state.status === 'analyzing' && 'Extracting key information and insights'}
+                      </p>
                     </div>
-                  )}
-                </div>
+                    
+                    {state.thinkingSteps.length > 0 && (
+                      <div className="absolute inset-x-0 bottom-0 p-6 glass rounded-t-2xl shadow-lg max-w-md mx-auto transition-all">
+                        <h3 className="text-sm font-medium mb-3">Analysis Progress</h3>
+                        <ThinkingProcess steps={state.thinkingSteps} />
+                      </div>
+                    )}
+                  </div>
+                </ScrollArea>
               )}
               
               {state.status === 'complete' && state.file && state.result && (
                 <div className="h-full grid grid-cols-2">
-                  <div className="h-full border-r">
+                  <div className="h-full border-r overflow-hidden">
                     <DocumentViewer 
                       fileName={state.file.name}
                       result={state.result}
                     />
                   </div>
-                  <div className="h-full">
+                  <div className="h-full overflow-hidden">
                     <AnalysisResult result={state.result} />
                   </div>
                 </div>
               )}
               
               {state.status === 'error' && (
-                <div className="h-full flex flex-col items-center justify-center p-6">
-                  <div className="w-16 h-16 rounded-full bg-destructive/10 flex items-center justify-center text-destructive mb-4">
-                    <RefreshCwIcon size={24} />
+                <ScrollArea className="h-full">
+                  <div className="h-full flex flex-col items-center justify-center p-6">
+                    <div className="w-16 h-16 rounded-full bg-destructive/10 flex items-center justify-center text-destructive mb-4">
+                      <RefreshCwIcon size={24} />
+                    </div>
+                    <h3 className="text-lg font-medium mb-2">Analysis Failed</h3>
+                    <p className="text-sm text-muted-foreground text-center max-w-xs mb-6">
+                      {state.error || "Something went wrong during the analysis. Please try again."}
+                    </p>
+                    <Button onClick={resetAnalysis}>Try Again</Button>
                   </div>
-                  <h3 className="text-lg font-medium mb-2">Analysis Failed</h3>
-                  <p className="text-sm text-muted-foreground text-center max-w-xs mb-6">
-                    {state.error || "Something went wrong during the analysis. Please try again."}
-                  </p>
-                  <Button onClick={resetAnalysis}>Try Again</Button>
-                </div>
+                </ScrollArea>
               )}
             </div>
           </div>

@@ -5,13 +5,25 @@ import { UserIcon, Loader2 } from 'lucide-react';
 import { useState, useEffect, useRef } from 'react';
 import LawyerIcon from './LawyerIcon';
 import { ScrollArea } from '@/components/ui/scroll-area';
+import ChatInput from '@/components/ChatInput';
 
 interface MessageListProps {
   messages: Message[];
   isWaiting?: boolean;
+  onSendMessage?: (message: string) => void;
+  onFileUpload?: (file: File) => void;
+  onNewConversation?: () => void;
+  isDisabled?: boolean;
 }
 
-export default function MessageList({ messages, isWaiting = false }: MessageListProps) {
+export default function MessageList({ 
+  messages, 
+  isWaiting = false,
+  onSendMessage,
+  onFileUpload,
+  onNewConversation,
+  isDisabled = false
+}: MessageListProps) {
   const messagesEndRef = useRef<HTMLDivElement>(null);
   
   // Auto-scroll to the latest message
@@ -31,6 +43,17 @@ export default function MessageList({ messages, isWaiting = false }: MessageList
         <p className="text-muted-foreground max-w-md mb-8 animate-fade-in" style={{ animationDelay: '0.2s' }}>
           I can use various tools, including iManage, emails, legal databases, and more, to help you complete the task.
         </p>
+        
+        {onSendMessage && onFileUpload && (
+          <div className="w-full max-w-2xl animate-fade-in" style={{ animationDelay: '0.3s' }}>
+            <ChatInput 
+              onSendMessage={onSendMessage} 
+              onFileUpload={onFileUpload}
+              onNewConversation={onNewConversation}
+              isDisabled={isDisabled} 
+            />
+          </div>
+        )}
       </div>
     );
   }

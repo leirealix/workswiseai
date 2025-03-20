@@ -160,12 +160,10 @@ const Index = () => {
       {showOnlyChatPanel ? (
         <div className="h-full w-full max-w-3xl mx-auto flex flex-col items-center justify-center">
           <div className="flex-1 flex flex-col items-center justify-center w-full">
-            <MessageList messages={messages} isWaiting={isWaitingForAI} />
-          </div>
-          
-          <div className="w-full max-w-2xl mx-auto mb-8">
-            <ChatInput 
-              onSendMessage={handleSendMessage} 
+            <MessageList 
+              messages={messages} 
+              isWaiting={isWaitingForAI}
+              onSendMessage={handleSendMessage}
               onFileUpload={handleFileSelect}
               onNewConversation={handleNewConversation}
               isDisabled={isWaitingForAI || state.status === 'uploading' || state.status === 'thinking' || state.status === 'analyzing'} 

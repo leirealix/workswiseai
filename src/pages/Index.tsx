@@ -156,35 +156,26 @@ const Index = () => {
   }, []);
 
   return (
-    <div className="h-full w-full overflow-hidden" style={{ height: '100vh' }}>
+    <div className="h-full w-full overflow-hidden flex items-center justify-center bg-background" style={{ height: '100vh' }}>
       {showOnlyChatPanel ? (
-        <div className="h-full flex flex-col border-l">
-          <div className="p-4 border-b bg-background/80 backdrop-blur-md flex justify-between items-center">
-            <div>
-              <h1 className="text-xl font-semibold">AI Lawyer</h1>
-              <p className="text-sm text-muted-foreground">Chat with AI about your legal documents</p>
-            </div>
+        <div className="h-full w-full max-w-3xl mx-auto flex flex-col items-center justify-center">
+          <div className="flex-1 flex flex-col items-center justify-center w-full">
+            <MessageList messages={messages} isWaiting={isWaitingForAI} />
           </div>
           
-          <ScrollArea className="flex-1 overflow-hidden">
-            <div className="flex flex-col h-full">
-              <div className="flex-1">
-                <MessageList messages={messages} isWaiting={isWaitingForAI} />
-              </div>
-            </div>
-          </ScrollArea>
-          
-          <ChatInput 
-            onSendMessage={handleSendMessage} 
-            onFileUpload={handleFileSelect}
-            onNewConversation={handleNewConversation}
-            isDisabled={isWaitingForAI || state.status === 'uploading' || state.status === 'thinking' || state.status === 'analyzing'} 
-          />
+          <div className="w-full max-w-2xl mx-auto mb-8">
+            <ChatInput 
+              onSendMessage={handleSendMessage} 
+              onFileUpload={handleFileSelect}
+              onNewConversation={handleNewConversation}
+              isDisabled={isWaitingForAI || state.status === 'uploading' || state.status === 'thinking' || state.status === 'analyzing'} 
+            />
+          </div>
         </div>
       ) : (
         <ResizablePanelGroup 
           direction="horizontal" 
-          className="h-full"
+          className="h-full w-full"
         >
           <ResizablePanel 
             defaultSize={50} 
@@ -198,7 +189,10 @@ const Index = () => {
             collapsedSize={5}
           >
             <div className="h-full flex flex-col">
-              <div className="p-4 border-b flex items-center justify-between bg-background/80 backdrop-blur-md">
+              <div className={cn(
+                "flex items-center justify-between bg-background/80 backdrop-blur-md",
+                leftPanelCollapsed ? "p-2" : "p-4"
+              )}>
                 <div className={leftPanelCollapsed ? "hidden" : "block"}>
                   <h2 className="text-lg font-medium">
                     {state.status === 'idle' && 'Preview'}
@@ -362,12 +356,8 @@ const Index = () => {
               rightPanelExpanded && "!w-[calc(100%-80px)] !min-w-[calc(100%-80px)] !max-w-[calc(100%-80px)]"
             )}
           >
-            <div className="h-full flex flex-col border-l">
-              <div className="p-4 border-b bg-background/80 backdrop-blur-md flex justify-between items-center">
-                <div>
-                  <h1 className="text-xl font-semibold">AI Lawyer</h1>
-                  <p className="text-sm text-muted-foreground">Chat with AI about your legal documents</p>
-                </div>
+            <div className="h-full flex flex-col items-center justify-center">
+              <div className="flex items-end justify-end w-full p-2">
                 <Button 
                   variant="ghost" 
                   size="icon"
@@ -378,8 +368,8 @@ const Index = () => {
                 </Button>
               </div>
               
-              <ScrollArea className="flex-1 overflow-hidden">
-                <div className="flex flex-col h-full">
+              <ScrollArea className="flex-1 w-full overflow-hidden">
+                <div className="flex flex-col h-full items-center justify-center">
                   {state.thinkingSteps.length > 0 && (
                     <div className="px-4 py-3">
                       <AnalysisProgress 
@@ -391,12 +381,12 @@ const Index = () => {
                     </div>
                   )}
                   
-                  <div className="flex-1">
+                  <div className="flex-1 w-full max-w-2xl mx-auto">
                     <MessageList messages={messages} isWaiting={isWaitingForAI} />
                   </div>
                   
                   {state.status === 'complete' && (
-                    <div className="px-4 py-2 border-t flex items-center gap-2 bg-muted/20">
+                    <div className="px-4 py-2 border-t flex items-center gap-2 bg-muted/20 w-full">
                       <Button 
                         variant="outline" 
                         size="sm"
@@ -411,12 +401,14 @@ const Index = () => {
                 </div>
               </ScrollArea>
               
-              <ChatInput 
-                onSendMessage={handleSendMessage} 
-                onFileUpload={handleFileSelect}
-                onNewConversation={handleNewConversation}
-                isDisabled={isWaitingForAI || state.status === 'uploading' || state.status === 'thinking' || state.status === 'analyzing'} 
-              />
+              <div className="w-full max-w-2xl mx-auto">
+                <ChatInput 
+                  onSendMessage={handleSendMessage} 
+                  onFileUpload={handleFileSelect}
+                  onNewConversation={handleNewConversation}
+                  isDisabled={isWaitingForAI || state.status === 'uploading' || state.status === 'thinking' || state.status === 'analyzing'} 
+                />
+              </div>
             </div>
           </ResizablePanel>
         </ResizablePanelGroup>

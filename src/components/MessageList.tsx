@@ -24,11 +24,11 @@ export default function MessageList({ messages, isWaiting = false }: MessageList
   if (messages.length === 0) {
     return (
       <div className="flex-1 flex flex-col items-center justify-center p-6 text-center">
-        <div className="bg-muted/50 rounded-full p-4 mb-4">
+        <div className="bg-muted/50 rounded-full p-4 mb-4 animate-fade-in">
           <LawyerIcon className="w-8 h-8 text-muted-foreground" />
         </div>
-        <h3 className="text-lg font-medium mb-2">AI Lawyer</h3>
-        <p className="text-muted-foreground max-w-md">
+        <h3 className="text-lg font-medium mb-2 animate-fade-in" style={{ animationDelay: '0.1s' }}>AI Lawyer</h3>
+        <p className="text-muted-foreground max-w-md mb-8 animate-fade-in" style={{ animationDelay: '0.2s' }}>
           I can use various tools, including iManage, emails, legal databases, and more, to help you complete the task.
         </p>
       </div>

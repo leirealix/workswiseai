@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Send, Plus, Search, Mic, MoreHorizontal, RefreshCw, FileIcon, XIcon } from 'lucide-react';
+import { Textarea } from '@/components/ui/textarea';
 
 interface ChatInputProps {
   onSendMessage: (message: string) => void;
@@ -100,22 +101,22 @@ export default function ChatInput({
       )}
       
       <div className="relative w-full">
-        <Input
+        <Textarea
           value={input}
           onChange={(e) => setInput(e.target.value)}
           placeholder="Complete any work you request"
           disabled={isDisabled}
-          className="pr-12 py-7 pl-5 rounded-full bg-white dark:bg-black/20 border border-border shadow-sm focus-visible:ring-1 focus-visible:ring-primary/30 text-base"
+          className="pr-14 py-4 pl-5 min-h-[100px] rounded-xl bg-white dark:bg-black/20 border border-border shadow-sm focus-visible:ring-1 focus-visible:ring-primary/30 text-base resize-none"
         />
         
-        <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
+        <div className="absolute right-3 bottom-3">
           <Button 
             type="submit" 
             size="icon" 
             disabled={(!input.trim() && selectedFiles.length === 0) || isDisabled}
-            className="rounded-full w-11 h-11 hover:bg-primary/90"
+            className="rounded-full w-12 h-12 hover:bg-primary/90"
           >
-            <Send size={20} />
+            <Send size={22} />
           </Button>
         </div>
       </div>

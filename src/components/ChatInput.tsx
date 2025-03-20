@@ -105,7 +105,7 @@ export default function ChatInput({
           onChange={(e) => setInput(e.target.value)}
           placeholder="Complete any work you request"
           disabled={isDisabled}
-          className="pr-12 py-6 pl-4 rounded-full bg-white dark:bg-black/20 border border-border shadow-sm focus-visible:ring-1 focus-visible:ring-primary/30"
+          className="pr-12 py-7 pl-5 rounded-full bg-white dark:bg-black/20 border border-border shadow-sm focus-visible:ring-1 focus-visible:ring-primary/30 text-base"
         />
         
         <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
@@ -113,9 +113,9 @@ export default function ChatInput({
             type="submit" 
             size="icon" 
             disabled={(!input.trim() && selectedFiles.length === 0) || isDisabled}
-            className="rounded-full w-10 h-10 hover:bg-primary/90"
+            className="rounded-full w-11 h-11 hover:bg-primary/90"
           >
-            <Send size={18} />
+            <Send size={20} />
           </Button>
         </div>
       </div>

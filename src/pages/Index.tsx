@@ -20,8 +20,8 @@ import { sendMessageToAIAgent } from '@/services/aiAgentService';
 const Index = () => {
   const [messages, setMessages] = useState<Message[]>([]);
   const { state, uploadFile, resetAnalysis } = useDocumentAnalysis();
-  const [leftPanelCollapsed, setLeftPanelCollapsed] = useState(false);
-  const [rightPanelExpanded, setRightPanelExpanded] = useState(false);
+  const [rightPanelCollapsed, setRightPanelCollapsed] = useState(false);
+  const [leftPanelExpanded, setLeftPanelExpanded] = useState(false);
   const [isWaitingForAI, setIsWaitingForAI] = useState(false);
   const conversationIdRef = useRef<string | undefined>(undefined);
   const [showComparison, setShowComparison] = useState<boolean>(false);
@@ -113,14 +113,14 @@ const Index = () => {
     setShowComparison(!showComparison);
   };
 
-  const toggleLeftPanel = () => {
-    setLeftPanelCollapsed(!leftPanelCollapsed);
-    setRightPanelExpanded(false);
+  const toggleRightPanel = () => {
+    setRightPanelCollapsed(!rightPanelCollapsed);
+    setLeftPanelExpanded(false);
   };
 
-  const toggleRightPanel = () => {
-    setRightPanelExpanded(!rightPanelExpanded);
-    setLeftPanelCollapsed(rightPanelExpanded ? false : true);
+  const toggleLeftPanel = () => {
+    setLeftPanelExpanded(!leftPanelExpanded);
+    setRightPanelCollapsed(leftPanelExpanded ? false : true);
   };
 
   useEffect(() => {
@@ -154,85 +154,10 @@ const Index = () => {
         <ResizablePanel 
           defaultSize={50} 
           minSize={20}
-          maxSize={80} 
-          className={cn(
-            "transition-all duration-300",
-            leftPanelCollapsed && "!w-[80px] min-w-[80px] !max-w-[80px]"
-          )}
-          collapsible={leftPanelCollapsed}
-          collapsedSize={5}
-        >
-          <div className="h-full flex flex-col border-r">
-            <div className="p-4 border-b bg-background/80 backdrop-blur-md flex justify-between items-center">
-              <div className={leftPanelCollapsed ? "hidden" : "block"}>
-                <h1 className="text-xl font-semibold">AI Lawyer</h1>
-                <p className="text-sm text-muted-foreground">Chat with AI about your legal documents</p>
-              </div>
-              <Button 
-                variant="ghost" 
-                size="icon"
-                onClick={toggleLeftPanel}
-                className="flex-shrink-0"
-              >
-                {leftPanelCollapsed ? <MaximizeIcon size={18} /> : <MinimizeIcon size={18} />}
-              </Button>
-            </div>
-            
-            {!leftPanelCollapsed && (
-              <ScrollArea className="flex-1 overflow-hidden">
-                <div className="flex flex-col h-full">
-                  {state.thinkingSteps.length > 0 && (
-                    <div className="px-4 py-3">
-                      <AnalysisProgress 
-                        status={state.status} 
-                        progress={0} 
-                        steps={state.thinkingSteps}
-                        onFollowUpSelected={handleFollowUpQuestion}
-                      />
-                    </div>
-                  )}
-                  
-                  <div className="flex-1">
-                    <MessageList messages={messages} isWaiting={isWaitingForAI} />
-                  </div>
-                  
-                  {state.status === 'complete' && (
-                    <div className="px-4 py-2 border-t flex items-center gap-2 bg-muted/20">
-                      <Button 
-                        variant="outline" 
-                        size="sm"
-                        onClick={resetAnalysis}
-                        className="flex items-center gap-1"
-                      >
-                        <RefreshCwIcon size={14} />
-                        <span>New Analysis</span>
-                      </Button>
-                    </div>
-                  )}
-                </div>
-              </ScrollArea>
-            )}
-            
-            {!leftPanelCollapsed && (
-              <ChatInput 
-                onSendMessage={handleSendMessage} 
-                onFileUpload={handleFileUpload}
-                onNewConversation={handleNewConversation}
-                isDisabled={isWaitingForAI || state.status === 'uploading' || state.status === 'thinking' || state.status === 'analyzing'} 
-              />
-            )}
-          </div>
-        </ResizablePanel>
-
-        {!leftPanelCollapsed && !rightPanelExpanded && <ResizableHandle withHandle />}
-        
-        <ResizablePanel 
-          defaultSize={50} 
-          minSize={20}
           maxSize={80}
           className={cn(
             "transition-all duration-300",
-            rightPanelExpanded && "!w-[calc(100%-80px)] !min-w-[calc(100%-80px)] !max-w-[calc(100%-80px)]"
+            leftPanelExpanded && "!w-[calc(100%-80px)] !min-w-[calc(100%-80px)] !max-w-[calc(100%-80px)]"
           )}
         >
           <div className="h-full flex flex-col">
@@ -282,10 +207,10 @@ const Index = () => {
                 <Button 
                   variant="ghost" 
                   size="icon"
-                  onClick={toggleRightPanel}
+                  onClick={toggleLeftPanel}
                   className="flex-shrink-0 ml-2"
                 >
-                  {rightPanelExpanded ? <MinimizeIcon size={18} /> : <MaximizeIcon size={18} />}
+                  {leftPanelExpanded ? <MinimizeIcon size={18} /> : <MaximizeIcon size={18} />}
                 </Button>
               </div>
             </div>
@@ -386,6 +311,81 @@ const Index = () => {
                 </ScrollArea>
               )}
             </div>
+          </div>
+        </ResizablePanel>
+
+        {!rightPanelCollapsed && !leftPanelExpanded && <ResizableHandle withHandle />}
+        
+        <ResizablePanel 
+          defaultSize={50} 
+          minSize={20}
+          maxSize={80} 
+          className={cn(
+            "transition-all duration-300",
+            rightPanelCollapsed && "!w-[80px] min-w-[80px] !max-w-[80px]"
+          )}
+          collapsible={rightPanelCollapsed}
+          collapsedSize={5}
+        >
+          <div className="h-full flex flex-col border-l">
+            <div className="p-4 border-b bg-background/80 backdrop-blur-md flex justify-between items-center">
+              <div className={rightPanelCollapsed ? "hidden" : "block"}>
+                <h1 className="text-xl font-semibold">AI Lawyer</h1>
+                <p className="text-sm text-muted-foreground">Chat with AI about your legal documents</p>
+              </div>
+              <Button 
+                variant="ghost" 
+                size="icon"
+                onClick={toggleRightPanel}
+                className="flex-shrink-0"
+              >
+                {rightPanelCollapsed ? <MaximizeIcon size={18} /> : <MinimizeIcon size={18} />}
+              </Button>
+            </div>
+            
+            {!rightPanelCollapsed && (
+              <ScrollArea className="flex-1 overflow-hidden">
+                <div className="flex flex-col h-full">
+                  {state.thinkingSteps.length > 0 && (
+                    <div className="px-4 py-3">
+                      <AnalysisProgress 
+                        status={state.status} 
+                        progress={0} 
+                        steps={state.thinkingSteps}
+                        onFollowUpSelected={handleFollowUpQuestion}
+                      />
+                    </div>
+                  )}
+                  
+                  <div className="flex-1">
+                    <MessageList messages={messages} isWaiting={isWaitingForAI} />
+                  </div>
+                  
+                  {state.status === 'complete' && (
+                    <div className="px-4 py-2 border-t flex items-center gap-2 bg-muted/20">
+                      <Button 
+                        variant="outline" 
+                        size="sm"
+                        onClick={resetAnalysis}
+                        className="flex items-center gap-1"
+                      >
+                        <RefreshCwIcon size={14} />
+                        <span>New Analysis</span>
+                      </Button>
+                    </div>
+                  )}
+                </div>
+              </ScrollArea>
+            )}
+            
+            {!rightPanelCollapsed && (
+              <ChatInput 
+                onSendMessage={handleSendMessage} 
+                onFileUpload={handleFileUpload}
+                onNewConversation={handleNewConversation}
+                isDisabled={isWaitingForAI || state.status === 'uploading' || state.status === 'thinking' || state.status === 'analyzing'} 
+              />
+            )}
           </div>
         </ResizablePanel>
       </ResizablePanelGroup>

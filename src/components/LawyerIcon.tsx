@@ -4,9 +4,10 @@ import React from 'react';
 interface LawyerIconProps {
   size?: number;
   className?: string;
+  style?: React.CSSProperties;
 }
 
-const LawyerIcon: React.FC<LawyerIconProps> = ({ size = 24, className = "" }) => {
+const LawyerIcon: React.FC<LawyerIconProps> = ({ size = 24, className = "", style }) => {
   return (
     <svg 
       width={size} 
@@ -18,6 +19,7 @@ const LawyerIcon: React.FC<LawyerIconProps> = ({ size = 24, className = "" }) =>
       strokeLinecap="round" 
       strokeLinejoin="round"
       className={className}
+      style={style}
     >
       {/* Simple lawyer figure with tie and suit */}
       <path d="M12 4a2 2 0 1 0 0-4 2 2 0 0 0 0 4z" />

@@ -5,10 +5,8 @@ import {
   User, 
   Settings, 
   MessageSquare, 
-  ChevronLeft,
   Plus
 } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import {
   Sidebar,
   SidebarContent,
@@ -23,6 +21,7 @@ import {
   useSidebar
 } from "@/components/ui/sidebar";
 import { useState } from "react";
+import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/ui/hover-card";
 
 type Conversation = {
   id: string;
@@ -32,7 +31,7 @@ type Conversation = {
 
 const AppSidebar = () => {
   const navigate = useNavigate();
-  const { toggleSidebar } = useSidebar();
+  const { setOpen } = useSidebar();
   const [recentConversations, setRecentConversations] = useState<Conversation[]>([
     { id: '1', title: 'Document analysis', date: new Date(2023, 6, 15) },
     { id: '2', title: 'Legal contract review', date: new Date(2023, 6, 10) },
@@ -51,28 +50,25 @@ const AppSidebar = () => {
   };
 
   return (
-    <Sidebar>
-      <SidebarHeader className="flex items-center justify-between p-4">
-        <h2 className="text-xl font-semibold">Document AI</h2>
-        <Button variant="ghost" size="icon" onClick={toggleSidebar} className="h-8 w-8">
-          <ChevronLeft className="h-5 w-5" />
-        </Button>
+    <Sidebar className="border-r border-border/60">
+      <SidebarHeader className="flex items-center p-4">
+        <h2 className="text-xl font-semibold text-primary">Document AI</h2>
       </SidebarHeader>
       <SidebarContent>
         <SidebarGroup>
           <div className="px-4 mb-2">
-            <Button 
+            <button 
               onClick={handleNewChat} 
-              className="w-full justify-start gap-2"
+              className="w-full flex items-center gap-2 bg-primary/10 hover:bg-primary/20 text-primary font-medium rounded-md px-3 py-2 transition-colors"
             >
               <Plus size={18} />
               New Chat
-            </Button>
+            </button>
           </div>
         </SidebarGroup>
 
         <SidebarGroup>
-          <SidebarGroupLabel>Recent Conversations</SidebarGroupLabel>
+          <SidebarGroupLabel className="text-muted-foreground font-medium">Recent Conversations</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
               {recentConversations.map((conversation) => (
@@ -80,8 +76,9 @@ const AppSidebar = () => {
                   <SidebarMenuButton 
                     onClick={() => handleSelectConversation(conversation.id)}
                     tooltip={conversation.title}
+                    className="hover:bg-primary/5 text-foreground"
                   >
-                    <MessageSquare size={18} />
+                    <MessageSquare size={18} className="text-primary/70" />
                     <span>{conversation.title}</span>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
@@ -91,24 +88,24 @@ const AppSidebar = () => {
         </SidebarGroup>
 
         <SidebarGroup>
-          <SidebarGroupLabel>Navigation</SidebarGroupLabel>
+          <SidebarGroupLabel className="text-muted-foreground font-medium">Navigation</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
               <SidebarMenuItem>
-                <SidebarMenuButton tooltip="History">
-                  <History size={18} />
+                <SidebarMenuButton tooltip="History" className="hover:bg-primary/5 text-foreground">
+                  <History size={18} className="text-primary/70" />
                   <span>History</span>
                 </SidebarMenuButton>
               </SidebarMenuItem>
               <SidebarMenuItem>
-                <SidebarMenuButton tooltip="Profile">
-                  <User size={18} />
+                <SidebarMenuButton tooltip="Profile" className="hover:bg-primary/5 text-foreground">
+                  <User size={18} className="text-primary/70" />
                   <span>Profile</span>
                 </SidebarMenuButton>
               </SidebarMenuItem>
               <SidebarMenuItem>
-                <SidebarMenuButton tooltip="Settings">
-                  <Settings size={18} />
+                <SidebarMenuButton tooltip="Settings" className="hover:bg-primary/5 text-foreground">
+                  <Settings size={18} className="text-primary/70" />
                   <span>Settings</span>
                 </SidebarMenuButton>
               </SidebarMenuItem>
@@ -116,7 +113,7 @@ const AppSidebar = () => {
           </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>
-      <SidebarFooter className="p-4">
+      <SidebarFooter className="p-4 border-t border-border/60">
         <div className="text-xs text-muted-foreground">
           Version 1.0.0
         </div>

@@ -1,4 +1,3 @@
-
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap');
 
 @tailwind base;
@@ -36,6 +35,9 @@
     --ring: 213 92% 55%;
 
     --radius: 1rem;
+    
+    /* Variable for sidebar hover state */
+    --sidebar-hover: 0;
   }
 
   .dark {
@@ -81,6 +83,23 @@
 
   body {
     @apply bg-background text-foreground;
+  }
+
+  /* Sidebar hover behavior */
+  .group[data-state="collapsed"] {
+    left: 0;
+    transition: left 0.3s ease;
+  }
+  
+  .group[data-state="collapsed"]:hover,
+  .group[data-state="collapsed"]:has(+ .peer:hover),
+  .group[data-state="collapsed"]:has(+ .group:hover) {
+    left: var(--sidebar-width) !important;
+  }
+  
+  /* Add hover control via CSS variable */
+  html[style*="--sidebar-hover: 1"] .group[data-state="collapsed"] {
+    left: var(--sidebar-width) !important;
   }
 
   ::-webkit-scrollbar {

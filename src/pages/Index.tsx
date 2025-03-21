@@ -20,7 +20,6 @@ import { sendMessageToAIAgent } from '@/services/aiAgentService';
 const Index = () => {
   const [messages, setMessages] = useState<Message[]>([]);
   const { state, uploadFile, resetAnalysis } = useDocumentAnalysis();
-  const [leftPanelCollapsed, setLeftPanelCollapsed] = useState(false);
   const [rightPanelExpanded, setRightPanelExpanded] = useState(false);
   const [isWaitingForAI, setIsWaitingForAI] = useState(false);
   const conversationIdRef = useRef<string | undefined>(undefined);
@@ -123,14 +122,8 @@ const Index = () => {
     setShowComparison(!showComparison);
   };
 
-  const toggleLeftPanel = () => {
-    setLeftPanelCollapsed(!leftPanelCollapsed);
-    setRightPanelExpanded(leftPanelCollapsed ? false : true);
-  };
-
   const toggleRightPanel = () => {
     setRightPanelExpanded(!rightPanelExpanded);
-    setLeftPanelCollapsed(rightPanelExpanded ? false : true);
   };
 
   useEffect(() => {
@@ -158,7 +151,7 @@ const Index = () => {
   return (
     <div className="h-full w-full overflow-hidden flex items-center justify-center bg-background" style={{ height: '100vh' }}>
       {showOnlyChatPanel ? (
-        <div className="h-full w-full max-w-3xl mx-auto flex flex-col items-center justify-center">
+        <div className="h-full w-full mx-auto flex flex-col items-center justify-center">
           <div className="flex-1 flex flex-col items-center justify-center w-full">
             <MessageList 
               messages={messages} 
@@ -180,18 +173,12 @@ const Index = () => {
             minSize={20}
             maxSize={80} 
             className={cn(
-              "transition-all duration-300",
-              leftPanelCollapsed && "!w-[80px] min-w-[80px] !max-w-[80px]"
+              "transition-all duration-300"
             )}
-            collapsible={leftPanelCollapsed}
-            collapsedSize={5}
           >
             <div className="h-full flex flex-col">
-              <div className={cn(
-                "flex items-center justify-between bg-background/80 backdrop-blur-md",
-                leftPanelCollapsed ? "p-2" : "p-4"
-              )}>
-                <div className={leftPanelCollapsed ? "hidden" : "block"}>
+              <div className="flex items-center justify-between bg-background/80 backdrop-blur-md p-4">
+                <div>
                   <h2 className="text-lg font-medium">
                     {state.status === 'idle' && 'Preview'}
                     {state.status === 'uploading' && 'Uploading Document...'}
@@ -217,7 +204,7 @@ const Index = () => {
                         variant="outline" 
                         size="sm" 
                         onClick={toggleComparison}
-                        className={cn("flex items-center gap-1", leftPanelCollapsed && "hidden")}
+                        className="flex items-center gap-1"
                       >
                         {showComparison ? "Exit Comparison" : "Compare Documents"}
                       </Button>
@@ -225,22 +212,13 @@ const Index = () => {
                         variant="outline" 
                         size="sm" 
                         onClick={resetAnalysis}
-                        className={cn("flex items-center gap-1", leftPanelCollapsed && "hidden")}
+                        className="flex items-center gap-1"
                       >
                         <RefreshCwIcon size={14} />
                         <span>New Analysis</span>
                       </Button>
                     </>
                   )}
-                  
-                  <Button 
-                    variant="ghost" 
-                    size="icon"
-                    onClick={toggleLeftPanel}
-                    className="flex-shrink-0 ml-2"
-                  >
-                    {leftPanelCollapsed ? <MaximizeIcon size={18} /> : <MinimizeIcon size={18} />}
-                  </Button>
                 </div>
               </div>
               
@@ -256,10 +234,7 @@ const Index = () => {
                 {(state.status === 'uploading' || state.status === 'thinking' || state.status === 'analyzing') && (
                   <ScrollArea className="h-full">
                     <div className="h-full flex flex-col">
-                      <div className={cn(
-                        "flex-1 flex flex-col items-center justify-center p-6 transition-opacity duration-500",
-                        state.thinkingSteps.length > 0 ? "opacity-20" : "opacity-100"
-                      )}>
+                      <div className="flex-1 flex flex-col items-center justify-center p-6 transition-opacity duration-500">
                         <Loader2Icon size={40} className="text-primary animate-spin mb-4" />
                         <h3 className="text-lg font-medium mb-1">
                           {state.status === 'uploading' && 'Uploading Document...'}
@@ -272,13 +247,6 @@ const Index = () => {
                           {state.status === 'analyzing' && 'Extracting key information and insights'}
                         </p>
                       </div>
-                      
-                      {state.thinkingSteps.length > 0 && (
-                        <div className="absolute inset-x-0 bottom-0 p-6 glass rounded-t-2xl shadow-lg max-w-md mx-auto transition-all">
-                          <h3 className="text-sm font-medium mb-3">Analysis Progress</h3>
-                          <ThinkingProcess steps={state.thinkingSteps} />
-                        </div>
-                      )}
                     </div>
                   </ScrollArea>
                 )}
@@ -343,7 +311,7 @@ const Index = () => {
             </div>
           </ResizablePanel>
 
-          {!leftPanelCollapsed && !rightPanelExpanded && <ResizableHandle withHandle />}
+          <ResizableHandle withHandle />
           
           <ResizablePanel 
             defaultSize={50} 
@@ -351,7 +319,7 @@ const Index = () => {
             maxSize={80}
             className={cn(
               "transition-all duration-300",
-              rightPanelExpanded && "!w-[calc(100%-80px)] !min-w-[calc(100%-80px)] !max-w-[calc(100%-80px)]"
+              rightPanelExpanded && "!w-full !min-w-full !max-w-full"
             )}
           >
             <div className="h-full flex flex-col items-center justify-center">

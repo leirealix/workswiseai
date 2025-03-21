@@ -4,8 +4,8 @@ import {
   History, 
   User, 
   Settings, 
-  MessageSquare, 
-  Plus
+  MessageSquare,
+  ChevronLeft
 } from "lucide-react";
 import {
   Sidebar,
@@ -21,6 +21,7 @@ import {
   useSidebar
 } from "@/components/ui/sidebar";
 import { useState } from "react";
+import { Button } from "@/components/ui/button";
 
 type Conversation = {
   id: string;
@@ -42,36 +43,31 @@ const AppSidebar = ({ isHovered, onMouseLeave }: AppSidebarProps) => {
     { id: '3', title: 'Resume parsing', date: new Date(2023, 6, 5) },
   ]);
 
-  const handleNewChat = () => {
-    // Clear the current conversation and redirect to home
-    navigate('/');
-    // Logic for starting a new conversation would go here
-  };
-
   const handleSelectConversation = (id: string) => {
     // Logic to load the selected conversation would go here
     console.log(`Selected conversation: ${id}`);
   };
 
+  const handleCloseSidebar = () => {
+    onMouseLeave();
+  };
+
   return (
     <div className="h-full" onMouseLeave={onMouseLeave}>
       <Sidebar className="border-r border-border/30">
-        <SidebarHeader className="flex items-center p-4">
-          <h2 className="text-xl font-semibold text-primary">Document AI</h2>
+        <SidebarHeader className="flex items-center justify-between p-4">
+          <h2 className="text-xl font-semibold text-primary">AI Lawyer</h2>
+          <Button 
+            variant="ghost" 
+            size="icon" 
+            className="h-7 w-7 rounded-full hover:bg-primary/10" 
+            onClick={handleCloseSidebar}
+          >
+            <ChevronLeft size={18} className="text-primary" />
+            <span className="sr-only">Close sidebar</span>
+          </Button>
         </SidebarHeader>
         <SidebarContent>
-          <SidebarGroup>
-            <div className="px-4 mb-2">
-              <button 
-                onClick={handleNewChat} 
-                className="w-full flex items-center gap-2 bg-primary/10 hover:bg-primary/20 text-primary font-medium rounded-md px-3 py-2 transition-colors"
-              >
-                <Plus size={18} />
-                New Chat
-              </button>
-            </div>
-          </SidebarGroup>
-
           <SidebarGroup>
             <SidebarGroupLabel className="text-muted-foreground font-medium">Recent Conversations</SidebarGroupLabel>
             <SidebarGroupContent>

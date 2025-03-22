@@ -24,7 +24,7 @@ export default function AnalysisResult({ result }: AnalysisResultProps) {
         
         <div className="flex-1 overflow-hidden">
           <TabsContent value="summary" className="h-full mt-0 animate-fade-in">
-            <Card className="h-full border-0 rounded-none">
+            <Card className="h-full border-0 rounded-none shadow-none">
               <CardHeader>
                 <CardTitle className="flex items-center">
                   <ClipboardCheckIcon size={18} className="mr-2 text-primary" />
@@ -64,7 +64,7 @@ export default function AnalysisResult({ result }: AnalysisResultProps) {
           </TabsContent>
           
           <TabsContent value="parties" className="h-full mt-0 animate-fade-in">
-            <Card className="h-full border-0 rounded-none">
+            <Card className="h-full border-0 rounded-none shadow-none">
               <CardHeader>
                 <CardTitle className="flex items-center">
                   <UsersIcon size={18} className="mr-2 text-primary" />
@@ -109,7 +109,7 @@ export default function AnalysisResult({ result }: AnalysisResultProps) {
           </TabsContent>
           
           <TabsContent value="dates" className="h-full mt-0 animate-fade-in">
-            <Card className="h-full border-0 rounded-none">
+            <Card className="h-full border-0 rounded-none shadow-none">
               <CardHeader>
                 <CardTitle className="flex items-center">
                   <CalendarIcon size={18} className="mr-2 text-primary" />
@@ -160,7 +160,7 @@ export default function AnalysisResult({ result }: AnalysisResultProps) {
           </TabsContent>
           
           <TabsContent value="clauses" className="h-full mt-0 animate-fade-in">
-            <Card className="h-full border-0 rounded-none">
+            <Card className="h-full border-0 rounded-none shadow-none">
               <CardHeader>
                 <CardTitle className="flex items-center">
                   <FileTextIcon size={18} className="mr-2 text-primary" />
@@ -172,9 +172,9 @@ export default function AnalysisResult({ result }: AnalysisResultProps) {
               </CardHeader>
               <CardContent className="p-0">
                 <ScrollArea className="h-[calc(100vh-240px)]">
-                  <div className="p-4 space-y-6">
+                  <div className="p-4 space-y-4">
                     {result.clauses.map((clause) => (
-                      <div key={clause.id} className="border rounded-lg overflow-hidden">
+                      <div key={clause.id} className="border rounded-lg overflow-hidden shadow-sm">
                         <div className="bg-muted p-3 font-medium text-sm">
                           {clause.title}
                           <span className="ml-2 text-xs text-muted-foreground">

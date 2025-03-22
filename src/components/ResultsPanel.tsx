@@ -18,6 +18,9 @@ interface ResultsPanelProps {
   fileName: string;
 }
 
+// Define a type for the risk level
+type RiskLevel = 'Low' | 'Moderate' | 'High';
+
 export default function ResultsPanel({ result, fileName }: ResultsPanelProps) {
   const [openSection, setOpenSection] = useState<string | null>('summary');
   
@@ -42,7 +45,8 @@ export default function ResultsPanel({ result, fileName }: ResultsPanelProps) {
     });
   };
 
-  const riskLevel = 'Moderate';
+  // Now using the proper type for riskLevel
+  const riskLevel: RiskLevel = 'Moderate';
   const reviewedDocuments = 1;
   const highRiskClauses = result.clauses.filter(c => 
     c.title.toLowerCase().includes('termination') || 

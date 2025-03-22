@@ -234,16 +234,14 @@ export default function ResultsPanel({ result }: ResultsPanelProps) {
             <Collapsible defaultOpen={!summaryCardCollapsed} onOpenChange={(isOpen) => setSummaryCardCollapsed(!isOpen)}>
               <CardHeader className="pb-2">
                 <div className="flex items-center justify-between">
-                  <CollapsibleTrigger asChild>
-                    <Button variant="ghost" size="icon" className="ml-auto">
-                      {summaryCardCollapsed ? <MaximizeIcon size={16} /> : <MinimizeIcon size={16} />}
-                    </Button>
+                  <CardTitle className="text-xl flex items-center">
+                    <FileTextIcon size={20} className="mr-2 text-primary" />
+                    Document Analysis
+                  </CardTitle>
+                  <CollapsibleTrigger className="ml-auto">
+                    {summaryCardCollapsed ? <MaximizeIcon size={16} /> : <MinimizeIcon size={16} />}
                   </CollapsibleTrigger>
                 </div>
-                <CardTitle className="text-xl flex items-center">
-                  <FileTextIcon size={20} className="mr-2 text-primary" />
-                  Document Analysis
-                </CardTitle>
                 <CardDescription>
                   {result.summary.substring(0, 120)}...
                 </CardDescription>
@@ -294,14 +292,19 @@ export default function ResultsPanel({ result }: ResultsPanelProps) {
             </Collapsible>
           </Card>
 
-          {/* Comparative Analysis Card - NEW */}
+          {/* Comparative Analysis Card */}
           <Card className="border shadow-md overflow-hidden">
             <Collapsible defaultOpen>
               <CardHeader className="pb-2">
-                <CardTitle className="text-base flex items-center">
-                  <BarChart2Icon size={18} className="mr-2 text-primary" />
-                  Comparative Analysis
-                </CardTitle>
+                <div className="flex items-center justify-between">
+                  <CardTitle className="text-base flex items-center">
+                    <BarChart2Icon size={18} className="mr-2 text-primary" />
+                    Comparative Analysis
+                  </CardTitle>
+                  <CollapsibleTrigger className="ml-auto">
+                    <MinimizeIcon size={16} />
+                  </CollapsibleTrigger>
+                </div>
               </CardHeader>
               <CollapsibleContent>
                 <CardContent>
@@ -365,14 +368,19 @@ export default function ResultsPanel({ result }: ResultsPanelProps) {
             </Collapsible>
           </Card>
 
-          {/* Actionable Recommendations Card - NEW */}
+          {/* Actionable Recommendations Card */}
           <Card className="border shadow-md overflow-hidden">
             <Collapsible defaultOpen>
               <CardHeader className="pb-2">
-                <CardTitle className="text-base flex items-center">
-                  <LightbulbIcon size={18} className="mr-2 text-amber-500" />
-                  Actionable Recommendations
-                </CardTitle>
+                <div className="flex items-center justify-between">
+                  <CardTitle className="text-base flex items-center">
+                    <LightbulbIcon size={18} className="mr-2 text-amber-500" />
+                    Actionable Recommendations
+                  </CardTitle>
+                  <CollapsibleTrigger className="ml-auto">
+                    <MinimizeIcon size={16} />
+                  </CollapsibleTrigger>
+                </div>
               </CardHeader>
               <CollapsibleContent>
                 <CardContent>
@@ -436,18 +444,21 @@ export default function ResultsPanel({ result }: ResultsPanelProps) {
             </Collapsible>
           </Card>
           
-          {/* Detail Cards (Using Collapsible instead of Accordion for better control) */}
+          {/* Detail Cards */}
           <div className="space-y-4">
             {/* Summarized Findings */}
             <Card className="border shadow-md overflow-hidden">
               <Collapsible defaultOpen>
                 <CardHeader className="pb-2">
-                  <CollapsibleTrigger className="group flex w-full items-center justify-between">
+                  <div className="flex items-center justify-between">
                     <CardTitle className="text-base flex items-center">
                       <ClipboardCheckIcon size={18} className="mr-2 text-primary" />
                       Summarized Findings
                     </CardTitle>
-                  </CollapsibleTrigger>
+                    <CollapsibleTrigger className="ml-auto">
+                      <MinimizeIcon size={16} />
+                    </CollapsibleTrigger>
+                  </div>
                 </CardHeader>
                 <CollapsibleContent>
                   <CardContent>
@@ -479,12 +490,15 @@ export default function ResultsPanel({ result }: ResultsPanelProps) {
             <Card className="border shadow-md overflow-hidden">
               <Collapsible>
                 <CardHeader className="pb-2">
-                  <CollapsibleTrigger className="group flex w-full items-center justify-between">
+                  <div className="flex items-center justify-between">
                     <CardTitle className="text-base flex items-center">
                       <UsersIcon size={18} className="mr-2 text-primary" />
                       Parties Involved
                     </CardTitle>
-                  </CollapsibleTrigger>
+                    <CollapsibleTrigger className="ml-auto">
+                      <MinimizeIcon size={16} />
+                    </CollapsibleTrigger>
+                  </div>
                 </CardHeader>
                 <CollapsibleContent>
                   <CardContent>
@@ -535,12 +549,15 @@ export default function ResultsPanel({ result }: ResultsPanelProps) {
             <Card className="border shadow-md overflow-hidden">
               <Collapsible>
                 <CardHeader className="pb-2">
-                  <CollapsibleTrigger className="group flex w-full items-center justify-between">
+                  <div className="flex items-center justify-between">
                     <CardTitle className="text-base flex items-center">
                       <CalendarIcon size={18} className="mr-2 text-primary" />
                       Key Dates
                     </CardTitle>
-                  </CollapsibleTrigger>
+                    <CollapsibleTrigger className="ml-auto">
+                      <MinimizeIcon size={16} />
+                    </CollapsibleTrigger>
+                  </div>
                 </CardHeader>
                 <CollapsibleContent>
                   <CardContent>
@@ -597,12 +614,15 @@ export default function ResultsPanel({ result }: ResultsPanelProps) {
             <Card className="border shadow-md overflow-hidden">
               <Collapsible>
                 <CardHeader className="pb-2">
-                  <CollapsibleTrigger className="group flex w-full items-center justify-between">
+                  <div className="flex items-center justify-between">
                     <CardTitle className="text-base flex items-center">
                       <AlertTriangleIcon size={18} className="mr-2 text-amber-500" />
                       Risk Assessment
                     </CardTitle>
-                  </CollapsibleTrigger>
+                    <CollapsibleTrigger className="ml-auto">
+                      <MinimizeIcon size={16} />
+                    </CollapsibleTrigger>
+                  </div>
                 </CardHeader>
                 <CollapsibleContent>
                   <CardContent>

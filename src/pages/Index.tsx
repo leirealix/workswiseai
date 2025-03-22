@@ -7,6 +7,7 @@ import DocumentViewer from '@/components/DocumentViewer';
 import AnalysisResult from '@/components/AnalysisResult';
 import AnalysisProgress from '@/components/AnalysisProgress';
 import WelcomeAnimation from '@/components/WelcomeAnimation';
+import ResultsPanel from '@/components/ResultsPanel';
 import { useDocumentAnalysis } from '@/hooks/useDocumentAnalysis';
 import { Message } from '@/types';
 import { toast } from '@/hooks/use-toast';
@@ -379,9 +380,17 @@ const Index = () => {
                     </div>
                   )}
                   
-                  <div className="flex-1 w-full max-w-2xl mx-auto">
-                    <MessageList messages={messages} isWaiting={isWaitingForAI} />
-                  </div>
+                  {state.status === 'complete' && state.result && (
+                    <div className="w-full max-w-4xl mx-auto">
+                      <ResultsPanel result={state.result} fileName={state.file?.name || "Document"} />
+                    </div>
+                  )}
+                  
+                  {state.status !== 'complete' && (
+                    <div className="flex-1 w-full max-w-2xl mx-auto">
+                      <MessageList messages={messages} isWaiting={isWaitingForAI} />
+                    </div>
+                  )}
                   
                   {state.status === 'complete' && (
                     <div className="px-4 py-2 border-t flex items-center gap-2 bg-muted/20 w-full">

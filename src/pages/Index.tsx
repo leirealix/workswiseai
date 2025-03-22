@@ -1,4 +1,3 @@
-
 import { useState, useEffect, useRef } from 'react';
 import ChatInput from '@/components/ChatInput';
 import MessageList from '@/components/MessageList';
@@ -121,10 +120,6 @@ const Index = () => {
     });
   };
 
-  const toggleComparison = () => {
-    setShowComparison(!showComparison);
-  };
-
   const toggleLeftPanel = () => {
     setLeftPanelCollapsed(!leftPanelCollapsed);
     setRightPanelExpanded(leftPanelCollapsed ? false : true);
@@ -213,28 +208,6 @@ const Index = () => {
                 </div>
                 
                 <div className="flex items-center gap-2">
-                  {state.status === 'complete' && (
-                    <>
-                      <Button 
-                        variant="outline" 
-                        size="sm" 
-                        onClick={toggleComparison}
-                        className={cn("flex items-center gap-1", leftPanelCollapsed && "hidden")}
-                      >
-                        {showComparison ? "Exit Comparison" : "Compare Documents"}
-                      </Button>
-                      <Button 
-                        variant="outline" 
-                        size="sm" 
-                        onClick={resetAnalysis}
-                        className={cn("flex items-center gap-1", leftPanelCollapsed && "hidden")}
-                      >
-                        <RefreshCwIcon size={14} />
-                        <span>New Analysis</span>
-                      </Button>
-                    </>
-                  )}
-                  
                   <Button 
                     variant="ghost" 
                     size="icon"

@@ -336,31 +336,6 @@ export default function ResultsPanel({ result }: ResultsPanelProps) {
               </AccordionContent>
             </AccordionItem>
           </Accordion>
-          
-          {/* Call-to-Action Buttons */}
-          <Card className="border shadow-sm">
-            <CardHeader className="pb-2">
-              <CardTitle className="text-base">Next Steps</CardTitle>
-            </CardHeader>
-            <CardContent className="grid grid-cols-2 gap-2">
-              <Button variant="outline" className="w-full justify-start gap-2">
-                <DownloadIcon size={14} />
-                Export as PDF
-              </Button>
-              <Button variant="outline" className="w-full justify-start gap-2">
-                <MailIcon size={14} />
-                Send to Colleague
-              </Button>
-              <Button variant="outline" className="w-full justify-start gap-2">
-                <ExternalLinkIcon size={14} />
-                Open in iManage
-              </Button>
-              <Button variant="outline" className="w-full justify-start gap-2">
-                <EditIcon size={14} />
-                Revision Suggestions
-              </Button>
-            </CardContent>
-          </Card>
         </div>
       </ScrollArea>
     </div>

@@ -21,7 +21,8 @@ import {
   FlagIcon, 
   MailIcon, 
   SearchIcon, 
-  UsersIcon 
+  UsersIcon,
+  ChevronRightIcon
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -72,18 +73,25 @@ export default function ResultsPanel({ result }: ResultsPanelProps) {
     <div className="h-full flex flex-col">
       <ScrollArea className="flex-1">
         <div className="p-4 space-y-4">
-          {/* Summary Card */}
+          {/* Main Analysis Card */}
           <Card className="border shadow-sm">
             <CardHeader className="pb-2">
-              <CardTitle className="text-xl flex items-center">
-                <FileTextIcon size={20} className="mr-2 text-primary" />
-                Document Analysis Summary
-              </CardTitle>
+              <div className="flex items-center justify-between">
+                <CardTitle className="text-xl flex items-center">
+                  <FileTextIcon size={20} className="mr-2 text-primary" />
+                  Document Analysis
+                </CardTitle>
+                <Badge variant="outline" className={`${getRiskLevelStyle(riskLevel)}`}>
+                  {riskLevel} Risk
+                </Badge>
+              </div>
               <CardDescription>
-                {result.summary.substring(0, 120)}...
+                {result.summary.substring(0, 100)}...
               </CardDescription>
             </CardHeader>
-            <CardContent className="pb-2">
+            
+            <CardContent className="pb-0">
+              {/* Stats Overview */}
               <div className="grid grid-cols-3 gap-4 mb-4">
                 <div className="flex flex-col items-center justify-center p-3 bg-muted/30 rounded-lg">
                   <FileTextIcon size={18} className="mb-1 text-primary" />
@@ -101,265 +109,218 @@ export default function ResultsPanel({ result }: ResultsPanelProps) {
                   <div className="font-semibold">{suggestedRevisions}</div>
                 </div>
               </div>
-              <div className="flex items-center gap-2 mb-2">
-                <FlagIcon size={16} className={`${riskLevel === 'High' ? 'text-red-500' : riskLevel === 'Moderate' ? 'text-amber-500' : 'text-green-500'}`} />
-                <span className="text-sm font-medium">Overall Risk Level:</span>
-                <Badge variant="outline" className={`${getRiskLevelStyle(riskLevel)}`}>
-                  {riskLevel}
-                </Badge>
-              </div>
-            </CardContent>
-            <CardFooter className="flex justify-between pt-2">
-              <Button variant="outline" size="sm" className="gap-1">
-                <DownloadIcon size={14} />
-                Export
-              </Button>
-              <Button variant="outline" size="sm" className="gap-1">
-                <MailIcon size={14} />
-                Share
-              </Button>
-              <Button variant="default" size="sm" className="gap-1">
-                <ArrowRightIcon size={14} />
-                Detailed Results
-              </Button>
-            </CardFooter>
-          </Card>
-
-          {/* Detail Cards (Accordion) */}
-          <Accordion type="single" collapsible className="w-full">
-            {/* Summarized Findings */}
-            <AccordionItem value="findings">
-              <AccordionTrigger className="py-3 text-base">
-                <div className="flex items-center">
-                  <ClipboardCheckIcon size={18} className="mr-2 text-primary" />
-                  Summarized Findings
-                </div>
-              </AccordionTrigger>
-              <AccordionContent>
-                <div className="space-y-3 pt-2">
-                  <p className="text-sm">{result.summary}</p>
-                  
-                  <div className="mt-4">
-                    <h4 className="text-sm font-medium mb-2">Key Document Points:</h4>
-                    <ul className="text-sm space-y-2">
-                      <li className="flex items-start gap-2">
-                        <CheckIcon size={14} className="mt-1 text-green-500 flex-shrink-0" />
-                        <span>This is a non-exclusive licensing agreement between two parties.</span>
+              
+              {/* Analysis Sections (Accordion) */}
+              <Accordion type="single" collapsible className="w-full">
+                {/* Summarized Findings */}
+                <AccordionItem value="findings" className="border rounded-md px-0 mb-2">
+                  <AccordionTrigger className="py-2.5 px-3 text-sm font-medium hover:no-underline hover:bg-muted/20 rounded-md">
+                    <div className="flex items-center">
+                      <ClipboardCheckIcon size={16} className="mr-2 text-primary" />
+                      Summarized Findings
+                    </div>
+                  </AccordionTrigger>
+                  <AccordionContent className="px-3 pb-3">
+                    <p className="text-sm">{result.summary}</p>
+                    
+                    <div className="mt-3">
+                      <h4 className="text-sm font-medium mb-2">Key Document Points:</h4>
+                      <ul className="text-sm space-y-1.5">
+                        <li className="flex items-start gap-2">
+                          <CheckIcon size={14} className="mt-1 text-green-500 flex-shrink-0" />
+                          <span>This is a non-exclusive licensing agreement between two parties.</span>
+                        </li>
+                        <li className="flex items-start gap-2">
+                          <CheckIcon size={14} className="mt-1 text-green-500 flex-shrink-0" />
+                          <span>Agreement is effective for 2 years with automatic renewal provisions.</span>
+                        </li>
+                        <li className="flex items-start gap-2">
+                          <CheckIcon size={14} className="mt-1 text-green-500 flex-shrink-0" />
+                          <span>Standard confidentiality, non-compete, and termination clauses included.</span>
+                        </li>
+                      </ul>
+                    </div>
+                  </AccordionContent>
+                </AccordionItem>
+                
+                {/* Key Data Extraction */}
+                <AccordionItem value="data" className="border rounded-md px-0 mb-2">
+                  <AccordionTrigger className="py-2.5 px-3 text-sm font-medium hover:no-underline hover:bg-muted/20 rounded-md">
+                    <div className="flex items-center">
+                      <SearchIcon size={16} className="mr-2 text-primary" />
+                      Key Data Extraction
+                    </div>
+                  </AccordionTrigger>
+                  <AccordionContent className="px-3 pb-3">
+                    <div className="space-y-3">
+                      <div className="space-y-1.5">
+                        <h4 className="text-xs font-medium uppercase text-muted-foreground">Parties</h4>
+                        <ul className="space-y-1.5">
+                          {result.parties.map((party, index) => (
+                            <li key={index} className="text-sm flex items-center">
+                              <Badge variant="outline" className="mr-2">{index === 0 ? 'First Party' : 'Second Party'}</Badge>
+                              {party}
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                      
+                      <div className="space-y-1.5">
+                        <h4 className="text-xs font-medium uppercase text-muted-foreground">Key Dates</h4>
+                        <ul className="space-y-1.5">
+                          {result.keyDates.map((date, index) => (
+                            <li key={index} className="text-sm flex items-center justify-between">
+                              <span>{date.description}:</span>
+                              <span className="font-medium">
+                                {new Date(date.date).toLocaleDateString('en-US', {
+                                  year: 'numeric',
+                                  month: 'long',
+                                  day: 'numeric',
+                                })}
+                              </span>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    </div>
+                  </AccordionContent>
+                </AccordionItem>
+                
+                {/* Risk Identification */}
+                <AccordionItem value="risks" className="border rounded-md px-0 mb-2">
+                  <AccordionTrigger className="py-2.5 px-3 text-sm font-medium hover:no-underline hover:bg-muted/20 rounded-md">
+                    <div className="flex items-center">
+                      <AlertTriangleIcon size={16} className="mr-2 text-amber-500" />
+                      Risk Identification
+                    </div>
+                  </AccordionTrigger>
+                  <AccordionContent className="px-3 pb-3">
+                    <div className="space-y-2">
+                      {result.clauses.map((clause, index) => (
+                        <Collapsible key={index} className="border rounded-md overflow-hidden">
+                          <CollapsibleTrigger className="flex items-start justify-between w-full px-3 py-2 text-left hover:bg-muted/20">
+                            <div className="flex items-start gap-2">
+                              <FlagIcon 
+                                size={14} 
+                                className={`mt-0.5 ${index === 0 ? 'text-red-500' : index === 1 ? 'text-amber-500' : 'text-green-500'}`} 
+                              />
+                              <div>
+                                <h4 className="text-sm font-medium">{clause.title}</h4>
+                                <p className="text-xs text-muted-foreground">Page {clause.page}</p>
+                              </div>
+                            </div>
+                            <Badge 
+                              variant="outline" 
+                              className={`${index === 0 ? 'text-red-500 bg-red-50' : index === 1 ? 'text-amber-500 bg-amber-50' : 'text-green-500 bg-green-50'}`}
+                            >
+                              {index === 0 ? 'High Risk' : index === 1 ? 'Moderate' : 'Low Risk'}
+                            </Badge>
+                            <ChevronRightIcon size={16} className="ml-2 text-muted-foreground transition-transform duration-200 group-data-[state=open]:rotate-90" />
+                          </CollapsibleTrigger>
+                          <CollapsibleContent className="px-3 py-2 border-t bg-muted/5">
+                            <p className="text-sm">{clause.content}</p>
+                            <div className="flex justify-end mt-2">
+                              <Button variant="ghost" size="sm" className="text-xs">View in Document</Button>
+                            </div>
+                          </CollapsibleContent>
+                        </Collapsible>
+                      ))}
+                    </div>
+                  </AccordionContent>
+                </AccordionItem>
+                
+                {/* Comparative Analysis */}
+                <AccordionItem value="comparative" className="border rounded-md px-0 mb-2">
+                  <AccordionTrigger className="py-2.5 px-3 text-sm font-medium hover:no-underline hover:bg-muted/20 rounded-md">
+                    <div className="flex items-center">
+                      <FileTextIcon size={16} className="mr-2 text-primary" />
+                      Comparative Analysis
+                    </div>
+                  </AccordionTrigger>
+                  <AccordionContent className="px-3 pb-3">
+                    <p className="text-sm mb-2">Comparison with standard templates shows the following deviations:</p>
+                    <ul className="space-y-2">
+                      <li className="text-sm flex items-start gap-2 px-3 py-2 rounded-md bg-red-50">
+                        <AlertTriangleIcon size={14} className="mt-1 text-red-500 flex-shrink-0" />
+                        <div>
+                          <div className="font-medium">Termination Clause</div>
+                          <p className="text-xs text-muted-foreground">Missing standard 30-day cure period for non-material breaches.</p>
+                        </div>
                       </li>
-                      <li className="flex items-start gap-2">
-                        <CheckIcon size={14} className="mt-1 text-green-500 flex-shrink-0" />
-                        <span>Agreement is effective for 2 years with automatic renewal provisions.</span>
-                      </li>
-                      <li className="flex items-start gap-2">
-                        <CheckIcon size={14} className="mt-1 text-green-500 flex-shrink-0" />
-                        <span>Standard confidentiality, non-compete, and termination clauses included.</span>
+                      <li className="text-sm flex items-start gap-2 px-3 py-2 rounded-md bg-amber-50">
+                        <AlertTriangleIcon size={14} className="mt-1 text-amber-500 flex-shrink-0" />
+                        <div>
+                          <div className="font-medium">Confidentiality</div>
+                          <p className="text-xs text-muted-foreground">Extended period (5 years) exceeds company standard (3 years).</p>
+                        </div>
                       </li>
                     </ul>
-                  </div>
-                  
-                  <div className="flex justify-end mt-4">
-                    <Button variant="outline" size="sm">View Full Analysis</Button>
-                  </div>
-                </div>
-              </AccordionContent>
-            </AccordionItem>
-            
-            {/* Key Data Extraction */}
-            <AccordionItem value="data">
-              <AccordionTrigger className="py-3 text-base">
-                <div className="flex items-center">
-                  <SearchIcon size={18} className="mr-2 text-primary" />
-                  Key Data Extraction
-                </div>
-              </AccordionTrigger>
-              <AccordionContent>
-                <div className="space-y-4 pt-2">
-                  {/* Parties */}
-                  <Collapsible className="w-full border rounded-md">
-                    <CollapsibleTrigger className="flex justify-between items-center w-full p-3 text-sm font-medium">
-                      <div className="flex items-center">
-                        <UsersIcon size={16} className="mr-2 text-primary" />
-                        Parties
-                      </div>
-                    </CollapsibleTrigger>
-                    <CollapsibleContent className="p-3 pt-0 border-t">
-                      <ul className="space-y-2">
-                        {result.parties.map((party, index) => (
-                          <li key={index} className="text-sm flex items-center">
-                            <Badge variant="outline" className="mr-2">{index === 0 ? 'First Party' : 'Second Party'}</Badge>
-                            {party}
-                          </li>
-                        ))}
-                      </ul>
-                    </CollapsibleContent>
-                  </Collapsible>
-                  
-                  {/* Key Dates */}
-                  <Collapsible className="w-full border rounded-md">
-                    <CollapsibleTrigger className="flex justify-between items-center w-full p-3 text-sm font-medium">
-                      <div className="flex items-center">
-                        <CalendarIcon size={16} className="mr-2 text-primary" />
-                        Key Dates
-                      </div>
-                    </CollapsibleTrigger>
-                    <CollapsibleContent className="p-3 pt-0 border-t">
-                      <ul className="space-y-2">
-                        {result.keyDates.map((date, index) => (
-                          <li key={index} className="text-sm flex items-center justify-between">
-                            <span>{date.description}:</span>
-                            <span className="font-medium">
-                              {new Date(date.date).toLocaleDateString('en-US', {
-                                year: 'numeric',
-                                month: 'long',
-                                day: 'numeric',
-                              })}
-                            </span>
-                          </li>
-                        ))}
-                      </ul>
-                    </CollapsibleContent>
-                  </Collapsible>
-                </div>
-              </AccordionContent>
-            </AccordionItem>
-            
-            {/* Risk Identification */}
-            <AccordionItem value="risks">
-              <AccordionTrigger className="py-3 text-base">
-                <div className="flex items-center">
-                  <AlertTriangleIcon size={18} className="mr-2 text-amber-500" />
-                  Risk Identification
-                </div>
-              </AccordionTrigger>
-              <AccordionContent>
-                <div className="space-y-3 pt-2">
-                  {result.clauses.map((clause, index) => (
-                    <div key={index} className="border rounded-md p-3">
-                      <div className="flex items-start justify-between">
+                  </AccordionContent>
+                </AccordionItem>
+                
+                {/* Actionable Recommendations */}
+                <AccordionItem value="recommendations" className="border rounded-md px-0 mb-2">
+                  <AccordionTrigger className="py-2.5 px-3 text-sm font-medium hover:no-underline hover:bg-muted/20 rounded-md">
+                    <div className="flex items-center">
+                      <CheckIcon size={16} className="mr-2 text-primary" />
+                      Actionable Recommendations
+                    </div>
+                  </AccordionTrigger>
+                  <AccordionContent className="px-3 pb-3">
+                    <div className="space-y-2">
+                      <div className="border rounded-md p-3 bg-muted/5">
                         <div className="flex items-start gap-2">
-                          <FlagIcon 
-                            size={16} 
-                            className={index === 0 ? 'text-red-500' : index === 1 ? 'text-amber-500' : 'text-green-500'} 
-                          />
-                          <div>
-                            <h4 className="text-sm font-medium">{clause.title}</h4>
-                            <p className="text-xs text-muted-foreground">Page {clause.page}</p>
+                          <div className="mt-0.5 h-5 w-5 rounded-full bg-red-100 flex items-center justify-center flex-shrink-0">
+                            <span className="text-xs font-medium text-red-500">1</span>
+                          </div>
+                          <div className="flex-1">
+                            <h4 className="text-sm font-medium">Add cure period to termination clause</h4>
+                            <p className="text-xs text-muted-foreground mt-1">Add standard 30-day cure period for non-material breaches to align with company policy.</p>
                           </div>
                         </div>
-                        <Badge 
-                          variant="outline" 
-                          className={index === 0 ? 'text-red-500 bg-red-50' : index === 1 ? 'text-amber-500 bg-amber-50' : 'text-green-500 bg-green-50'}
-                        >
-                          {index === 0 ? 'High Risk' : index === 1 ? 'Moderate' : 'Low Risk'}
-                        </Badge>
+                        <div className="flex justify-end mt-2 gap-2">
+                          <Button variant="outline" size="sm" className="h-7 text-xs">Dismiss</Button>
+                          <Button variant="default" size="sm" className="h-7 text-xs">Accept</Button>
+                        </div>
                       </div>
-                      <p className="text-sm mt-2">{clause.content.substring(0, 100)}...</p>
-                      <div className="flex justify-end mt-2">
-                        <Button variant="ghost" size="sm">View Details</Button>
+                      
+                      <div className="border rounded-md p-3 bg-muted/5">
+                        <div className="flex items-start gap-2">
+                          <div className="mt-0.5 h-5 w-5 rounded-full bg-amber-100 flex items-center justify-center flex-shrink-0">
+                            <span className="text-xs font-medium text-amber-500">2</span>
+                          </div>
+                          <div className="flex-1">
+                            <h4 className="text-sm font-medium">Adjust confidentiality period</h4>
+                            <p className="text-xs text-muted-foreground mt-1">Reduce confidentiality period from 5 years to 3 years to align with company standard.</p>
+                          </div>
+                        </div>
+                        <div className="flex justify-end mt-2 gap-2">
+                          <Button variant="outline" size="sm" className="h-7 text-xs">Dismiss</Button>
+                          <Button variant="default" size="sm" className="h-7 text-xs">Accept</Button>
+                        </div>
                       </div>
                     </div>
-                  ))}
-                </div>
-              </AccordionContent>
-            </AccordionItem>
+                  </AccordionContent>
+                </AccordionItem>
+              </Accordion>
+            </CardContent>
             
-            {/* Comparative Analysis */}
-            <AccordionItem value="comparative">
-              <AccordionTrigger className="py-3 text-base">
-                <div className="flex items-center">
-                  <FileTextIcon size={18} className="mr-2 text-primary" />
-                  Comparative Analysis
-                </div>
-              </AccordionTrigger>
-              <AccordionContent>
-                <div className="space-y-3 pt-2">
-                  <p className="text-sm">Comparison with standard templates shows the following deviations:</p>
-                  <ul className="space-y-2">
-                    <li className="text-sm flex items-start gap-2">
-                      <AlertTriangleIcon size={14} className="mt-1 text-red-500 flex-shrink-0" />
-                      <span><span className="font-medium">Termination Clause:</span> Missing standard 30-day cure period for non-material breaches.</span>
-                    </li>
-                    <li className="text-sm flex items-start gap-2">
-                      <AlertTriangleIcon size={14} className="mt-1 text-amber-500 flex-shrink-0" />
-                      <span><span className="font-medium">Confidentiality:</span> Extended period (5 years) exceeds company standard (3 years).</span>
-                    </li>
-                  </ul>
-                  <div className="flex justify-end mt-4">
-                    <Button variant="outline" size="sm">View Full Comparison</Button>
-                  </div>
-                </div>
-              </AccordionContent>
-            </AccordionItem>
-            
-            {/* Actionable Recommendations */}
-            <AccordionItem value="recommendations">
-              <AccordionTrigger className="py-3 text-base">
-                <div className="flex items-center">
-                  <CheckIcon size={18} className="mr-2 text-primary" />
-                  Actionable Recommendations
-                </div>
-              </AccordionTrigger>
-              <AccordionContent>
-                <div className="space-y-3 pt-2">
-                  <div className="border rounded-md p-3">
-                    <div className="flex items-start gap-2">
-                      <div className="mt-1 h-5 w-5 rounded-full bg-red-100 flex items-center justify-center flex-shrink-0">
-                        <span className="text-xs font-medium text-red-500">1</span>
-                      </div>
-                      <div>
-                        <h4 className="text-sm font-medium">Add cure period to termination clause</h4>
-                        <p className="text-xs text-muted-foreground mt-1">Add standard 30-day cure period for non-material breaches to align with company policy.</p>
-                      </div>
-                    </div>
-                    <div className="flex justify-end mt-2 gap-2">
-                      <Button variant="outline" size="sm" className="h-7">Dismiss</Button>
-                      <Button variant="default" size="sm" className="h-7">Accept</Button>
-                    </div>
-                  </div>
-                  
-                  <div className="border rounded-md p-3">
-                    <div className="flex items-start gap-2">
-                      <div className="mt-1 h-5 w-5 rounded-full bg-amber-100 flex items-center justify-center flex-shrink-0">
-                        <span className="text-xs font-medium text-amber-500">2</span>
-                      </div>
-                      <div>
-                        <h4 className="text-sm font-medium">Adjust confidentiality period</h4>
-                        <p className="text-xs text-muted-foreground mt-1">Reduce confidentiality period from 5 years to 3 years to align with company standard.</p>
-                      </div>
-                    </div>
-                    <div className="flex justify-end mt-2 gap-2">
-                      <Button variant="outline" size="sm" className="h-7">Dismiss</Button>
-                      <Button variant="default" size="sm" className="h-7">Accept</Button>
-                    </div>
-                  </div>
-                </div>
-              </AccordionContent>
-            </AccordionItem>
-          </Accordion>
-          
-          {/* Call-to-Action Buttons */}
-          <Card className="border shadow-sm">
-            <CardHeader className="pb-2">
-              <CardTitle className="text-base">Next Steps</CardTitle>
-            </CardHeader>
-            <CardContent className="grid grid-cols-2 gap-2">
-              <Button variant="outline" className="w-full justify-start gap-2">
-                <DownloadIcon size={14} />
-                Export as PDF
-              </Button>
-              <Button variant="outline" className="w-full justify-start gap-2">
-                <MailIcon size={14} />
-                Send to Colleague
-              </Button>
-              <Button variant="outline" className="w-full justify-start gap-2">
-                <ExternalLinkIcon size={14} />
-                Open in iManage
-              </Button>
-              <Button variant="outline" className="w-full justify-start gap-2">
+            <CardFooter className="flex justify-between pt-4 pb-4 border-t mt-4">
+              <div className="flex gap-2">
+                <Button variant="outline" size="sm" className="gap-1">
+                  <DownloadIcon size={14} />
+                  Export
+                </Button>
+                <Button variant="outline" size="sm" className="gap-1">
+                  <MailIcon size={14} />
+                  Share
+                </Button>
+              </div>
+              <Button variant="default" size="sm" className="gap-1">
                 <EditIcon size={14} />
                 Revision Suggestions
               </Button>
-            </CardContent>
+            </CardFooter>
           </Card>
         </div>
       </ScrollArea>

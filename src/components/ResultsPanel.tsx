@@ -234,11 +234,11 @@ export default function ResultsPanel({ result }: ResultsPanelProps) {
             <Collapsible defaultOpen={!summaryCardCollapsed} onOpenChange={(isOpen) => setSummaryCardCollapsed(!isOpen)}>
               <CardHeader className="pb-2">
                 <div className="flex items-center justify-between">
-                  <CardTitle className="text-xl flex items-center">
-                    <FileTextIcon size={20} className="mr-2 text-primary" />
+                  <CardTitle className="text-xl flex items-center whitespace-nowrap overflow-hidden text-ellipsis">
+                    <FileTextIcon size={20} className="mr-2 text-primary flex-shrink-0" />
                     Document Analysis
                   </CardTitle>
-                  <CollapsibleTrigger className="ml-auto">
+                  <CollapsibleTrigger>
                     {summaryCardCollapsed ? <MaximizeIcon size={16} /> : <MinimizeIcon size={16} />}
                   </CollapsibleTrigger>
                 </div>
@@ -292,16 +292,257 @@ export default function ResultsPanel({ result }: ResultsPanelProps) {
             </Collapsible>
           </Card>
 
-          {/* Comparative Analysis Card */}
+          {/* Summarized Findings */}
           <Card className="border shadow-md overflow-hidden">
             <Collapsible defaultOpen>
               <CardHeader className="pb-2">
                 <div className="flex items-center justify-between">
-                  <CardTitle className="text-base flex items-center">
-                    <BarChart2Icon size={18} className="mr-2 text-primary" />
+                  <CardTitle className="text-base flex items-center whitespace-nowrap overflow-hidden text-ellipsis">
+                    <ClipboardCheckIcon size={18} className="mr-2 text-primary flex-shrink-0" />
+                    Summarized Findings
+                  </CardTitle>
+                  <CollapsibleTrigger>
+                    <MinimizeIcon size={16} />
+                  </CollapsibleTrigger>
+                </div>
+              </CardHeader>
+              <CollapsibleContent>
+                <CardContent>
+                  <p className="text-sm">{result.summary}</p>
+                  
+                  <div className="mt-4">
+                    <h4 className="text-sm font-medium mb-2">Key Document Points:</h4>
+                    <ul className="text-sm space-y-2">
+                      <li className="flex items-start gap-2">
+                        <CheckIcon size={14} className="mt-1 text-green-500 flex-shrink-0" />
+                        <span>This is a non-exclusive licensing agreement between two parties.</span>
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <CheckIcon size={14} className="mt-1 text-green-500 flex-shrink-0" />
+                        <span>Agreement is effective for 2 years with automatic renewal provisions.</span>
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <CheckIcon size={14} className="mt-1 text-green-500 flex-shrink-0" />
+                        <span>Standard confidentiality, non-compete, and termination clauses included.</span>
+                      </li>
+                    </ul>
+                  </div>
+                </CardContent>
+                <CardFooter className="flex justify-between pt-0">
+                  <Button 
+                    variant="ghost" 
+                    size="sm" 
+                    className="gap-1 hover:bg-primary/10"
+                    onClick={() => toggleDetailedView('findings')}
+                  >
+                    <SearchIcon size={14} />
+                    View Details
+                  </Button>
+                </CardFooter>
+              </CollapsibleContent>
+            </Collapsible>
+          </Card>
+          
+          {/* Parties Information */}
+          <Card className="border shadow-md overflow-hidden">
+            <Collapsible>
+              <CardHeader className="pb-2">
+                <div className="flex items-center justify-between">
+                  <CardTitle className="text-base flex items-center whitespace-nowrap overflow-hidden text-ellipsis">
+                    <UsersIcon size={18} className="mr-2 text-primary flex-shrink-0" />
+                    Parties Involved
+                  </CardTitle>
+                  <CollapsibleTrigger>
+                    <MinimizeIcon size={16} />
+                  </CollapsibleTrigger>
+                </div>
+              </CardHeader>
+              <CollapsibleContent>
+                <CardContent>
+                  <div className="space-y-3">
+                    {result.parties.map((party, index) => (
+                      <div key={index} className="bg-muted/30 rounded-lg p-3">
+                        <div className="font-medium">{party}</div>
+                        <div className="text-sm text-muted-foreground mt-1">
+                          {index === 0 ? 'First Party' : 'Second Party'}
+                        </div>
+                      </div>
+                    ))}
+                  
+                    <div className="mt-4">
+                      <h4 className="text-sm font-medium mb-3">Signatories</h4>
+                      <div className="space-y-3">
+                        {result.signatures.map((signature, index) => (
+                          <div key={index} className="flex items-center border rounded-lg p-3">
+                            <div className="w-8 h-8 rounded-full bg-primary/10 text-primary flex items-center justify-center mr-3">
+                              {signature.name.charAt(0)}
+                            </div>
+                            <div>
+                              <div className="font-medium">{signature.name}</div>
+                              <div className="text-xs text-muted-foreground">{signature.role}</div>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                </CardContent>
+                <CardFooter className="flex justify-end pt-0">
+                  <Button 
+                    variant="ghost" 
+                    size="sm" 
+                    className="gap-1 hover:bg-primary/10"
+                    onClick={() => toggleDetailedView('parties')}
+                  >
+                    <SearchIcon size={14} />
+                    View Details
+                  </Button>
+                </CardFooter>
+              </CollapsibleContent>
+            </Collapsible>
+          </Card>
+          
+          {/* Key Dates */}
+          <Card className="border shadow-md overflow-hidden">
+            <Collapsible>
+              <CardHeader className="pb-2">
+                <div className="flex items-center justify-between">
+                  <CardTitle className="text-base flex items-center whitespace-nowrap overflow-hidden text-ellipsis">
+                    <CalendarIcon size={18} className="mr-2 text-primary flex-shrink-0" />
+                    Key Dates
+                  </CardTitle>
+                  <CollapsibleTrigger>
+                    <MinimizeIcon size={16} />
+                  </CollapsibleTrigger>
+                </div>
+              </CardHeader>
+              <CollapsibleContent>
+                <CardContent>
+                  <div className="space-y-3">
+                    {result.keyDates.map((date, index) => (
+                      <div key={index} className="flex items-center justify-between border-b pb-3 last:border-0">
+                        <div>
+                          <div className="font-medium">{date.description}</div>
+                          <div className="text-xs text-muted-foreground mt-1">
+                            {new Date(date.date).toLocaleDateString('en-US', {
+                              year: 'numeric',
+                              month: 'long',
+                              day: 'numeric',
+                            })}
+                          </div>
+                        </div>
+                        <div className="bg-primary/10 text-primary text-xs font-medium px-2 py-1 rounded-full">
+                          {(() => {
+                            const dateObj = new Date(date.date);
+                            const now = new Date();
+                            if (dateObj > now) {
+                              return 'Upcoming';
+                            } else if (
+                              dateObj.getDate() === now.getDate() &&
+                              dateObj.getMonth() === now.getMonth() &&
+                              dateObj.getFullYear() === now.getFullYear()
+                            ) {
+                              return 'Today';
+                            } else {
+                              return 'Past';
+                            }
+                          })()}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </CardContent>
+                <CardFooter className="flex justify-end pt-0">
+                  <Button 
+                    variant="ghost" 
+                    size="sm" 
+                    className="gap-1 hover:bg-primary/10"
+                    onClick={() => toggleDetailedView('dates')}
+                  >
+                    <SearchIcon size={14} />
+                    View Details
+                  </Button>
+                </CardFooter>
+              </CollapsibleContent>
+            </Collapsible>
+          </Card>
+          
+          {/* Risk Identification */}
+          <Card className="border shadow-md overflow-hidden">
+            <Collapsible>
+              <CardHeader className="pb-2">
+                <div className="flex items-center justify-between">
+                  <CardTitle className="text-base flex items-center whitespace-nowrap overflow-hidden text-ellipsis">
+                    <AlertTriangleIcon size={18} className="mr-2 text-amber-500 flex-shrink-0" />
+                    Risk Assessment
+                  </CardTitle>
+                  <CollapsibleTrigger>
+                    <MinimizeIcon size={16} />
+                  </CollapsibleTrigger>
+                </div>
+              </CardHeader>
+              <CollapsibleContent>
+                <CardContent>
+                  <div className="space-y-3">
+                    {result.clauses.map((clause, index) => (
+                      <div key={index} className="border rounded-md p-3">
+                        <div className="flex items-start justify-between">
+                          <div className="flex items-start gap-2">
+                            <FlagIcon 
+                              size={16} 
+                              className={index === 0 ? 'text-red-500' : index === 1 ? 'text-amber-500' : 'text-green-500'} 
+                            />
+                            <div>
+                              <h4 className="text-sm font-medium">{clause.title}</h4>
+                              <p className="text-xs text-muted-foreground">Page {clause.page}</p>
+                            </div>
+                          </div>
+                          <Badge 
+                            variant="outline" 
+                            className={index === 0 ? 'text-red-500 bg-red-50' : index === 1 ? 'text-amber-500 bg-amber-50' : 'text-green-500 bg-green-50'}
+                          >
+                            {index === 0 ? 'High Risk' : index === 1 ? 'Moderate' : 'Low Risk'}
+                          </Badge>
+                        </div>
+                        <p className="text-sm mt-2">{clause.content.substring(0, 100)}...</p>
+                        <div className="flex justify-end mt-2">
+                          <Button 
+                            variant="ghost" 
+                            size="sm"
+                            onClick={() => toggleDetailedView(`clause-${index}`)}
+                          >
+                            View Details
+                          </Button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </CardContent>
+                <CardFooter className="flex justify-end pt-0">
+                  <Button 
+                    variant="ghost" 
+                    size="sm" 
+                    className="gap-1 hover:bg-primary/10"
+                    onClick={() => toggleDetailedView('risks')}
+                  >
+                    <SearchIcon size={14} />
+                    View All Risks
+                  </Button>
+                </CardFooter>
+              </CollapsibleContent>
+            </Collapsible>
+          </Card>
+
+          {/* Comparative Analysis Card - Moved below Risk Assessment */}
+          <Card className="border shadow-md overflow-hidden">
+            <Collapsible defaultOpen>
+              <CardHeader className="pb-2">
+                <div className="flex items-center justify-between">
+                  <CardTitle className="text-base flex items-center whitespace-nowrap overflow-hidden text-ellipsis">
+                    <BarChart2Icon size={18} className="mr-2 text-primary flex-shrink-0" />
                     Comparative Analysis
                   </CardTitle>
-                  <CollapsibleTrigger className="ml-auto">
+                  <CollapsibleTrigger>
                     <MinimizeIcon size={16} />
                   </CollapsibleTrigger>
                 </div>
@@ -349,7 +590,7 @@ export default function ResultsPanel({ result }: ResultsPanelProps) {
                     </div>
                   </div>
                 </CardContent>
-                <CardFooter className="flex justify-between pt-0">
+                <CardFooter className="flex justify-end pt-0">
                   <Button 
                     variant="ghost" 
                     size="sm" 
@@ -359,25 +600,21 @@ export default function ResultsPanel({ result }: ResultsPanelProps) {
                     <SearchIcon size={14} />
                     View Details
                   </Button>
-                  <Button variant="default" size="sm" className="gap-1">
-                    <ArrowRightIcon size={14} />
-                    Run Comparison
-                  </Button>
                 </CardFooter>
               </CollapsibleContent>
             </Collapsible>
           </Card>
 
-          {/* Actionable Recommendations Card */}
+          {/* Actionable Recommendations Card - Moved below Comparative Analysis */}
           <Card className="border shadow-md overflow-hidden">
             <Collapsible defaultOpen>
               <CardHeader className="pb-2">
                 <div className="flex items-center justify-between">
-                  <CardTitle className="text-base flex items-center">
-                    <LightbulbIcon size={18} className="mr-2 text-amber-500" />
+                  <CardTitle className="text-base flex items-center whitespace-nowrap overflow-hidden text-ellipsis">
+                    <LightbulbIcon size={18} className="mr-2 text-amber-500 flex-shrink-0" />
                     Actionable Recommendations
                   </CardTitle>
-                  <CollapsibleTrigger className="ml-auto">
+                  <CollapsibleTrigger>
                     <MinimizeIcon size={16} />
                   </CollapsibleTrigger>
                 </div>
@@ -425,7 +662,7 @@ export default function ResultsPanel({ result }: ResultsPanelProps) {
                     </div>
                   </div>
                 </CardContent>
-                <CardFooter className="flex justify-between pt-0">
+                <CardFooter className="flex justify-end pt-0">
                   <Button 
                     variant="ghost" 
                     size="sm" 
@@ -435,247 +672,10 @@ export default function ResultsPanel({ result }: ResultsPanelProps) {
                     <SearchIcon size={14} />
                     View All
                   </Button>
-                  <Button variant="default" size="sm" className="gap-1">
-                    <ArrowRightIcon size={14} />
-                    Implement All
-                  </Button>
                 </CardFooter>
               </CollapsibleContent>
             </Collapsible>
           </Card>
-          
-          {/* Detail Cards */}
-          <div className="space-y-4">
-            {/* Summarized Findings */}
-            <Card className="border shadow-md overflow-hidden">
-              <Collapsible defaultOpen>
-                <CardHeader className="pb-2">
-                  <div className="flex items-center justify-between">
-                    <CardTitle className="text-base flex items-center">
-                      <ClipboardCheckIcon size={18} className="mr-2 text-primary" />
-                      Summarized Findings
-                    </CardTitle>
-                    <CollapsibleTrigger className="ml-auto">
-                      <MinimizeIcon size={16} />
-                    </CollapsibleTrigger>
-                  </div>
-                </CardHeader>
-                <CollapsibleContent>
-                  <CardContent>
-                    <p className="text-sm">{result.summary}</p>
-                    
-                    <div className="mt-4">
-                      <h4 className="text-sm font-medium mb-2">Key Document Points:</h4>
-                      <ul className="text-sm space-y-2">
-                        <li className="flex items-start gap-2">
-                          <CheckIcon size={14} className="mt-1 text-green-500 flex-shrink-0" />
-                          <span>This is a non-exclusive licensing agreement between two parties.</span>
-                        </li>
-                        <li className="flex items-start gap-2">
-                          <CheckIcon size={14} className="mt-1 text-green-500 flex-shrink-0" />
-                          <span>Agreement is effective for 2 years with automatic renewal provisions.</span>
-                        </li>
-                        <li className="flex items-start gap-2">
-                          <CheckIcon size={14} className="mt-1 text-green-500 flex-shrink-0" />
-                          <span>Standard confidentiality, non-compete, and termination clauses included.</span>
-                        </li>
-                      </ul>
-                    </div>
-                  </CardContent>
-                </CollapsibleContent>
-              </Collapsible>
-            </Card>
-            
-            {/* Parties Information */}
-            <Card className="border shadow-md overflow-hidden">
-              <Collapsible>
-                <CardHeader className="pb-2">
-                  <div className="flex items-center justify-between">
-                    <CardTitle className="text-base flex items-center">
-                      <UsersIcon size={18} className="mr-2 text-primary" />
-                      Parties Involved
-                    </CardTitle>
-                    <CollapsibleTrigger className="ml-auto">
-                      <MinimizeIcon size={16} />
-                    </CollapsibleTrigger>
-                  </div>
-                </CardHeader>
-                <CollapsibleContent>
-                  <CardContent>
-                    <div className="space-y-3">
-                      {result.parties.map((party, index) => (
-                        <div key={index} className="bg-muted/30 rounded-lg p-3">
-                          <div className="font-medium">{party}</div>
-                          <div className="text-sm text-muted-foreground mt-1">
-                            {index === 0 ? 'First Party' : 'Second Party'}
-                          </div>
-                        </div>
-                      ))}
-                    
-                      <div className="mt-4">
-                        <h4 className="text-sm font-medium mb-3">Signatories</h4>
-                        <div className="space-y-3">
-                          {result.signatures.map((signature, index) => (
-                            <div key={index} className="flex items-center border rounded-lg p-3">
-                              <div className="w-8 h-8 rounded-full bg-primary/10 text-primary flex items-center justify-center mr-3">
-                                {signature.name.charAt(0)}
-                              </div>
-                              <div>
-                                <div className="font-medium">{signature.name}</div>
-                                <div className="text-xs text-muted-foreground">{signature.role}</div>
-                              </div>
-                            </div>
-                          ))}
-                        </div>
-                      </div>
-                    </div>
-                  </CardContent>
-                  <CardFooter className="flex justify-between pt-0">
-                    <Button 
-                      variant="ghost" 
-                      size="sm" 
-                      className="gap-1 hover:bg-primary/10"
-                      onClick={() => toggleDetailedView('parties')}
-                    >
-                      <SearchIcon size={14} />
-                      View Details
-                    </Button>
-                  </CardFooter>
-                </CollapsibleContent>
-              </Collapsible>
-            </Card>
-            
-            {/* Key Dates */}
-            <Card className="border shadow-md overflow-hidden">
-              <Collapsible>
-                <CardHeader className="pb-2">
-                  <div className="flex items-center justify-between">
-                    <CardTitle className="text-base flex items-center">
-                      <CalendarIcon size={18} className="mr-2 text-primary" />
-                      Key Dates
-                    </CardTitle>
-                    <CollapsibleTrigger className="ml-auto">
-                      <MinimizeIcon size={16} />
-                    </CollapsibleTrigger>
-                  </div>
-                </CardHeader>
-                <CollapsibleContent>
-                  <CardContent>
-                    <div className="space-y-3">
-                      {result.keyDates.map((date, index) => (
-                        <div key={index} className="flex items-center justify-between border-b pb-3 last:border-0">
-                          <div>
-                            <div className="font-medium">{date.description}</div>
-                            <div className="text-xs text-muted-foreground mt-1">
-                              {new Date(date.date).toLocaleDateString('en-US', {
-                                year: 'numeric',
-                                month: 'long',
-                                day: 'numeric',
-                              })}
-                            </div>
-                          </div>
-                          <div className="bg-primary/10 text-primary text-xs font-medium px-2 py-1 rounded-full">
-                            {(() => {
-                              const dateObj = new Date(date.date);
-                              const now = new Date();
-                              if (dateObj > now) {
-                                return 'Upcoming';
-                              } else if (
-                                dateObj.getDate() === now.getDate() &&
-                                dateObj.getMonth() === now.getMonth() &&
-                                dateObj.getFullYear() === now.getFullYear()
-                              ) {
-                                return 'Today';
-                              } else {
-                                return 'Past';
-                              }
-                            })()}
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  </CardContent>
-                  <CardFooter className="flex justify-between pt-0">
-                    <Button 
-                      variant="ghost" 
-                      size="sm" 
-                      className="gap-1 hover:bg-primary/10"
-                      onClick={() => toggleDetailedView('dates')}
-                    >
-                      <SearchIcon size={14} />
-                      View Details
-                    </Button>
-                  </CardFooter>
-                </CollapsibleContent>
-              </Collapsible>
-            </Card>
-            
-            {/* Risk Identification */}
-            <Card className="border shadow-md overflow-hidden">
-              <Collapsible>
-                <CardHeader className="pb-2">
-                  <div className="flex items-center justify-between">
-                    <CardTitle className="text-base flex items-center">
-                      <AlertTriangleIcon size={18} className="mr-2 text-amber-500" />
-                      Risk Assessment
-                    </CardTitle>
-                    <CollapsibleTrigger className="ml-auto">
-                      <MinimizeIcon size={16} />
-                    </CollapsibleTrigger>
-                  </div>
-                </CardHeader>
-                <CollapsibleContent>
-                  <CardContent>
-                    <div className="space-y-3">
-                      {result.clauses.map((clause, index) => (
-                        <div key={index} className="border rounded-md p-3">
-                          <div className="flex items-start justify-between">
-                            <div className="flex items-start gap-2">
-                              <FlagIcon 
-                                size={16} 
-                                className={index === 0 ? 'text-red-500' : index === 1 ? 'text-amber-500' : 'text-green-500'} 
-                              />
-                              <div>
-                                <h4 className="text-sm font-medium">{clause.title}</h4>
-                                <p className="text-xs text-muted-foreground">Page {clause.page}</p>
-                              </div>
-                            </div>
-                            <Badge 
-                              variant="outline" 
-                              className={index === 0 ? 'text-red-500 bg-red-50' : index === 1 ? 'text-amber-500 bg-amber-50' : 'text-green-500 bg-green-50'}
-                            >
-                              {index === 0 ? 'High Risk' : index === 1 ? 'Moderate' : 'Low Risk'}
-                            </Badge>
-                          </div>
-                          <p className="text-sm mt-2">{clause.content.substring(0, 100)}...</p>
-                          <div className="flex justify-end mt-2">
-                            <Button 
-                              variant="ghost" 
-                              size="sm"
-                              onClick={() => toggleDetailedView(`clause-${index}`)}
-                            >
-                              View Details
-                            </Button>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  </CardContent>
-                  <CardFooter className="flex justify-between pt-0">
-                    <Button 
-                      variant="ghost" 
-                      size="sm" 
-                      className="gap-1 hover:bg-primary/10"
-                      onClick={() => toggleDetailedView('risks')}
-                    >
-                      <SearchIcon size={14} />
-                      View All Risks
-                    </Button>
-                  </CardFooter>
-                </CollapsibleContent>
-              </Collapsible>
-            </Card>
-          </div>
         </div>
       </ScrollArea>
       

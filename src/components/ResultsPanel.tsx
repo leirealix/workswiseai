@@ -45,13 +45,27 @@ export default function ResultsPanel({ result, fileName }: ResultsPanelProps) {
     });
   };
 
-  // Now using the proper type for riskLevel
+  // Using the proper type for riskLevel
   const riskLevel: RiskLevel = 'Moderate';
   const reviewedDocuments = 1;
   const highRiskClauses = result.clauses.filter(c => 
     c.title.toLowerCase().includes('termination') || 
     c.title.toLowerCase().includes('non-compete')).length;
   const suggestedRevisions = 3;
+
+  // Function to determine the risk level styling
+  const getRiskLevelStyle = (level: RiskLevel) => {
+    switch(level) {
+      case 'Low': 
+        return 'bg-green-500/10 text-green-500';
+      case 'Moderate': 
+        return 'bg-amber-500/10 text-amber-500';
+      case 'High': 
+        return 'bg-red-500/10 text-red-500';
+      default:
+        return 'bg-amber-500/10 text-amber-500';
+    }
+  };
 
   return (
     <div className="h-full flex flex-col">
@@ -104,11 +118,7 @@ export default function ResultsPanel({ result, fileName }: ResultsPanelProps) {
                 </div>
                 
                 <div className="flex items-center gap-2">
-                  <div className={`h-8 w-8 rounded-full flex items-center justify-center ${
-                    riskLevel === 'Low' ? 'bg-green-500/10 text-green-500' : 
-                    riskLevel === 'Moderate' ? 'bg-amber-500/10 text-amber-500' : 
-                    'bg-red-500/10 text-red-500'
-                  }`}>
+                  <div className={`h-8 w-8 rounded-full flex items-center justify-center ${getRiskLevelStyle(riskLevel)}`}>
                     <FlagIcon size={16} />
                   </div>
                   <div>

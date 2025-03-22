@@ -1,3 +1,4 @@
+
 import { useState, useEffect, useRef } from 'react';
 import ChatInput from '@/components/ChatInput';
 import MessageList from '@/components/MessageList';
@@ -7,6 +8,7 @@ import DocumentViewer from '@/components/DocumentViewer';
 import AnalysisResult from '@/components/AnalysisResult';
 import AnalysisProgress from '@/components/AnalysisProgress';
 import WelcomeAnimation from '@/components/WelcomeAnimation';
+import ResultsPanel from '@/components/ResultsPanel';
 import { useDocumentAnalysis } from '@/hooks/useDocumentAnalysis';
 import { Message } from '@/types';
 import { toast } from '@/hooks/use-toast';
@@ -143,7 +145,7 @@ const Index = () => {
       const completionMessage: Message = {
         id: crypto.randomUUID(),
         role: 'assistant',
-        content: "I've completed analyzing your document. You can see the results in the right panel. Feel free to ask me any questions about it.",
+        content: "I've completed analyzing your document. You can see the results in the left panel. Feel free to ask me any questions about it.",
         timestamp: new Date(),
       };
       
@@ -308,19 +310,7 @@ const Index = () => {
                         </ResizablePanel>
                       </ResizablePanelGroup>
                     ) : (
-                      <div className="h-full grid grid-cols-2">
-                        <div className="h-full border-r overflow-hidden">
-                          <DocumentViewer 
-                            fileName={state.file.name}
-                            result={state.result}
-                          />
-                        </div>
-                        <div className="h-full overflow-hidden">
-                          <ScrollArea className="h-full">
-                            <AnalysisResult result={state.result} />
-                          </ScrollArea>
-                        </div>
-                      </div>
+                      <ResultsPanel result={state.result} />
                     )}
                   </div>
                 )}

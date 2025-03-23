@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { AnalysisResult } from '@/types';
 import { 
@@ -16,6 +15,7 @@ import {
   CalendarIcon, 
   CheckIcon, 
   ClipboardCheckIcon, 
+  DatabaseIcon,
   DownloadIcon, 
   EditIcon, 
   ExternalLinkIcon, 
@@ -26,6 +26,7 @@ import {
   MinimizeIcon,
   MaximizeIcon,
   SearchIcon, 
+  TableIcon,
   UsersIcon 
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -37,6 +38,14 @@ import {
   CollapsibleTrigger 
 } from '@/components/ui/collapsible';
 import { DropdownActionMenu } from '@/components/ui/dropdown-action-menu';
+import { 
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow
+} from '@/components/ui/table';
 
 type RiskLevel = 'Low' | 'Moderate' | 'High';
 
@@ -83,6 +92,21 @@ export default function ResultsPanel({ result }: ResultsPanelProps) {
     }
   };
 
+  // Mock data for Key Data Extraction
+  const extractedData = [
+    { type: 'Date', label: 'Effective Date', value: '2023-06-15', page: 1, confidence: 'High' },
+    { type: 'Date', label: 'Termination Date', value: '2025-06-14', page: 4, confidence: 'High' },
+    { type: 'Date', label: 'First Review', value: '2023-12-15', page: 2, confidence: 'Medium' },
+    { type: 'Party', label: 'First Party', value: 'Acme Corporation', page: 1, confidence: 'High' },
+    { type: 'Party', label: 'Second Party', value: 'XYZ Enterprises Ltd.', page: 1, confidence: 'High' },
+    { type: 'Clause', label: 'Confidentiality', value: 'Both parties agree to maintain confidentiality...', page: 2, confidence: 'High' },
+    { type: 'Clause', label: 'Non-Compete', value: 'For a period of 24 months following termination...', page: 3, confidence: 'Medium' },
+    { type: 'Clause', label: 'Termination', value: 'This agreement may be terminated by either party...', page: 4, confidence: 'High' },
+    { type: 'Obligation', label: 'Payment Terms', value: 'Payment due within 30 days of invoice...', page: 2, confidence: 'Medium' },
+    { type: 'Provision', label: 'Change of Control', value: 'In the event of change of control...', page: 4, confidence: 'Low' },
+    { type: 'Provision', label: 'Force Majeure', value: 'Neither party shall be liable for failure...', page: 5, confidence: 'Medium' },
+  ];
+
   const renderDetailedView = () => {
     switch(showDetailedView) {
       case 'summary':
@@ -91,7 +115,7 @@ export default function ResultsPanel({ result }: ResultsPanelProps) {
             <div className="bg-card rounded-lg shadow-lg border max-w-3xl w-full max-h-[80vh] overflow-hidden flex flex-col">
               <div className="p-4 border-b flex items-center justify-between">
                 <h2 className="text-xl font-semibold flex items-center">
-                  <FileTextIcon size={20} className="mr-2 text-primary" />
+                  <FileTextIcon size={20} className="mr-2 text-primary flex-shrink-0" />
                   Document Analysis Details
                 </h2>
                 <Button variant="ghost" size="icon" onClick={() => setShowDetailedView(null)}>
@@ -220,7 +244,106 @@ export default function ResultsPanel({ result }: ResultsPanelProps) {
             </div>
           </div>
         );
-      // Add more detailed views for other cards as needed
+      case 'extraction':
+        return (
+          <div className="fixed inset-0 bg-background/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+            <div className="bg-card rounded-lg shadow-lg border max-w-5xl w-full max-h-[80vh] overflow-hidden flex flex-col">
+              <div className="p-4 border-b flex items-center justify-between">
+                <h2 className="text-xl font-semibold flex items-center">
+                  <DatabaseIcon size={20} className="mr-2 text-primary" />
+                  Key Data Extraction Details
+                </h2>
+                <Button variant="ghost" size="icon" onClick={() => setShowDetailedView(null)}>
+                  <MinimizeIcon size={18} />
+                </Button>
+              </div>
+              <ScrollArea className="flex-1">
+                <div className="p-6">
+                  <h3 className="text-lg font-medium mb-4">Extracted Data Elements</h3>
+                  <p className="text-sm text-muted-foreground mb-6">
+                    The following data points have been automatically extracted from the document with the confidence levels indicated.
+                  </p>
+                  
+                  <div className="border rounded-md overflow-hidden mb-4">
+                    <Table>
+                      <TableHeader>
+                        <TableRow>
+                          <TableHead>Type</TableHead>
+                          <TableHead>Label</TableHead>
+                          <TableHead>Value</TableHead>
+                          <TableHead>Page</TableHead>
+                          <TableHead>Confidence</TableHead>
+                          <TableHead>Actions</TableHead>
+                        </TableRow>
+                      </TableHeader>
+                      <TableBody>
+                        {extractedData.map((item, index) => (
+                          <TableRow key={index}>
+                            <TableCell className="font-medium">{item.type}</TableCell>
+                            <TableCell>{item.label}</TableCell>
+                            <TableCell className="max-w-xs truncate">{item.value}</TableCell>
+                            <TableCell>{item.page}</TableCell>
+                            <TableCell>
+                              <Badge 
+                                variant="outline" 
+                                className={
+                                  item.confidence === 'High' 
+                                    ? 'bg-green-100 text-green-700 border-green-200' 
+                                    : item.confidence === 'Medium'
+                                    ? 'bg-amber-100 text-amber-700 border-amber-200'
+                                    : 'bg-red-100 text-red-700 border-red-200'
+                                }
+                              >
+                                {item.confidence}
+                              </Badge>
+                            </TableCell>
+                            <TableCell>
+                              <Button variant="ghost" size="sm" className="h-7 px-2">
+                                <SearchIcon size={14} className="mr-1" />
+                                <span>View</span>
+                              </Button>
+                            </TableCell>
+                          </TableRow>
+                        ))}
+                      </TableBody>
+                    </Table>
+                  </div>
+                  
+                  <div className="space-y-4">
+                    <div className="border p-4 rounded-md bg-muted/10">
+                      <h4 className="text-sm font-medium mb-2 flex items-center">
+                        <CheckIcon size={16} className="mr-2 text-green-500" />
+                        Data Extraction Statistics
+                      </h4>
+                      <div className="grid grid-cols-3 gap-4 text-sm">
+                        <div>
+                          <span className="text-muted-foreground">Total Elements:</span>
+                          <span className="ml-1 font-medium">{extractedData.length}</span>
+                        </div>
+                        <div>
+                          <span className="text-muted-foreground">High Confidence:</span>
+                          <span className="ml-1 font-medium">
+                            {extractedData.filter(item => item.confidence === 'High').length}
+                          </span>
+                        </div>
+                        <div>
+                          <span className="text-muted-foreground">Medium/Low Confidence:</span>
+                          <span className="ml-1 font-medium">
+                            {extractedData.filter(item => item.confidence !== 'High').length}
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </ScrollArea>
+              <div className="p-4 border-t flex justify-end gap-2">
+                <Button variant="outline" onClick={() => setShowDetailedView(null)}>Close</Button>
+                <Button variant="default">Export Data</Button>
+              </div>
+            </div>
+          </div>
+        );
       default:
         return null;
     }
@@ -402,14 +525,14 @@ export default function ResultsPanel({ result }: ResultsPanelProps) {
             </Collapsible>
           </Card>
           
-          {/* Key Dates */}
+          {/* Key Data Extraction */}
           <Card className="border shadow-md overflow-hidden">
             <Collapsible>
               <CardHeader className="pb-2">
                 <div className="flex items-center justify-between">
-                  <CardTitle className="text-base flex items-center mr-2 truncate">
-                    <CalendarIcon size={18} className="mr-2 text-primary flex-shrink-0" />
-                    <span>Key Dates</span>
+                  <CardTitle className="text-base flex items-center mr-2">
+                    <DatabaseIcon size={18} className="mr-2 text-primary flex-shrink-0" />
+                    <span>Key Data Extraction</span>
                   </CardTitle>
                   <CollapsibleTrigger className="flex-shrink-0 p-1 hover:bg-muted/50 rounded-full">
                     <MinimizeIcon size={16} />
@@ -419,37 +542,38 @@ export default function ResultsPanel({ result }: ResultsPanelProps) {
               <CollapsibleContent>
                 <CardContent>
                   <div className="space-y-3">
-                    {result.keyDates.map((date, index) => (
+                    {extractedData.slice(0, 5).map((item, index) => (
                       <div key={index} className="flex items-center justify-between border-b pb-3 last:border-0">
                         <div>
-                          <div className="font-medium">{date.description}</div>
-                          <div className="text-xs text-muted-foreground mt-1">
-                            {new Date(date.date).toLocaleDateString('en-US', {
-                              year: 'numeric',
-                              month: 'long',
-                              day: 'numeric',
-                            })}
+                          <div className="font-medium flex items-center">
+                            {item.type === 'Date' && <CalendarIcon size={14} className="mr-1 text-primary" />}
+                            {item.type === 'Party' && <UsersIcon size={14} className="mr-1 text-primary" />}
+                            {item.type === 'Clause' && <FileTextIcon size={14} className="mr-1 text-primary" />}
+                            {item.type === 'Obligation' && <CheckIcon size={14} className="mr-1 text-primary" />}
+                            {item.type === 'Provision' && <AlertTriangleIcon size={14} className="mr-1 text-primary" />}
+                            {item.label}
+                          </div>
+                          <div className="text-xs text-muted-foreground mt-1 max-w-xs truncate">
+                            {item.value}
                           </div>
                         </div>
-                        <div className="bg-primary/10 text-primary text-xs font-medium px-2 py-1 rounded-full">
-                          {(() => {
-                            const dateObj = new Date(date.date);
-                            const now = new Date();
-                            if (dateObj > now) {
-                              return 'Upcoming';
-                            } else if (
-                              dateObj.getDate() === now.getDate() &&
-                              dateObj.getMonth() === now.getMonth() &&
-                              dateObj.getFullYear() === now.getFullYear()
-                            ) {
-                              return 'Today';
-                            } else {
-                              return 'Past';
-                            }
-                          })()}
+                        <div className={`text-xs font-medium px-2 py-1 rounded-full 
+                          ${item.confidence === 'High' 
+                            ? 'bg-green-100 text-green-700' 
+                            : item.confidence === 'Medium'
+                            ? 'bg-amber-100 text-amber-700'
+                            : 'bg-red-100 text-red-700'}`
+                        }>
+                          {item.confidence}
                         </div>
                       </div>
                     ))}
+                    
+                    {extractedData.length > 5 && (
+                      <div className="text-sm text-center text-muted-foreground pt-2">
+                        + {extractedData.length - 5} more extracted elements
+                      </div>
+                    )}
                   </div>
                 </CardContent>
                 <CardFooter className="flex justify-between items-center pt-0">
@@ -457,12 +581,12 @@ export default function ResultsPanel({ result }: ResultsPanelProps) {
                     variant="ghost" 
                     size="sm" 
                     className="gap-1 hover:bg-primary/10"
-                    onClick={() => toggleDetailedView('dates')}
+                    onClick={() => toggleDetailedView('extraction')}
                   >
-                    <SearchIcon size={14} />
+                    <TableIcon size={14} />
                     View Details
                   </Button>
-                  <DropdownActionMenu entityName="Key Dates" />
+                  <DropdownActionMenu entityName="Key Data Extraction" />
                 </CardFooter>
               </CollapsibleContent>
             </Collapsible>

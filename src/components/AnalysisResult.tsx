@@ -1,9 +1,12 @@
 
 import { AnalysisResult as ResultType } from '@/types';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { CalendarIcon, UsersIcon, FileTextIcon, ClipboardCheckIcon } from 'lucide-react';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
+import { CalendarIcon, UsersIcon, FileTextIcon, ClipboardCheckIcon, ExternalLinkIcon } from 'lucide-react';
 import { ScrollArea } from '@/components/ui/scroll-area';
+import { Button } from '@/components/ui/button';
+import { DropdownActionMenu } from '@/components/ui/dropdown-action-menu';
+import { cn } from '@/lib/utils';
 
 interface AnalysisResultProps {
   result: ResultType;
@@ -13,182 +16,288 @@ export default function AnalysisResult({ result }: AnalysisResultProps) {
   return (
     <div className="h-full flex flex-col">
       <Tabs defaultValue="summary" className="h-full flex flex-col">
-        <div className="px-4 pt-4 border-b">
-          <TabsList className="w-full">
-            <TabsTrigger value="summary" className="flex-1">Summary</TabsTrigger>
-            <TabsTrigger value="parties" className="flex-1">Parties</TabsTrigger>
-            <TabsTrigger value="dates" className="flex-1">Key Dates</TabsTrigger>
-            <TabsTrigger value="clauses" className="flex-1">Clauses</TabsTrigger>
+        <div className="px-6 py-4 border-b bg-muted/30">
+          <TabsList className="w-full grid grid-cols-4 gap-2">
+            <TabsTrigger value="summary" className="flex items-center gap-2">
+              <ClipboardCheckIcon size={16} />
+              <span>Summary</span>
+            </TabsTrigger>
+            <TabsTrigger value="parties" className="flex items-center gap-2">
+              <UsersIcon size={16} />
+              <span>Parties</span>
+            </TabsTrigger>
+            <TabsTrigger value="dates" className="flex items-center gap-2">
+              <CalendarIcon size={16} />
+              <span>Key Dates</span>
+            </TabsTrigger>
+            <TabsTrigger value="clauses" className="flex items-center gap-2">
+              <FileTextIcon size={16} />
+              <span>Clauses</span>
+            </TabsTrigger>
           </TabsList>
         </div>
         
         <div className="flex-1 overflow-hidden">
           <TabsContent value="summary" className="h-full mt-0 animate-fade-in">
             <Card className="h-full border-0 rounded-none shadow-none">
-              <CardHeader>
-                <CardTitle className="flex items-center">
-                  <ClipboardCheckIcon size={18} className="mr-2 text-primary" />
-                  Document Summary
-                </CardTitle>
-                <CardDescription>
-                  Key points extracted from the document
-                </CardDescription>
+              <CardHeader className="bg-muted/10 border-b pb-4">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center">
+                    <div className="mr-3 bg-primary/10 text-primary p-2 rounded-full">
+                      <ClipboardCheckIcon size={18} />
+                    </div>
+                    <div>
+                      <CardTitle>Document Summary</CardTitle>
+                      <CardDescription>Key points extracted from the document</CardDescription>
+                    </div>
+                  </div>
+                </div>
               </CardHeader>
               <CardContent className="p-0">
                 <ScrollArea className="h-[calc(100vh-240px)]">
-                  <div className="p-4 space-y-4">
-                    <div className="text-sm leading-relaxed">{result.summary}</div>
+                  <div className="p-6 space-y-6">
+                    <div className="text-sm leading-relaxed bg-background p-4 rounded-md border shadow-sm">
+                      {result.summary}
+                    </div>
                     
-                    <div className="grid grid-cols-2 gap-3 mt-6">
-                      <div className="bg-muted/30 rounded-lg p-3">
-                        <div className="text-xs text-muted-foreground mb-1">Document Type</div>
-                        <div className="text-sm font-medium">Contract Agreement</div>
-                      </div>
-                      <div className="bg-muted/30 rounded-lg p-3">
-                        <div className="text-xs text-muted-foreground mb-1">Total Pages</div>
-                        <div className="text-sm font-medium">5</div>
-                      </div>
-                      <div className="bg-muted/30 rounded-lg p-3">
-                        <div className="text-xs text-muted-foreground mb-1">Total Clauses</div>
-                        <div className="text-sm font-medium">{result.clauses.length}</div>
-                      </div>
-                      <div className="bg-muted/30 rounded-lg p-3">
-                        <div className="text-xs text-muted-foreground mb-1">Agreement Duration</div>
-                        <div className="text-sm font-medium">2 years</div>
-                      </div>
+                    <div className="grid grid-cols-2 gap-4 mt-6">
+                      <Card className="transition-all">
+                        <CardContent className="p-4">
+                          <div className="text-xs text-muted-foreground font-medium uppercase tracking-wider mb-1">Document Type</div>
+                          <div className="text-sm font-semibold">Contract Agreement</div>
+                        </CardContent>
+                      </Card>
+                      <Card>
+                        <CardContent className="p-4">
+                          <div className="text-xs text-muted-foreground font-medium uppercase tracking-wider mb-1">Total Pages</div>
+                          <div className="text-sm font-semibold">5</div>
+                        </CardContent>
+                      </Card>
+                      <Card>
+                        <CardContent className="p-4">
+                          <div className="text-xs text-muted-foreground font-medium uppercase tracking-wider mb-1">Total Clauses</div>
+                          <div className="text-sm font-semibold">{result.clauses.length}</div>
+                        </CardContent>
+                      </Card>
+                      <Card>
+                        <CardContent className="p-4">
+                          <div className="text-xs text-muted-foreground font-medium uppercase tracking-wider mb-1">Agreement Duration</div>
+                          <div className="text-sm font-semibold">2 years</div>
+                        </CardContent>
+                      </Card>
                     </div>
                   </div>
                 </ScrollArea>
               </CardContent>
+              <CardFooter className="border-t mt-auto p-4">
+                <DropdownActionMenu entityName="Document Summary" />
+              </CardFooter>
             </Card>
           </TabsContent>
           
           <TabsContent value="parties" className="h-full mt-0 animate-fade-in">
             <Card className="h-full border-0 rounded-none shadow-none">
-              <CardHeader>
-                <CardTitle className="flex items-center">
-                  <UsersIcon size={18} className="mr-2 text-primary" />
-                  Parties Involved
-                </CardTitle>
-                <CardDescription>
-                  Organizations and entities mentioned in the document
-                </CardDescription>
+              <CardHeader className="bg-muted/10 border-b pb-4">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center">
+                    <div className="mr-3 bg-primary/10 text-primary p-2 rounded-full">
+                      <UsersIcon size={18} />
+                    </div>
+                    <div>
+                      <CardTitle>Parties Involved</CardTitle>
+                      <CardDescription>Organizations and entities mentioned in the document</CardDescription>
+                    </div>
+                  </div>
+                </div>
               </CardHeader>
               <CardContent className="p-0">
                 <ScrollArea className="h-[calc(100vh-240px)]">
-                  <div className="p-4 space-y-4">
-                    {result.parties.map((party, index) => (
-                      <div key={index} className="bg-muted/30 rounded-lg p-4">
-                        <div className="font-medium">{party}</div>
-                        <div className="text-sm text-muted-foreground mt-1">
-                          {index === 0 ? 'First Party' : 'Second Party'}
-                        </div>
-                      </div>
-                    ))}
+                  <div className="p-6 space-y-6">
+                    <div className="grid gap-4">
+                      {result.parties.map((party, index) => (
+                        <Card key={index} className="overflow-hidden">
+                          <CardContent className="p-0">
+                            <div className="p-4 bg-muted/10 border-b">
+                              <div className="font-medium text-primary">{party}</div>
+                              <div className="text-xs text-muted-foreground mt-1">
+                                {index === 0 ? 'First Party' : 'Second Party'}
+                              </div>
+                            </div>
+                            <div className="p-4 text-sm">
+                              {index === 0 ? 
+                                'Primary entity in the agreement with primary obligations and rights.' : 
+                                'Secondary entity in the agreement with corresponding obligations and rights.'}
+                            </div>
+                          </CardContent>
+                        </Card>
+                      ))}
+                    </div>
                   
-                    <div className="mt-6">
-                      <h4 className="text-sm font-medium mb-3">Signatories</h4>
-                      <div className="space-y-3">
+                    <div className="mt-8">
+                      <h4 className="text-sm font-medium mb-4 flex items-center">
+                        <UsersIcon size={16} className="mr-2 text-primary" />
+                        Signatories
+                      </h4>
+                      <div className="grid gap-3">
                         {result.signatures.map((signature, index) => (
-                          <div key={index} className="flex items-center border rounded-lg p-3">
-                            <div className="w-8 h-8 rounded-full bg-primary/10 text-primary flex items-center justify-center mr-3">
-                              {signature.name.charAt(0)}
-                            </div>
-                            <div>
-                              <div className="font-medium">{signature.name}</div>
-                              <div className="text-xs text-muted-foreground">{signature.role}</div>
-                            </div>
-                          </div>
+                          <Card key={index} className="overflow-hidden">
+                            <CardContent className="p-4 flex items-center">
+                              <div className="w-10 h-10 rounded-full bg-primary/10 text-primary flex items-center justify-center mr-4 text-lg font-semibold">
+                                {signature.name.charAt(0)}
+                              </div>
+                              <div>
+                                <div className="font-medium">{signature.name}</div>
+                                <div className="text-xs text-muted-foreground">{signature.role}</div>
+                              </div>
+                            </CardContent>
+                          </Card>
                         ))}
                       </div>
                     </div>
                   </div>
                 </ScrollArea>
               </CardContent>
+              <CardFooter className="border-t mt-auto p-4">
+                <DropdownActionMenu entityName="Parties Information" />
+              </CardFooter>
             </Card>
           </TabsContent>
           
           <TabsContent value="dates" className="h-full mt-0 animate-fade-in">
             <Card className="h-full border-0 rounded-none shadow-none">
-              <CardHeader>
-                <CardTitle className="flex items-center">
-                  <CalendarIcon size={18} className="mr-2 text-primary" />
-                  Key Dates
-                </CardTitle>
-                <CardDescription>
-                  Important dates mentioned in the document
-                </CardDescription>
+              <CardHeader className="bg-muted/10 border-b pb-4">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center">
+                    <div className="mr-3 bg-primary/10 text-primary p-2 rounded-full">
+                      <CalendarIcon size={18} />
+                    </div>
+                    <div>
+                      <CardTitle>Key Dates</CardTitle>
+                      <CardDescription>Important deadlines and dates in the document</CardDescription>
+                    </div>
+                  </div>
+                </div>
               </CardHeader>
               <CardContent className="p-0">
                 <ScrollArea className="h-[calc(100vh-240px)]">
-                  <div className="p-4 space-y-4">
+                  <div className="p-6 space-y-4">
                     {result.keyDates.map((date, index) => (
-                      <div key={index} className="flex items-center justify-between border-b pb-3 last:border-0">
-                        <div>
-                          <div className="font-medium">{date.description}</div>
-                          <div className="text-xs text-muted-foreground mt-1">
-                            {new Date(date.date).toLocaleDateString('en-US', {
-                              year: 'numeric',
-                              month: 'long',
-                              day: 'numeric',
-                            })}
+                      <Card key={index} className={cn("border overflow-hidden",
+                        (() => {
+                          const dateObj = new Date(date.date);
+                          const now = new Date();
+                          if (dateObj > now) {
+                            return "border-l-4 border-l-amber-500";
+                          } else if (
+                            dateObj.getDate() === now.getDate() &&
+                            dateObj.getMonth() === now.getMonth() &&
+                            dateObj.getFullYear() === now.getFullYear()
+                          ) {
+                            return "border-l-4 border-l-emerald-500";
+                          } else {
+                            return "border-l-4 border-l-slate-300";
+                          }
+                        })()
+                      )}>
+                        <CardContent className="p-4 flex items-center justify-between">
+                          <div>
+                            <div className="font-medium text-primary">{date.description}</div>
+                            <div className="text-xs text-muted-foreground mt-1">
+                              {new Date(date.date).toLocaleDateString('en-US', {
+                                year: 'numeric',
+                                month: 'long',
+                                day: 'numeric',
+                              })}
+                            </div>
                           </div>
-                        </div>
-                        <div className="bg-primary/10 text-primary text-xs font-medium px-2 py-1 rounded-full">
-                          {(() => {
-                            const dateObj = new Date(date.date);
-                            const now = new Date();
-                            if (dateObj > now) {
-                              return 'Upcoming';
-                            } else if (
-                              dateObj.getDate() === now.getDate() &&
-                              dateObj.getMonth() === now.getMonth() &&
-                              dateObj.getFullYear() === now.getFullYear()
-                            ) {
-                              return 'Today';
-                            } else {
-                              return 'Past';
-                            }
-                          })()}
-                        </div>
-                      </div>
+                          <div className={cn("text-xs font-medium px-2 py-1 rounded-full", 
+                            (() => {
+                              const dateObj = new Date(date.date);
+                              const now = new Date();
+                              if (dateObj > now) {
+                                return "bg-amber-100 text-amber-700";
+                              } else if (
+                                dateObj.getDate() === now.getDate() &&
+                                dateObj.getMonth() === now.getMonth() &&
+                                dateObj.getFullYear() === now.getFullYear()
+                              ) {
+                                return "bg-emerald-100 text-emerald-700";
+                              } else {
+                                return "bg-slate-100 text-slate-700";
+                              }
+                            })()
+                          )}>
+                            {(() => {
+                              const dateObj = new Date(date.date);
+                              const now = new Date();
+                              if (dateObj > now) {
+                                return 'Upcoming';
+                              } else if (
+                                dateObj.getDate() === now.getDate() &&
+                                dateObj.getMonth() === now.getMonth() &&
+                                dateObj.getFullYear() === now.getFullYear()
+                              ) {
+                                return 'Today';
+                              } else {
+                                return 'Past';
+                              }
+                            })()}
+                          </div>
+                        </CardContent>
+                      </Card>
                     ))}
                   </div>
                 </ScrollArea>
               </CardContent>
+              <CardFooter className="border-t mt-auto p-4">
+                <DropdownActionMenu entityName="Key Dates" />
+              </CardFooter>
             </Card>
           </TabsContent>
           
           <TabsContent value="clauses" className="h-full mt-0 animate-fade-in">
             <Card className="h-full border-0 rounded-none shadow-none">
-              <CardHeader>
-                <CardTitle className="flex items-center">
-                  <FileTextIcon size={18} className="mr-2 text-primary" />
-                  Key Clauses
-                </CardTitle>
-                <CardDescription>
-                  Important provisions and clauses in the document
-                </CardDescription>
+              <CardHeader className="bg-muted/10 border-b pb-4">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center">
+                    <div className="mr-3 bg-primary/10 text-primary p-2 rounded-full">
+                      <FileTextIcon size={18} />
+                    </div>
+                    <div>
+                      <CardTitle>Key Clauses</CardTitle>
+                      <CardDescription>Important provisions and clauses in the document</CardDescription>
+                    </div>
+                  </div>
+                </div>
               </CardHeader>
               <CardContent className="p-0">
                 <ScrollArea className="h-[calc(100vh-240px)]">
-                  <div className="p-4 space-y-4">
+                  <div className="p-6 space-y-4">
                     {result.clauses.map((clause) => (
-                      <div key={clause.id} className="border rounded-lg overflow-hidden shadow-sm">
-                        <div className="bg-muted p-3 font-medium text-sm">
-                          {clause.title}
-                          <span className="ml-2 text-xs text-muted-foreground">
-                            Page {clause.page}
-                          </span>
+                      <Card key={clause.id} className="overflow-hidden shadow-sm">
+                        <div className="bg-muted/30 p-4 font-medium flex items-center justify-between border-b">
+                          <div>
+                            <span className="text-primary">{clause.title}</span>
+                            <span className="ml-2 text-xs text-muted-foreground px-2 py-0.5 rounded-full bg-background">
+                              Page {clause.page}
+                            </span>
+                          </div>
+                          <Button variant="ghost" size="sm" className="h-7 text-xs">
+                            <ExternalLinkIcon size={14} className="mr-1" />
+                            View in Document
+                          </Button>
                         </div>
-                        <div className="p-3 text-sm">
+                        <CardContent className="p-4 text-sm">
                           {clause.content}
-                        </div>
-                      </div>
+                        </CardContent>
+                      </Card>
                     ))}
                   </div>
                 </ScrollArea>
               </CardContent>
+              <CardFooter className="border-t mt-auto p-4">
+                <DropdownActionMenu entityName="Key Clauses" />
+              </CardFooter>
             </Card>
           </TabsContent>
         </div>

@@ -1,11 +1,12 @@
 
 import * as React from "react"
 import { cn } from "@/lib/utils"
+import { ChevronDown, ChevronUp } from "lucide-react"
 
 const Card = React.forwardRef<
   HTMLDivElement,
-  React.HTMLAttributes<HTMLDivElement>
->(({ className, ...props }, ref) => (
+  React.HTMLAttributes<HTMLDivElement> & { isExpanded?: boolean; onToggleExpand?: () => void }
+>(({ className, isExpanded, onToggleExpand, ...props }, ref) => (
   <div
     ref={ref}
     className={cn(
@@ -19,13 +20,26 @@ Card.displayName = "Card"
 
 const CardHeader = React.forwardRef<
   HTMLDivElement,
-  React.HTMLAttributes<HTMLDivElement>
->(({ className, ...props }, ref) => (
+  React.HTMLAttributes<HTMLDivElement> & { isExpanded?: boolean; onToggleExpand?: () => void }
+>(({ className, children, isExpanded, onToggleExpand, ...props }, ref) => (
   <div
     ref={ref}
     className={cn("flex flex-col space-y-1.5 p-6", className)}
     {...props}
-  />
+  >
+    <div className="flex items-center justify-between w-full">
+      <div className="flex-1">{children}</div>
+      {onToggleExpand && (
+        <button 
+          onClick={onToggleExpand}
+          className="text-muted-foreground hover:text-primary transition-colors"
+          aria-label={isExpanded ? "Collapse" : "Expand"}
+        >
+          {isExpanded ? <ChevronUp size={20} /> : <ChevronDown size={20} />}
+        </button>
+      )}
+    </div>
+  </div>
 ))
 CardHeader.displayName = "CardHeader"
 
@@ -58,9 +72,17 @@ CardDescription.displayName = "CardDescription"
 
 const CardContent = React.forwardRef<
   HTMLDivElement,
-  React.HTMLAttributes<HTMLDivElement>
->(({ className, ...props }, ref) => (
-  <div ref={ref} className={cn("p-6 pt-0", className)} {...props} />
+  React.HTMLAttributes<HTMLDivElement> & { isExpanded?: boolean }
+>(({ className, isExpanded = true, ...props }, ref) => (
+  <div 
+    ref={ref} 
+    className={cn(
+      "p-6 pt-0 transition-all",
+      isExpanded ? "block" : "hidden",
+      className
+    )} 
+    {...props} 
+  />
 ))
 CardContent.displayName = "CardContent"
 

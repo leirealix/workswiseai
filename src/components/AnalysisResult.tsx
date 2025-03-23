@@ -1,4 +1,4 @@
-
+import { useState } from 'react';
 import { AnalysisResult as ResultType } from '@/types';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
@@ -13,6 +13,31 @@ interface AnalysisResultProps {
 }
 
 export default function AnalysisResult({ result }: AnalysisResultProps) {
+  const [expandedClauses, setExpandedClauses] = useState<Record<string, boolean>>({});
+  const [expandedParties, setExpandedParties] = useState<Record<number, boolean>>({});
+  const [expandedDates, setExpandedDates] = useState<Record<number, boolean>>({});
+
+  const toggleClauseExpand = (id: string) => {
+    setExpandedClauses(prev => ({
+      ...prev,
+      [id]: !prev[id]
+    }));
+  };
+
+  const togglePartyExpand = (index: number) => {
+    setExpandedParties(prev => ({
+      ...prev,
+      [index]: !prev[index]
+    }));
+  };
+
+  const toggleDateExpand = (index: number) => {
+    setExpandedDates(prev => ({
+      ...prev,
+      [index]: !prev[index]
+    }));
+  };
+
   return (
     <div className="h-full flex flex-col">
       <Tabs defaultValue="summary" className="h-full flex flex-col">
@@ -116,14 +141,17 @@ export default function AnalysisResult({ result }: AnalysisResultProps) {
                     <div className="grid gap-4">
                       {result.parties.map((party, index) => (
                         <Card key={index} className="overflow-hidden">
-                          <CardContent className="p-0">
-                            <div className="p-4 bg-muted/10 border-b">
-                              <div className="font-medium text-primary">{party}</div>
-                              <div className="text-xs text-muted-foreground mt-1">
-                                {index === 0 ? 'First Party' : 'Second Party'}
-                              </div>
+                          <CardHeader 
+                            isExpanded={expandedParties[index]} 
+                            onToggleExpand={() => togglePartyExpand(index)}
+                          >
+                            <div className="font-medium text-primary">{party}</div>
+                            <div className="text-xs text-muted-foreground mt-1">
+                              {index === 0 ? 'First Party' : 'Second Party'}
                             </div>
-                            <div className="p-4 text-sm">
+                          </CardHeader>
+                          <CardContent isExpanded={expandedParties[index]}>
+                            <div className="text-sm">
                               {index === 0 ? 
                                 'Primary entity in the agreement with primary obligations and rights.' : 
                                 'Secondary entity in the agreement with corresponding obligations and rights.'}
@@ -199,18 +227,21 @@ export default function AnalysisResult({ result }: AnalysisResultProps) {
                           }
                         })()
                       )}>
-                        <CardContent className="p-4 flex items-center justify-between">
-                          <div>
-                            <div className="font-medium text-primary">{date.description}</div>
-                            <div className="text-xs text-muted-foreground mt-1">
-                              {new Date(date.date).toLocaleDateString('en-US', {
-                                year: 'numeric',
-                                month: 'long',
-                                day: 'numeric',
-                              })}
-                            </div>
+                        <CardHeader
+                          isExpanded={expandedDates[index]}
+                          onToggleExpand={() => toggleDateExpand(index)}
+                        >
+                          <div className="font-medium text-primary">{date.description}</div>
+                          <div className="text-xs text-muted-foreground mt-1">
+                            {new Date(date.date).toLocaleDateString('en-US', {
+                              year: 'numeric',
+                              month: 'long',
+                              day: 'numeric',
+                            })}
                           </div>
-                          <div className={cn("text-xs font-medium px-2 py-1 rounded-full", 
+                        </CardHeader>
+                        <CardContent isExpanded={expandedDates[index]}>
+                          <div className={cn("text-xs font-medium px-2 py-1 rounded-full inline-block", 
                             (() => {
                               const dateObj = new Date(date.date);
                               const now = new Date();
@@ -242,6 +273,9 @@ export default function AnalysisResult({ result }: AnalysisResultProps) {
                                 return 'Past';
                               }
                             })()}
+                          </div>
+                          <div className="mt-2 text-sm text-muted-foreground">
+                            Additional details about this date and its significance in the document.
                           </div>
                         </CardContent>
                       </Card>
@@ -275,20 +309,28 @@ export default function AnalysisResult({ result }: AnalysisResultProps) {
                   <div className="p-6 space-y-4">
                     {result.clauses.map((clause) => (
                       <Card key={clause.id} className="overflow-hidden shadow-sm">
-                        <div className="bg-muted/30 p-4 font-medium flex items-center justify-between border-b">
-                          <div>
-                            <span className="text-primary">{clause.title}</span>
-                            <span className="ml-2 text-xs text-muted-foreground px-2 py-0.5 rounded-full bg-background">
-                              Page {clause.page}
-                            </span>
+                        <CardHeader 
+                          className="bg-muted/30 font-medium border-b" 
+                          isExpanded={expandedClauses[clause.id]} 
+                          onToggleExpand={() => toggleClauseExpand(clause.id)}
+                        >
+                          <div className="flex items-center justify-between">
+                            <div>
+                              <span className="text-primary">{clause.title}</span>
+                              <span className="ml-2 text-xs text-muted-foreground px-2 py-0.5 rounded-full bg-background">
+                                Page {clause.page}
+                              </span>
+                            </div>
                           </div>
-                          <Button variant="ghost" size="sm" className="h-7 text-xs">
-                            <ExternalLinkIcon size={14} className="mr-1" />
-                            View in Document
-                          </Button>
-                        </div>
-                        <CardContent className="p-4 text-sm">
+                        </CardHeader>
+                        <CardContent className="p-4 text-sm" isExpanded={expandedClauses[clause.id]}>
                           {clause.content}
+                          <div className="mt-4 flex justify-end">
+                            <Button variant="ghost" size="sm" className="h-7 text-xs">
+                              <ExternalLinkIcon size={14} className="mr-1" />
+                              View in Document
+                            </Button>
+                          </div>
                         </CardContent>
                       </Card>
                     ))}

@@ -1,7 +1,7 @@
 
 import * as React from "react"
 import * as CollapsiblePrimitive from "@radix-ui/react-collapsible"
-import { ChevronDown } from "lucide-react"
+import { ChevronDown, ChevronUp } from "lucide-react"
 
 import { cn } from "@/lib/utils"
 
@@ -9,14 +9,19 @@ const Collapsible = CollapsiblePrimitive.Root
 
 const CollapsibleTrigger = React.forwardRef<
   React.ElementRef<typeof CollapsiblePrimitive.CollapsibleTrigger>,
-  React.ComponentPropsWithoutRef<typeof CollapsiblePrimitive.CollapsibleTrigger>
->(({ className, children, ...props }, ref) => (
+  React.ComponentPropsWithoutRef<typeof CollapsiblePrimitive.CollapsibleTrigger> & { showIcon?: boolean }
+>(({ className, children, showIcon = true, ...props }, ref) => (
   <CollapsiblePrimitive.CollapsibleTrigger
     ref={ref}
-    className={cn("group", className)}
+    className={cn("group flex items-center justify-between w-full", className)}
     {...props}
   >
-    {children}
+    <span className="flex-1">{children}</span>
+    {showIcon && (
+      <span className="transition-transform duration-200 group-data-[state=open]:rotate-180">
+        <ChevronDown className="h-4 w-4 shrink-0" />
+      </span>
+    )}
   </CollapsiblePrimitive.CollapsibleTrigger>
 ))
 CollapsibleTrigger.displayName = CollapsiblePrimitive.CollapsibleTrigger.displayName

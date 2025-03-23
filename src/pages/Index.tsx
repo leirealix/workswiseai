@@ -22,7 +22,7 @@ const Index = () => {
   const [messages, setMessages] = useState<Message[]>([]);
   const { state, uploadFile, resetAnalysis } = useDocumentAnalysis();
   const [leftPanelCollapsed, setLeftPanelCollapsed] = useState(false);
-  const [rightPanelExpanded, setRightPanelExpanded] = useState(false);
+  const [leftPanelExpanded, setLeftPanelExpanded] = useState(false);
   const [isWaitingForAI, setIsWaitingForAI] = useState(false);
   const conversationIdRef = useRef<string | undefined>(undefined);
   const [showComparison, setShowComparison] = useState<boolean>(false);
@@ -121,13 +121,7 @@ const Index = () => {
   };
 
   const toggleLeftPanel = () => {
-    setLeftPanelCollapsed(!leftPanelCollapsed);
-    setRightPanelExpanded(leftPanelCollapsed ? false : true);
-  };
-
-  const toggleRightPanel = () => {
-    setRightPanelExpanded(!rightPanelExpanded);
-    setLeftPanelCollapsed(rightPanelExpanded ? false : true);
+    setLeftPanelExpanded(!leftPanelExpanded);
   };
 
   useEffect(() => {
@@ -175,7 +169,7 @@ const Index = () => {
           <ResizablePanel 
             defaultSize={50} 
             minSize={20}
-            maxSize={80} 
+            maxSize={leftPanelExpanded ? 100 : 80} 
             className={cn(
               "transition-all duration-300",
               leftPanelCollapsed && "!w-[80px] min-w-[80px] !max-w-[80px]"
@@ -211,10 +205,11 @@ const Index = () => {
                   <Button 
                     variant="ghost" 
                     size="icon"
-                    onClick={toggleLeftPanel}
+                    onClick={leftPanelExpanded ? toggleLeftPanel : toggleLeftPanel}
                     className="flex-shrink-0 ml-2"
+                    aria-label={leftPanelExpanded ? "Restore split view" : "Maximize panel"}
                   >
-                    {leftPanelCollapsed ? <MaximizeIcon size={18} /> : <MinimizeIcon size={18} />}
+                    {leftPanelExpanded ? <MinimizeIcon size={18} /> : <MaximizeIcon size={18} />}
                   </Button>
                 </div>
               </div>
@@ -306,7 +301,7 @@ const Index = () => {
             </div>
           </ResizablePanel>
 
-          {!leftPanelCollapsed && !rightPanelExpanded && <ResizableHandle withHandle />}
+          {!leftPanelCollapsed && !leftPanelExpanded && <ResizableHandle withHandle />}
           
           <ResizablePanel 
             defaultSize={50} 
@@ -314,21 +309,11 @@ const Index = () => {
             maxSize={80}
             className={cn(
               "transition-all duration-300",
-              rightPanelExpanded && "!w-[calc(100%-80px)] !min-w-[calc(100%-80px)] !max-w-[calc(100%-80px)]"
+              (leftPanelExpanded || leftPanelCollapsed) && "!w-[calc(100%-80px)] !min-w-[calc(100%-80px)] !max-w-[calc(100%-80px)]",
+              leftPanelExpanded && "hidden"
             )}
           >
             <div className="h-full flex flex-col items-center justify-center">
-              <div className="flex items-end justify-end w-full p-2">
-                <Button 
-                  variant="ghost" 
-                  size="icon"
-                  onClick={toggleRightPanel}
-                  className="flex-shrink-0"
-                >
-                  {rightPanelExpanded ? <MinimizeIcon size={18} /> : <MaximizeIcon size={18} />}
-                </Button>
-              </div>
-              
               <ScrollArea className="flex-1 w-full overflow-hidden">
                 <div className="flex flex-col h-full items-center justify-center">
                   {state.thinkingSteps.length > 0 && (

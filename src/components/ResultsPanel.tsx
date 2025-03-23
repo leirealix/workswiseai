@@ -63,8 +63,24 @@ export default function ResultsPanel({ result }: ResultsPanelProps) {
   // Get suggested revisions count (for demo purposes)
   const suggestedRevisions = result.clauses.length;
 
-  // State for card minimization
-  const [summaryCardCollapsed, setSummaryCardCollapsed] = useState(false);
+  // State for card expansion
+  const [expandedCards, setExpandedCards] = useState<Record<string, boolean>>({
+    'summary': true,
+    'findings': true,
+    'parties': false,
+    'extraction': false,
+    'risks': false,
+    'comparison': true,
+    'recommendations': true
+  });
+
+  // Toggle card expansion
+  const toggleCardExpansion = (cardKey: string) => {
+    setExpandedCards(prev => ({
+      ...prev,
+      [cardKey]: !prev[cardKey]
+    }));
+  };
   
   // State for detailed view 
   const [showDetailedView, setShowDetailedView] = useState<string | null>(null);
@@ -355,23 +371,18 @@ export default function ResultsPanel({ result }: ResultsPanelProps) {
         <div className="p-4 space-y-4">
           {/* Summary Card */}
           <Card className="border shadow-md">
-            <Collapsible defaultOpen={!summaryCardCollapsed} onOpenChange={(isOpen) => setSummaryCardCollapsed(!isOpen)}>
-              <CardHeader className="pb-2">
-                <div className="flex items-center justify-between">
-                  <CardTitle className="text-xl flex items-center mr-2 truncate">
-                    <FileTextIcon size={20} className="mr-2 text-primary flex-shrink-0" />
-                    <span>Document Analysis</span>
-                  </CardTitle>
-                  <CollapsibleTrigger className="flex-shrink-0 p-1 hover:bg-muted/50 rounded-full">
-                    {summaryCardCollapsed ? <MaximizeIcon size={16} /> : <MinimizeIcon size={16} />}
-                  </CollapsibleTrigger>
-                </div>
-                <CardDescription>
-                  {result.summary.substring(0, 120)}...
-                </CardDescription>
-              </CardHeader>
-              <CollapsibleContent>
-                <CardContent className="pb-3">
+            <CardHeader isExpanded={expandedCards.summary} onToggleExpand={() => toggleCardExpansion('summary')}>
+              <CardTitle className="flex items-center">
+                <FileTextIcon size={20} className="mr-2 text-primary flex-shrink-0" />
+                <span>Document Analysis</span>
+              </CardTitle>
+              <CardDescription>
+                {result.summary.substring(0, 120)}...
+              </CardDescription>
+            </CardHeader>
+            {expandedCards.summary && (
+              <>
+                <CardContent>
                   <div className="grid grid-cols-3 gap-4 mb-4">
                     <div className="flex flex-col items-center justify-center p-3 bg-muted/30 rounded-lg">
                       <FileTextIcon size={18} className="mb-1 text-primary" />
@@ -409,25 +420,20 @@ export default function ResultsPanel({ result }: ResultsPanelProps) {
                   </Button>
                   <DropdownActionMenu entityName="Document Analysis" />
                 </CardFooter>
-              </CollapsibleContent>
-            </Collapsible>
+              </>
+            )}
           </Card>
 
           {/* Summarized Findings */}
           <Card className="border shadow-md overflow-hidden">
-            <Collapsible defaultOpen>
-              <CardHeader className="pb-2">
-                <div className="flex items-center justify-between">
-                  <CardTitle className="text-base flex items-center mr-2 truncate">
-                    <ClipboardCheckIcon size={18} className="mr-2 text-primary flex-shrink-0" />
-                    <span>Summarized Findings</span>
-                  </CardTitle>
-                  <CollapsibleTrigger className="flex-shrink-0 p-1 hover:bg-muted/50 rounded-full">
-                    <MinimizeIcon size={16} />
-                  </CollapsibleTrigger>
-                </div>
-              </CardHeader>
-              <CollapsibleContent>
+            <CardHeader isExpanded={expandedCards.findings} onToggleExpand={() => toggleCardExpansion('findings')}>
+              <CardTitle className="flex items-center">
+                <ClipboardCheckIcon size={18} className="mr-2 text-primary flex-shrink-0" />
+                <span>Summarized Findings</span>
+              </CardTitle>
+            </CardHeader>
+            {expandedCards.findings && (
+              <>
                 <CardContent>
                   <p className="text-sm">{result.summary}</p>
                   
@@ -461,25 +467,20 @@ export default function ResultsPanel({ result }: ResultsPanelProps) {
                   </Button>
                   <DropdownActionMenu entityName="Summarized Findings" />
                 </CardFooter>
-              </CollapsibleContent>
-            </Collapsible>
+              </>
+            )}
           </Card>
           
           {/* Parties Information */}
           <Card className="border shadow-md overflow-hidden">
-            <Collapsible>
-              <CardHeader className="pb-2">
-                <div className="flex items-center justify-between">
-                  <CardTitle className="text-base flex items-center mr-2 truncate">
-                    <UsersIcon size={18} className="mr-2 text-primary flex-shrink-0" />
-                    <span>Parties Involved</span>
-                  </CardTitle>
-                  <CollapsibleTrigger className="flex-shrink-0 p-1 hover:bg-muted/50 rounded-full">
-                    <MinimizeIcon size={16} />
-                  </CollapsibleTrigger>
-                </div>
-              </CardHeader>
-              <CollapsibleContent>
+            <CardHeader isExpanded={expandedCards.parties} onToggleExpand={() => toggleCardExpansion('parties')}>
+              <CardTitle className="flex items-center">
+                <UsersIcon size={18} className="mr-2 text-primary flex-shrink-0" />
+                <span>Parties Involved</span>
+              </CardTitle>
+            </CardHeader>
+            {expandedCards.parties && (
+              <>
                 <CardContent>
                   <div className="space-y-3">
                     {result.parties.map((party, index) => (
@@ -521,25 +522,20 @@ export default function ResultsPanel({ result }: ResultsPanelProps) {
                   </Button>
                   <DropdownActionMenu entityName="Parties Information" />
                 </CardFooter>
-              </CollapsibleContent>
-            </Collapsible>
+              </>
+            )}
           </Card>
           
           {/* Key Data Extraction */}
           <Card className="border shadow-md overflow-hidden">
-            <Collapsible>
-              <CardHeader className="pb-2">
-                <div className="flex items-center justify-between">
-                  <CardTitle className="text-base flex items-center mr-2">
-                    <DatabaseIcon size={18} className="mr-2 text-primary flex-shrink-0" />
-                    <span>Key Data Extraction</span>
-                  </CardTitle>
-                  <CollapsibleTrigger className="flex-shrink-0 p-1 hover:bg-muted/50 rounded-full">
-                    <MinimizeIcon size={16} />
-                  </CollapsibleTrigger>
-                </div>
-              </CardHeader>
-              <CollapsibleContent>
+            <CardHeader isExpanded={expandedCards.extraction} onToggleExpand={() => toggleCardExpansion('extraction')}>
+              <CardTitle className="flex items-center">
+                <DatabaseIcon size={18} className="mr-2 text-primary flex-shrink-0" />
+                <span>Key Data Extraction</span>
+              </CardTitle>
+            </CardHeader>
+            {expandedCards.extraction && (
+              <>
                 <CardContent>
                   <div className="space-y-3">
                     {extractedData.slice(0, 5).map((item, index) => (
@@ -588,25 +584,20 @@ export default function ResultsPanel({ result }: ResultsPanelProps) {
                   </Button>
                   <DropdownActionMenu entityName="Key Data Extraction" />
                 </CardFooter>
-              </CollapsibleContent>
-            </Collapsible>
+              </>
+            )}
           </Card>
           
           {/* Risk Identification */}
           <Card className="border shadow-md overflow-hidden">
-            <Collapsible>
-              <CardHeader className="pb-2">
-                <div className="flex items-center justify-between">
-                  <CardTitle className="text-base flex items-center mr-2 truncate">
-                    <AlertTriangleIcon size={18} className="mr-2 text-amber-500 flex-shrink-0" />
-                    <span>Risk Assessment</span>
-                  </CardTitle>
-                  <CollapsibleTrigger className="flex-shrink-0 p-1 hover:bg-muted/50 rounded-full">
-                    <MinimizeIcon size={16} />
-                  </CollapsibleTrigger>
-                </div>
-              </CardHeader>
-              <CollapsibleContent>
+            <CardHeader isExpanded={expandedCards.risks} onToggleExpand={() => toggleCardExpansion('risks')}>
+              <CardTitle className="flex items-center">
+                <AlertTriangleIcon size={18} className="mr-2 text-amber-500 flex-shrink-0" />
+                <span>Risk Assessment</span>
+              </CardTitle>
+            </CardHeader>
+            {expandedCards.risks && (
+              <>
                 <CardContent>
                   <div className="space-y-3">
                     {result.clauses.map((clause, index) => (
@@ -655,25 +646,20 @@ export default function ResultsPanel({ result }: ResultsPanelProps) {
                   </Button>
                   <DropdownActionMenu entityName="Risk Assessment" />
                 </CardFooter>
-              </CollapsibleContent>
-            </Collapsible>
+              </>
+            )}
           </Card>
 
           {/* Comparative Analysis Card */}
           <Card className="border shadow-md overflow-hidden">
-            <Collapsible defaultOpen>
-              <CardHeader className="pb-2">
-                <div className="flex items-center justify-between">
-                  <CardTitle className="text-base flex items-center mr-2 truncate">
-                    <BarChart2Icon size={18} className="mr-2 text-primary flex-shrink-0" />
-                    <span>Comparative Analysis</span>
-                  </CardTitle>
-                  <CollapsibleTrigger className="flex-shrink-0 p-1 hover:bg-muted/50 rounded-full">
-                    <MinimizeIcon size={16} />
-                  </CollapsibleTrigger>
-                </div>
-              </CardHeader>
-              <CollapsibleContent>
+            <CardHeader isExpanded={expandedCards.comparison} onToggleExpand={() => toggleCardExpansion('comparison')}>
+              <CardTitle className="flex items-center">
+                <BarChart2Icon size={18} className="mr-2 text-primary flex-shrink-0" />
+                <span>Comparative Analysis</span>
+              </CardTitle>
+            </CardHeader>
+            {expandedCards.comparison && (
+              <>
                 <CardContent>
                   <div className="space-y-3 mb-4">
                     <div className="bg-muted/30 rounded-lg p-3">
@@ -728,25 +714,20 @@ export default function ResultsPanel({ result }: ResultsPanelProps) {
                   </Button>
                   <DropdownActionMenu entityName="Comparative Analysis" />
                 </CardFooter>
-              </CollapsibleContent>
-            </Collapsible>
+              </>
+            )}
           </Card>
 
           {/* Actionable Recommendations Card */}
           <Card className="border shadow-md overflow-hidden">
-            <Collapsible defaultOpen>
-              <CardHeader className="pb-2">
-                <div className="flex items-center justify-between">
-                  <CardTitle className="text-base flex items-center mr-2 truncate">
-                    <LightbulbIcon size={18} className="mr-2 text-amber-500 flex-shrink-0" />
-                    <span>Actionable Recommendations</span>
-                  </CardTitle>
-                  <CollapsibleTrigger className="flex-shrink-0 p-1 hover:bg-muted/50 rounded-full">
-                    <MinimizeIcon size={16} />
-                  </CollapsibleTrigger>
-                </div>
-              </CardHeader>
-              <CollapsibleContent>
+            <CardHeader isExpanded={expandedCards.recommendations} onToggleExpand={() => toggleCardExpansion('recommendations')}>
+              <CardTitle className="flex items-center">
+                <LightbulbIcon size={18} className="mr-2 text-amber-500 flex-shrink-0" />
+                <span>Actionable Recommendations</span>
+              </CardTitle>
+            </CardHeader>
+            {expandedCards.recommendations && (
+              <>
                 <CardContent>
                   <div className="space-y-3">
                     <div className="flex items-start gap-3 p-3 bg-amber-50 border border-amber-100 rounded-lg">
@@ -801,8 +782,8 @@ export default function ResultsPanel({ result }: ResultsPanelProps) {
                   </Button>
                   <DropdownActionMenu entityName="Actionable Recommendations" />
                 </CardFooter>
-              </CollapsibleContent>
-            </Collapsible>
+              </>
+            )}
           </Card>
         </div>
       </ScrollArea>

@@ -18,7 +18,7 @@ const CollapsibleTrigger = React.forwardRef<
   >
     <span className="flex-1">{children}</span>
     {showIcon && (
-      <span className="transition-transform duration-200 group-data-[state=open]:rotate-180">
+      <span className="transition-transform duration-200 ml-4 text-muted-foreground group-hover:text-primary">
         <ChevronDown className="h-4 w-4 shrink-0" />
       </span>
     )}

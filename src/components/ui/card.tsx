@@ -32,7 +32,7 @@ const CardHeader = React.forwardRef<
       {onToggleExpand && (
         <button 
           onClick={onToggleExpand}
-          className="text-muted-foreground hover:text-primary transition-colors"
+          className="text-muted-foreground hover:text-primary transition-colors ml-4 flex-shrink-0"
           aria-label={isExpanded ? "Collapse" : "Expand"}
         >
           {isExpanded ? <ChevronUp size={20} /> : <ChevronDown size={20} />}
@@ -50,7 +50,7 @@ const CardTitle = React.forwardRef<
   <h3
     ref={ref}
     className={cn(
-      "text-lg font-semibold leading-none tracking-tight group-hover:text-primary transition-colors",
+      "text-lg font-semibold leading-none tracking-tight group-hover:text-primary transition-colors whitespace-nowrap",
       className
     )}
     {...props}

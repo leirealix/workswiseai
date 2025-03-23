@@ -13,11 +13,10 @@ const CollapsibleTrigger = React.forwardRef<
 >(({ className, children, ...props }, ref) => (
   <CollapsiblePrimitive.CollapsibleTrigger
     ref={ref}
-    className={cn("flex w-full items-center justify-between", className)}
+    className={cn("group", className)}
     {...props}
   >
     {children}
-    <ChevronDown className="h-4 w-4 transition-transform duration-200 ease-in-out group-data-[state=open]:rotate-180" />
   </CollapsiblePrimitive.CollapsibleTrigger>
 ))
 CollapsibleTrigger.displayName = CollapsiblePrimitive.CollapsibleTrigger.displayName

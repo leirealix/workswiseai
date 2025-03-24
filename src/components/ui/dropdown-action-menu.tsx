@@ -29,7 +29,7 @@ export function DropdownActionMenu({ entityName }: DropdownActionMenuProps) {
       toast({
         title: "Export Complete",
         description: `${entityName} has been exported as a Word document.`,
-        variant: "success",
+        variant: "default",
       });
     }, 1500);
   };
@@ -46,7 +46,7 @@ export function DropdownActionMenu({ entityName }: DropdownActionMenuProps) {
       toast({
         title: "Export Complete",
         description: `${entityName} has been exported as a PDF document.`,
-        variant: "success",
+        variant: "default",
       });
     }, 1500);
   };
@@ -63,7 +63,7 @@ export function DropdownActionMenu({ entityName }: DropdownActionMenuProps) {
       toast({
         title: "Save Complete",
         description: `${entityName} has been saved to iManage successfully.`,
-        variant: "success",
+        variant: "default",
       });
     }, 2000);
   };
@@ -80,7 +80,7 @@ export function DropdownActionMenu({ entityName }: DropdownActionMenuProps) {
       toast({
         title: "Email Ready",
         description: `${entityName} is ready to send via email. Opening your email client...`,
-        variant: "success",
+        variant: "default",
       });
     }, 1500);
   };
@@ -97,7 +97,7 @@ export function DropdownActionMenu({ entityName }: DropdownActionMenuProps) {
       toast({
         title: "Print Dialog Opened",
         description: "The print dialog has been opened.",
-        variant: "success",
+        variant: "default",
       });
       
       // In a real app, this would trigger window.print()

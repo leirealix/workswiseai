@@ -2,13 +2,14 @@
 import { useState } from 'react';
 import { 
   FilesIcon, 
-  SearchIcon, 
+  UsersIcon, 
   SettingsIcon, 
-  HistoryIcon, 
+  HistoryIcon,
   MenuIcon,
   HomeIcon,
   PanelLeftIcon,
-  PanelRightIcon
+  PanelRightIcon,
+  BriefcaseIcon
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
@@ -34,7 +35,12 @@ export default function Sidebar({ className }: SidebarProps) {
       )}
     >
       <div className="flex h-14 items-center px-4 border-b">
-        {!collapsed && <h2 className="text-lg font-semibold">Document AI</h2>}
+        {!collapsed && (
+          <div className="flex items-center gap-2">
+            <BriefcaseIcon size={22} className="text-primary" />
+            <h2 className="text-lg font-semibold">Workswise AI</h2>
+          </div>
+        )}
         <Button 
           variant="ghost" 
           size="icon" 
@@ -59,8 +65,8 @@ export default function Sidebar({ className }: SidebarProps) {
             collapsed={collapsed} 
           />
           <NavItem 
-            icon={SearchIcon} 
-            label="Search" 
+            icon={UsersIcon} 
+            label="Collaborations" 
             collapsed={collapsed} 
           />
           <NavItem 

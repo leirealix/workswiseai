@@ -360,436 +360,349 @@ export default function ResultsPanel({ result }: ResultsPanelProps) {
             </div>
           </div>
         );
-      default:
-        return null;
-    }
-  };
-
-  return (
-    <div className="h-full flex flex-col">
-      <ScrollArea className="flex-1">
-        <div className="p-4 space-y-4">
-          {/* Summary Card */}
-          <Card className="border shadow-md">
-            <CardHeader isExpanded={expandedCards.summary} onToggleExpand={() => toggleCardExpansion('summary')}>
-              <CardTitle className="flex items-center">
-                <FileTextIcon size={20} className="mr-2 text-primary flex-shrink-0" />
-                <span>Document Analysis</span>
-              </CardTitle>
-              <CardDescription>
-                {result.summary.substring(0, 120)}...
-              </CardDescription>
-            </CardHeader>
-            {expandedCards.summary && (
-              <>
-                <CardContent>
-                  <div className="grid grid-cols-3 gap-4 mb-4">
-                    <div className="flex flex-col items-center justify-center p-3 bg-muted/30 rounded-lg">
-                      <FileTextIcon size={18} className="mb-1 text-primary" />
-                      <div className="text-xs text-muted-foreground">Documents</div>
-                      <div className="font-semibold">1</div>
-                    </div>
-                    <div className="flex flex-col items-center justify-center p-3 bg-muted/30 rounded-lg">
-                      <AlertTriangleIcon size={18} className="mb-1 text-amber-500" />
-                      <div className="text-xs text-muted-foreground">High Risk</div>
-                      <div className="font-semibold">{highRiskClauseCount}</div>
-                    </div>
-                    <div className="flex flex-col items-center justify-center p-3 bg-muted/30 rounded-lg">
-                      <EditIcon size={18} className="mb-1 text-blue-500" />
-                      <div className="text-xs text-muted-foreground">Revisions</div>
-                      <div className="font-semibold">{suggestedRevisions}</div>
-                    </div>
+      case 'findings':
+        return (
+          <div className="fixed inset-0 bg-background/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+            <div className="bg-card rounded-lg shadow-lg border max-w-3xl w-full max-h-[80vh] overflow-hidden flex flex-col">
+              <div className="p-4 border-b flex items-center justify-between">
+                <h2 className="text-xl font-semibold flex items-center">
+                  <ClipboardCheckIcon size={20} className="mr-2 text-primary" />
+                  Summarized Findings Details
+                </h2>
+                <Button variant="ghost" size="icon" onClick={() => setShowDetailedView(null)}>
+                  <MinimizeIcon size={18} />
+                </Button>
+              </div>
+              <ScrollArea className="flex-1 p-6">
+                <h3 className="text-lg font-medium mb-3">Complete Document Analysis</h3>
+                <p className="text-sm mb-6">{result.summary}</p>
+                
+                <h3 className="text-lg font-medium mb-3">Key Findings</h3>
+                <div className="space-y-4">
+                  <div className="bg-muted/30 rounded-lg p-4">
+                    <h4 className="font-medium mb-2">Agreement Structure</h4>
+                    <p className="text-sm">
+                      This is a standard legal agreement following conventional structure with clearly 
+                      defined terms, conditions, and obligations for all parties involved.
+                    </p>
                   </div>
-                  <div className="flex items-center gap-2 mb-2">
-                    <FlagIcon size={16} className={`${riskLevel === 'High' ? 'text-red-500' : riskLevel === 'Moderate' ? 'text-amber-500' : 'text-green-500'}`} />
-                    <span className="text-sm font-medium">Overall Risk Level:</span>
-                    <Badge variant="outline" className={`${getRiskLevelStyle(riskLevel)}`}>
-                      {riskLevel}
-                    </Badge>
-                  </div>
-                </CardContent>
-                <CardFooter className="flex justify-between items-center pt-0">
-                  <Button 
-                    variant="ghost" 
-                    size="sm" 
-                    className="gap-1 hover:bg-primary/10"
-                    onClick={() => toggleDetailedView('summary')}
-                  >
-                    <SearchIcon size={14} />
-                    View Details
-                  </Button>
-                  <DropdownActionMenu entityName="Document Analysis" />
-                </CardFooter>
-              </>
-            )}
-          </Card>
-
-          {/* Summarized Findings */}
-          <Card className="border shadow-md overflow-hidden">
-            <CardHeader isExpanded={expandedCards.findings} onToggleExpand={() => toggleCardExpansion('findings')}>
-              <CardTitle className="flex items-center">
-                <ClipboardCheckIcon size={18} className="mr-2 text-primary flex-shrink-0" />
-                <span>Summarized Findings</span>
-              </CardTitle>
-            </CardHeader>
-            {expandedCards.findings && (
-              <>
-                <CardContent>
-                  <p className="text-sm">{result.summary}</p>
                   
-                  <div className="mt-4">
-                    <h4 className="text-sm font-medium mb-2">Key Document Points:</h4>
+                  <div className="bg-muted/30 rounded-lg p-4">
+                    <h4 className="font-medium mb-2">Key Provisions</h4>
                     <ul className="text-sm space-y-2">
-                      <li className="flex items-start gap-2">
-                        <CheckIcon size={14} className="mt-1 text-green-500 flex-shrink-0" />
-                        <span>This is a non-exclusive licensing agreement between two parties.</span>
-                      </li>
-                      <li className="flex items-start gap-2">
-                        <CheckIcon size={14} className="mt-1 text-green-500 flex-shrink-0" />
-                        <span>Agreement is effective for 2 years with automatic renewal provisions.</span>
-                      </li>
-                      <li className="flex items-start gap-2">
-                        <CheckIcon size={14} className="mt-1 text-green-500 flex-shrink-0" />
-                        <span>Standard confidentiality, non-compete, and termination clauses included.</span>
-                      </li>
+                      {result.clauses.map((clause, index) => (
+                        <li key={index} className="flex items-start gap-2">
+                          <CheckIcon size={14} className="mt-1 text-green-500 flex-shrink-0" />
+                          <span>{clause.title}: {clause.content.substring(0, 80)}...</span>
+                        </li>
+                      ))}
                     </ul>
                   </div>
-                </CardContent>
-                <CardFooter className="flex justify-between items-center pt-0">
-                  <Button 
-                    variant="ghost" 
-                    size="sm" 
-                    className="gap-1 hover:bg-primary/10"
-                    onClick={() => toggleDetailedView('findings')}
-                  >
-                    <SearchIcon size={14} />
-                    View Details
-                  </Button>
-                  <DropdownActionMenu entityName="Summarized Findings" />
-                </CardFooter>
-              </>
-            )}
-          </Card>
-          
-          {/* Parties Information */}
-          <Card className="border shadow-md overflow-hidden">
-            <CardHeader isExpanded={expandedCards.parties} onToggleExpand={() => toggleCardExpansion('parties')}>
-              <CardTitle className="flex items-center">
-                <UsersIcon size={18} className="mr-2 text-primary flex-shrink-0" />
-                <span>Parties Involved</span>
-              </CardTitle>
-            </CardHeader>
-            {expandedCards.parties && (
-              <>
-                <CardContent>
-                  <div className="space-y-3">
-                    {result.parties.map((party, index) => (
-                      <div key={index} className="bg-muted/30 rounded-lg p-3">
-                        <div className="font-medium">{party}</div>
-                        <div className="text-sm text-muted-foreground mt-1">
-                          {index === 0 ? 'First Party' : 'Second Party'}
-                        </div>
-                      </div>
-                    ))}
                   
-                    <div className="mt-4">
-                      <h4 className="text-sm font-medium mb-3">Signatories</h4>
-                      <div className="space-y-3">
-                        {result.signatures.map((signature, index) => (
-                          <div key={index} className="flex items-center border rounded-lg p-3">
-                            <div className="w-8 h-8 rounded-full bg-primary/10 text-primary flex items-center justify-center mr-3">
-                              {signature.name.charAt(0)}
-                            </div>
-                            <div>
-                              <div className="font-medium">{signature.name}</div>
-                              <div className="text-xs text-muted-foreground">{signature.role}</div>
-                            </div>
-                          </div>
-                        ))}
+                  <div className="bg-muted/30 rounded-lg p-4">
+                    <h4 className="font-medium mb-2">Entities Involved</h4>
+                    <ul className="text-sm space-y-2">
+                      {result.parties.map((party, index) => (
+                        <li key={index} className="flex items-start gap-2">
+                          <UsersIcon size={14} className="mt-1 text-primary flex-shrink-0" />
+                          <span>{party} ({index === 0 ? 'First Party' : 'Second Party'})</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                </div>
+                
+                <h3 className="text-lg font-medium mb-3 mt-6">Document Timeline</h3>
+                <div className="relative border-l border-muted-foreground/30 pl-6 pb-2 space-y-6">
+                  {result.keyDates.map((date, index) => (
+                    <div key={index} className="relative">
+                      <div className="absolute w-3 h-3 rounded-full bg-primary -left-[1.65rem] top-1.5"></div>
+                      <div className="font-medium">{date.description}</div>
+                      <div className="text-sm text-muted-foreground">
+                        {new Date(date.date).toLocaleDateString('en-US', {
+                          year: 'numeric',
+                          month: 'long',
+                          day: 'numeric',
+                        })}
                       </div>
                     </div>
+                  ))}
+                </div>
+              </ScrollArea>
+              <div className="p-4 border-t flex justify-end gap-2">
+                <Button variant="outline" onClick={() => setShowDetailedView(null)}>Close</Button>
+                <Button variant="default">Export as PDF</Button>
+              </div>
+            </div>
+          </div>
+        );
+      case 'risks':
+        return (
+          <div className="fixed inset-0 bg-background/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+            <div className="bg-card rounded-lg shadow-lg border max-w-4xl w-full max-h-[80vh] overflow-hidden flex flex-col">
+              <div className="p-4 border-b flex items-center justify-between">
+                <h2 className="text-xl font-semibold flex items-center">
+                  <AlertTriangleIcon size={20} className="mr-2 text-amber-500" />
+                  Risk Assessment Details
+                </h2>
+                <Button variant="ghost" size="icon" onClick={() => setShowDetailedView(null)}>
+                  <MinimizeIcon size={18} />
+                </Button>
+              </div>
+              <ScrollArea className="flex-1">
+                <div className="p-6">
+                  <h3 className="text-lg font-medium mb-2">Risk Summary</h3>
+                  <p className="text-sm text-muted-foreground mb-6">
+                    This document has been analyzed for potential legal, financial, and operational risks.
+                    Below is a detailed breakdown of identified risk areas and their severity.
+                  </p>
+                  
+                  <div className="mb-6 grid grid-cols-3 gap-4">
+                    <div className="border rounded-lg p-4 bg-muted/10">
+                      <div className="text-4xl font-bold text-amber-500 mb-1">{result.clauses.length}</div>
+                      <div className="text-sm text-muted-foreground">Total Risk Points</div>
+                    </div>
+                    <div className="border rounded-lg p-4 bg-muted/10">
+                      <div className="text-4xl font-bold text-red-500 mb-1">{highRiskClauseCount}</div>
+                      <div className="text-sm text-muted-foreground">High Risk Items</div>
+                    </div>
+                    <div className="border rounded-lg p-4 bg-muted/10">
+                      <div className="text-4xl font-bold text-green-500 mb-1">{suggestedRevisions}</div>
+                      <div className="text-sm text-muted-foreground">Recommended Actions</div>
+                    </div>
                   </div>
-                </CardContent>
-                <CardFooter className="flex justify-between items-center pt-0">
-                  <Button 
-                    variant="ghost" 
-                    size="sm" 
-                    className="gap-1 hover:bg-primary/10"
-                    onClick={() => toggleDetailedView('parties')}
-                  >
-                    <SearchIcon size={14} />
-                    View Details
-                  </Button>
-                  <DropdownActionMenu entityName="Parties Information" />
-                </CardFooter>
-              </>
-            )}
-          </Card>
-          
-          {/* Key Data Extraction */}
-          <Card className="border shadow-md overflow-hidden">
-            <CardHeader isExpanded={expandedCards.extraction} onToggleExpand={() => toggleCardExpansion('extraction')}>
-              <CardTitle className="flex items-center">
-                <DatabaseIcon size={18} className="mr-2 text-primary flex-shrink-0" />
-                <span>Key Data Extraction</span>
-              </CardTitle>
-            </CardHeader>
-            {expandedCards.extraction && (
-              <>
-                <CardContent>
-                  <div className="space-y-3">
-                    {extractedData.slice(0, 5).map((item, index) => (
-                      <div key={index} className="flex items-center justify-between border-b pb-3 last:border-0">
-                        <div>
-                          <div className="font-medium flex items-center">
-                            {item.type === 'Date' && <CalendarIcon size={14} className="mr-1 text-primary" />}
-                            {item.type === 'Party' && <UsersIcon size={14} className="mr-1 text-primary" />}
-                            {item.type === 'Clause' && <FileTextIcon size={14} className="mr-1 text-primary" />}
-                            {item.type === 'Obligation' && <CheckIcon size={14} className="mr-1 text-primary" />}
-                            {item.type === 'Provision' && <AlertTriangleIcon size={14} className="mr-1 text-primary" />}
-                            {item.label}
-                          </div>
-                          <div className="text-xs text-muted-foreground mt-1 max-w-xs truncate">
-                            {item.value}
-                          </div>
-                        </div>
-                        <div className={`text-xs font-medium px-2 py-1 rounded-full 
-                          ${item.confidence === 'High' 
-                            ? 'bg-green-100 text-green-700' 
-                            : item.confidence === 'Medium'
-                            ? 'bg-amber-100 text-amber-700'
-                            : 'bg-red-100 text-red-700'}`
-                        }>
-                          {item.confidence}
-                        </div>
-                      </div>
-                    ))}
-                    
-                    {extractedData.length > 5 && (
-                      <div className="text-sm text-center text-muted-foreground pt-2">
-                        + {extractedData.length - 5} more extracted elements
-                      </div>
-                    )}
-                  </div>
-                </CardContent>
-                <CardFooter className="flex justify-between items-center pt-0">
-                  <Button 
-                    variant="ghost" 
-                    size="sm" 
-                    className="gap-1 hover:bg-primary/10"
-                    onClick={() => toggleDetailedView('extraction')}
-                  >
-                    <TableIcon size={14} />
-                    View Details
-                  </Button>
-                  <DropdownActionMenu entityName="Key Data Extraction" />
-                </CardFooter>
-              </>
-            )}
-          </Card>
-          
-          {/* Risk Identification */}
-          <Card className="border shadow-md overflow-hidden">
-            <CardHeader isExpanded={expandedCards.risks} onToggleExpand={() => toggleCardExpansion('risks')}>
-              <CardTitle className="flex items-center">
-                <AlertTriangleIcon size={18} className="mr-2 text-amber-500 flex-shrink-0" />
-                <span>Risk Assessment</span>
-              </CardTitle>
-            </CardHeader>
-            {expandedCards.risks && (
-              <>
-                <CardContent>
-                  <div className="space-y-3">
+                  
+                  <h3 className="text-lg font-medium mb-4">Identified Risks by Clause</h3>
+                  <div className="space-y-6">
                     {result.clauses.map((clause, index) => (
-                      <div key={index} className="border rounded-md p-3">
-                        <div className="flex items-start justify-between">
-                          <div className="flex items-start gap-2">
-                            <FlagIcon 
-                              size={16} 
-                              className={index === 0 ? 'text-red-500' : index === 1 ? 'text-amber-500' : 'text-green-500'} 
-                            />
-                            <div>
-                              <h4 className="text-sm font-medium">{clause.title}</h4>
-                              <p className="text-xs text-muted-foreground">Page {clause.page}</p>
+                      <div key={index} className="border rounded-lg overflow-hidden">
+                        <div className={`p-4 ${
+                          index === 0 ? 'bg-red-50 border-l-4 border-l-red-500' : 
+                          index === 1 ? 'bg-amber-50 border-l-4 border-l-amber-500' : 
+                          'bg-green-50 border-l-4 border-l-green-500'
+                        }`}>
+                          <div className="flex items-center justify-between">
+                            <div className="flex items-center">
+                              <FlagIcon 
+                                size={18} 
+                                className={`mr-2 ${
+                                  index === 0 ? 'text-red-500' : 
+                                  index === 1 ? 'text-amber-500' : 
+                                  'text-green-500'
+                                }`} 
+                              />
+                              <h4 className="font-medium">{clause.title}</h4>
+                            </div>
+                            <Badge 
+                              variant="outline" 
+                              className={
+                                index === 0 ? 'text-red-500 bg-red-50 border-red-200' : 
+                                index === 1 ? 'text-amber-500 bg-amber-50 border-amber-200' : 
+                                'text-green-500 bg-green-50 border-green-200'
+                              }
+                            >
+                              {index === 0 ? 'High Risk' : index === 1 ? 'Moderate Risk' : 'Low Risk'}
+                            </Badge>
+                          </div>
+                        </div>
+                        <div className="p-4 bg-card">
+                          <div className="mb-3">
+                            <div className="text-sm font-medium mb-1">Risk Description</div>
+                            <p className="text-sm">
+                              {index === 0 ? 
+                                'This clause contains vague language that could be interpreted in multiple ways, creating legal uncertainty.' : 
+                                index === 1 ? 
+                                'The obligations outlined in this section may be difficult to enforce in certain jurisdictions.' : 
+                                'Standard clause with well-defined parameters and minimal risk exposure.'
+                              }
+                            </p>
+                          </div>
+                          
+                          <div className="mb-3">
+                            <div className="text-sm font-medium mb-1">Original Clause Text</div>
+                            <div className="text-sm p-3 bg-muted/30 rounded-md">
+                              {clause.content}
                             </div>
                           </div>
-                          <Badge 
-                            variant="outline" 
-                            className={index === 0 ? 'text-red-500 bg-red-50' : index === 1 ? 'text-amber-500 bg-amber-50' : 'text-green-500 bg-green-50'}
-                          >
-                            {index === 0 ? 'High Risk' : index === 1 ? 'Moderate' : 'Low Risk'}
-                          </Badge>
-                        </div>
-                        <p className="text-sm mt-2">{clause.content.substring(0, 100)}...</p>
-                        <div className="flex justify-end mt-2">
-                          <Button 
-                            variant="ghost" 
-                            size="sm"
-                            onClick={() => toggleDetailedView(`clause-${index}`)}
-                          >
-                            View Details
-                          </Button>
+                          
+                          <div className="mb-3">
+                            <div className="text-sm font-medium mb-1">Potential Impact</div>
+                            <p className="text-sm">
+                              {index === 0 ? 
+                                'May lead to contract disputes, potential litigation, and financial liability.' : 
+                                index === 1 ? 
+                                'Could create operational challenges and require additional resources to manage.' : 
+                                'Minimal impact expected under normal circumstances.'
+                              }
+                            </p>
+                          </div>
+                          
+                          <div>
+                            <div className="text-sm font-medium mb-1">Recommended Action</div>
+                            <p className="text-sm">
+                              {index === 0 ? 
+                                'Revise clause with more specific language and clearly defined terms.' : 
+                                index === 1 ? 
+                                'Consider adding jurisdiction-specific provisions or clarifications.' : 
+                                'No action required, continue with standard monitoring.'
+                              }
+                            </p>
+                          </div>
                         </div>
                       </div>
                     ))}
                   </div>
-                </CardContent>
-                <CardFooter className="flex justify-between items-center pt-0">
-                  <Button 
-                    variant="ghost" 
-                    size="sm" 
-                    className="gap-1 hover:bg-primary/10"
-                    onClick={() => toggleDetailedView('risks')}
-                  >
-                    <SearchIcon size={14} />
-                    View All Risks
-                  </Button>
-                  <DropdownActionMenu entityName="Risk Assessment" />
-                </CardFooter>
-              </>
-            )}
-          </Card>
-
-          {/* Comparative Analysis Card */}
-          <Card className="border shadow-md overflow-hidden">
-            <CardHeader isExpanded={expandedCards.comparison} onToggleExpand={() => toggleCardExpansion('comparison')}>
-              <CardTitle className="flex items-center">
-                <BarChart2Icon size={18} className="mr-2 text-primary flex-shrink-0" />
-                <span>Comparative Analysis</span>
-              </CardTitle>
-            </CardHeader>
-            {expandedCards.comparison && (
-              <>
-                <CardContent>
-                  <div className="space-y-3 mb-4">
-                    <div className="bg-muted/30 rounded-lg p-3">
-                      <div className="font-medium text-sm">Industry Standard Comparison</div>
-                      <div className="mt-2 flex items-center">
-                        <div className="w-full bg-muted rounded-full h-2.5">
-                          <div className="bg-primary h-2.5 rounded-full" style={{ width: '75%' }}></div>
+                </div>
+              </ScrollArea>
+              <div className="p-4 border-t flex justify-end gap-2">
+                <Button variant="outline" onClick={() => setShowDetailedView(null)}>Close</Button>
+                <Button variant="default">Generate Risk Report</Button>
+              </div>
+            </div>
+          </div>
+        );
+      case 'comparison':
+        return (
+          <div className="fixed inset-0 bg-background/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+            <div className="bg-card rounded-lg shadow-lg border max-w-4xl w-full max-h-[80vh] overflow-hidden flex flex-col">
+              <div className="p-4 border-b flex items-center justify-between">
+                <h2 className="text-xl font-semibold flex items-center">
+                  <BarChart2Icon size={20} className="mr-2 text-primary" />
+                  Comparative Analysis Details
+                </h2>
+                <Button variant="ghost" size="icon" onClick={() => setShowDetailedView(null)}>
+                  <MinimizeIcon size={18} />
+                </Button>
+              </div>
+              <ScrollArea className="flex-1">
+                <div className="p-6">
+                  <h3 className="text-lg font-medium mb-2">Industry Benchmark Comparison</h3>
+                  <p className="text-sm text-muted-foreground mb-6">
+                    This analysis compares the document against industry standards, similar documents in our database, 
+                    and best practices for this document type.
+                  </p>
+                  
+                  <div className="grid grid-cols-2 gap-6 mb-8">
+                    <div className="space-y-5">
+                      <div className="space-y-2">
+                        <div className="flex justify-between items-center">
+                          <div className="text-sm font-medium">Completeness</div>
+                          <div className="text-sm">90%</div>
                         </div>
-                        <span className="text-xs ml-2 text-muted-foreground">75%</span>
+                        <div className="w-full bg-muted rounded-full h-3">
+                          <div className="bg-green-500 h-3 rounded-full" style={{ width: '90%' }}></div>
+                        </div>
+                        <p className="text-xs text-muted-foreground">
+                          How complete this document is compared to ideal templates
+                        </p>
                       </div>
-                      <div className="text-xs text-muted-foreground mt-1">
-                        This agreement meets 75% of industry standard clauses
+                      
+                      <div className="space-y-2">
+                        <div className="flex justify-between items-center">
+                          <div className="text-sm font-medium">Clarity</div>
+                          <div className="text-sm">75%</div>
+                        </div>
+                        <div className="w-full bg-muted rounded-full h-3">
+                          <div className="bg-primary h-3 rounded-full" style={{ width: '75%' }}></div>
+                        </div>
+                        <p className="text-xs text-muted-foreground">
+                          How clear and unambiguous the language is
+                        </p>
+                      </div>
+                      
+                      <div className="space-y-2">
+                        <div className="flex justify-between items-center">
+                          <div className="text-sm font-medium">Required Clauses</div>
+                          <div className="text-sm">85%</div>
+                        </div>
+                        <div className="w-full bg-muted rounded-full h-3">
+                          <div className="bg-blue-500 h-3 rounded-full" style={{ width: '85%' }}></div>
+                        </div>
+                        <p className="text-xs text-muted-foreground">
+                          Inclusion of industry-standard required clauses
+                        </p>
                       </div>
                     </div>
-
-                    <div className="bg-muted/30 rounded-lg p-3">
-                      <div className="font-medium text-sm">Risk Profile Comparison</div>
-                      <div className="mt-2 flex items-center">
-                        <div className="w-full bg-muted rounded-full h-2.5">
-                          <div className="bg-amber-500 h-2.5 rounded-full" style={{ width: '45%' }}></div>
+                    
+                    <div className="space-y-5">
+                      <div className="space-y-2">
+                        <div className="flex justify-between items-center">
+                          <div className="text-sm font-medium">Risk Level</div>
+                          <div className="text-sm">45%</div>
                         </div>
-                        <span className="text-xs ml-2 text-muted-foreground">45%</span>
-                      </div>
-                      <div className="text-xs text-muted-foreground mt-1">
-                        This agreement has 45% lower risk than similar documents
-                      </div>
-                    </div>
-
-                    <div className="bg-muted/30 rounded-lg p-3">
-                      <div className="font-medium text-sm">Completeness Score</div>
-                      <div className="mt-2 flex items-center">
-                        <div className="w-full bg-muted rounded-full h-2.5">
-                          <div className="bg-green-500 h-2.5 rounded-full" style={{ width: '90%' }}></div>
+                        <div className="w-full bg-muted rounded-full h-3">
+                          <div className="bg-amber-500 h-3 rounded-full" style={{ width: '45%' }}></div>
                         </div>
-                        <span className="text-xs ml-2 text-muted-foreground">90%</span>
+                        <p className="text-xs text-muted-foreground">
+                          Risk level compared to similar documents (lower is better)
+                        </p>
                       </div>
-                      <div className="text-xs text-muted-foreground mt-1">
-                        This agreement is 90% complete compared to ideal templates
+                      
+                      <div className="space-y-2">
+                        <div className="flex justify-between items-center">
+                          <div className="text-sm font-medium">Enforceability</div>
+                          <div className="text-sm">80%</div>
+                        </div>
+                        <div className="w-full bg-muted rounded-full h-3">
+                          <div className="bg-emerald-500 h-3 rounded-full" style={{ width: '80%' }}></div>
+                        </div>
+                        <p className="text-xs text-muted-foreground">
+                          Likelihood of terms being enforceable
+                        </p>
+                      </div>
+                      
+                      <div className="space-y-2">
+                        <div className="flex justify-between items-center">
+                          <div className="text-sm font-medium">Overall Rating</div>
+                          <div className="text-sm">78%</div>
+                        </div>
+                        <div className="w-full bg-muted rounded-full h-3">
+                          <div className="bg-primary h-3 rounded-full" style={{ width: '78%' }}></div>
+                        </div>
+                        <p className="text-xs text-muted-foreground">
+                          Aggregate score across all metrics
+                        </p>
                       </div>
                     </div>
                   </div>
-                </CardContent>
-                <CardFooter className="flex justify-between items-center pt-0">
-                  <Button 
-                    variant="ghost" 
-                    size="sm" 
-                    className="gap-1 hover:bg-primary/10"
-                    onClick={() => toggleDetailedView('comparison')}
-                  >
-                    <SearchIcon size={14} />
-                    View Details
-                  </Button>
-                  <DropdownActionMenu entityName="Comparative Analysis" />
-                </CardFooter>
-              </>
-            )}
-          </Card>
-
-          {/* Actionable Recommendations Card */}
-          <Card className="border shadow-md overflow-hidden">
-            <CardHeader isExpanded={expandedCards.recommendations} onToggleExpand={() => toggleCardExpansion('recommendations')}>
-              <CardTitle className="flex items-center">
-                <LightbulbIcon size={18} className="mr-2 text-amber-500 flex-shrink-0" />
-                <span>Actionable Recommendations</span>
-              </CardTitle>
-            </CardHeader>
-            {expandedCards.recommendations && (
-              <>
-                <CardContent>
-                  <div className="space-y-3">
-                    <div className="flex items-start gap-3 p-3 bg-amber-50 border border-amber-100 rounded-lg">
-                      <div className="mt-0.5">
-                        <AlertTriangleIcon size={16} className="text-amber-500" />
-                      </div>
-                      <div>
-                        <div className="font-medium text-sm">Strengthen Confidentiality Clause</div>
-                        <p className="text-xs text-muted-foreground mt-1">
-                          Current clause lacks specificity on information handling after termination.
-                        </p>
-                        <Button variant="outline" size="sm" className="mt-2 h-7 text-xs">View Suggested Text</Button>
-                      </div>
-                    </div>
-
-                    <div className="flex items-start gap-3 p-3 bg-red-50 border border-red-100 rounded-lg">
-                      <div className="mt-0.5">
-                        <AlertTriangleIcon size={16} className="text-red-500" />
-                      </div>
-                      <div>
-                        <div className="font-medium text-sm">Add Dispute Resolution Clause</div>
-                        <p className="text-xs text-muted-foreground mt-1">
-                          Document lacks clear dispute resolution process. Recommend adding arbitration clause.
-                        </p>
-                        <Button variant="outline" size="sm" className="mt-2 h-7 text-xs">View Suggested Text</Button>
-                      </div>
-                    </div>
-
-                    <div className="flex items-start gap-3 p-3 bg-blue-50 border border-blue-100 rounded-lg">
-                      <div className="mt-0.5">
-                        <LightbulbIcon size={16} className="text-blue-500" />
-                      </div>
-                      <div>
-                        <div className="font-medium text-sm">Update Force Majeure Clause</div>
-                        <p className="text-xs text-muted-foreground mt-1">
-                          Consider expanding to include modern disruptions like cyber attacks.
-                        </p>
-                        <Button variant="outline" size="sm" className="mt-2 h-7 text-xs">View Suggested Text</Button>
-                      </div>
-                    </div>
-                  </div>
-                </CardContent>
-                <CardFooter className="flex justify-between items-center pt-0">
-                  <Button 
-                    variant="ghost" 
-                    size="sm" 
-                    className="gap-1 hover:bg-primary/10"
-                    onClick={() => toggleDetailedView('recommendations')}
-                  >
-                    <SearchIcon size={14} />
-                    View All
-                  </Button>
-                  <DropdownActionMenu entityName="Actionable Recommendations" />
-                </CardFooter>
-              </>
-            )}
-          </Card>
-        </div>
-      </ScrollArea>
-      
-      {/* Render detailed view if needed */}
-      {showDetailedView && renderDetailedView()}
-    </div>
-  );
-}
+                  
+                  <h3 className="text-lg font-medium mb-4">Clause Comparison</h3>
+                  <div className="border rounded-lg overflow-hidden mb-6">
+                    <Table>
+                      <TableHeader>
+                        <TableRow>
+                          <TableHead>Clause</TableHead>
+                          <TableHead>This Document</TableHead>
+                          <TableHead>Industry Standard</TableHead>
+                          <TableHead>Gap Analysis</TableHead>
+                        </TableRow>
+                      </TableHeader>
+                      <TableBody>
+                        {result.clauses.map((clause, index) => (
+                          <TableRow key={index}>
+                            <TableCell className="font-medium">{clause.title}</TableCell>
+                            <TableCell>Present</TableCell>
+                            <TableCell>
+                              {index < 2 ? 'Present' : 'Optional'}
+                            </TableCell>
+                            <TableCell>
+                              <Badge 
+                                variant="outline" 
+                                className={
+                                  index === 0 ? 'bg-red-100 text-red-700 border-red-200' : 
+                                  'bg-green-100 text-green-700 border-green-200'
+                                }
+                              >
+                                {index === 0 ? 'Needs Improvement' : 'Meets Standard'}
+                              </Badge>
+                            </TableCell>
+                          </TableRow>
+                        ))}
+                        <TableRow>
+                          <TableCell className="font-medium">Force Majeure</TableCell>
+                          <TableCell>Present</TableCell>
+                          <TableCell>Present</TableCell>
+                          <TableCell>
+                            <Badge 
+                              variant="outline" 
+                              className="bg-green-100 text-green-700 border

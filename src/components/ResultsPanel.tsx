@@ -1,3 +1,4 @@
+
 import { useState } from 'react';
 import { AnalysisResult } from '@/types';
 import { 
@@ -705,4 +706,474 @@ export default function ResultsPanel({ result }: ResultsPanelProps) {
                           <TableCell>
                             <Badge 
                               variant="outline" 
-                              className="bg-green-100 text-green-700 border
+                              className="bg-green-100 text-green-700 border-green-200"
+                            >
+                              Meets Standard
+                            </Badge>
+                          </TableCell>
+                        </TableRow>
+                      </TableBody>
+                    </Table>
+                  </div>
+                </div>
+              </ScrollArea>
+              <div className="p-4 border-t flex justify-end gap-2">
+                <Button variant="outline" onClick={() => setShowDetailedView(null)}>Close</Button>
+                <Button variant="default">Compare With Template</Button>
+              </div>
+            </div>
+          </div>
+        );
+      case 'recommendations':
+        return (
+          <div className="fixed inset-0 bg-background/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+            <div className="bg-card rounded-lg shadow-lg border max-w-3xl w-full max-h-[80vh] overflow-hidden flex flex-col">
+              <div className="p-4 border-b flex items-center justify-between">
+                <h2 className="text-xl font-semibold flex items-center">
+                  <LightbulbIcon size={20} className="mr-2 text-amber-500" />
+                  Actionable Recommendations
+                </h2>
+                <Button variant="ghost" size="icon" onClick={() => setShowDetailedView(null)}>
+                  <MinimizeIcon size={18} />
+                </Button>
+              </div>
+              <ScrollArea className="flex-1 p-6">
+                <h3 className="text-lg font-medium mb-3">Suggested Improvements</h3>
+                <p className="text-sm mb-6">
+                  Based on our analysis, we've identified several areas where this document could be improved 
+                  for clarity, enforceability, and risk mitigation.
+                </p>
+                
+                <div className="space-y-6">
+                  {result.clauses.map((clause, index) => (
+                    <div key={index} className="border rounded-lg overflow-hidden">
+                      <div className="p-4 bg-amber-50 border-l-4 border-l-amber-500">
+                        <div className="font-medium">{index + 1}. Review {clause.title}</div>
+                      </div>
+                      <div className="p-4">
+                        <div className="mb-3">
+                          <div className="text-sm font-medium mb-1">Current Language</div>
+                          <div className="text-sm p-3 bg-muted/30 rounded-md">
+                            {clause.content}
+                          </div>
+                        </div>
+                        
+                        <div className="mb-3">
+                          <div className="text-sm font-medium mb-1">Issue</div>
+                          <p className="text-sm">
+                            {index === 0 
+                              ? 'The language is potentially ambiguous and could lead to disputes over interpretation.' 
+                              : index === 1 
+                              ? 'This provision may have limited enforceability in certain jurisdictions.' 
+                              : 'This clause could benefit from more specific performance metrics.'}
+                          </p>
+                        </div>
+                        
+                        <div className="mb-3">
+                          <div className="text-sm font-medium mb-1">Recommendation</div>
+                          <div className="text-sm p-3 bg-green-50 rounded-md">
+                            {index === 0 
+                              ? 'Consider revising to: "Each party shall maintain the confidentiality of all proprietary information, defined as [specific definition], and shall not disclose such information to any third party without prior written consent."' 
+                              : index === 1 
+                              ? 'Consider adding jurisdiction-specific language or reducing the scope to ensure enforceability.' 
+                              : 'Include specific metrics or standards for measuring compliance with this provision.'}
+                          </div>
+                        </div>
+                        
+                        <div>
+                          <div className="text-sm font-medium mb-1">Benefits</div>
+                          <ul className="text-sm space-y-2">
+                            <li className="flex items-start gap-2">
+                              <CheckIcon size={14} className="mt-1 text-green-500 flex-shrink-0" />
+                              <span>
+                                {index === 0 
+                                  ? 'Reduces potential for misinterpretation' 
+                                  : index === 1 
+                                  ? 'Improves likelihood of enforcement' 
+                                  : 'Provides clear standards for compliance'}
+                              </span>
+                            </li>
+                            <li className="flex items-start gap-2">
+                              <CheckIcon size={14} className="mt-1 text-green-500 flex-shrink-0" />
+                              <span>
+                                {index === 0 
+                                  ? 'Strengthens protective measures for proprietary information' 
+                                  : index === 1 
+                                  ? 'Balances business needs with legal enforceability' 
+                                  : 'Reduces potential disputes over performance standards'}
+                              </span>
+                            </li>
+                          </ul>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+                
+                <div className="mt-6 p-4 border rounded-lg bg-primary/5">
+                  <h4 className="font-medium mb-2 flex items-center">
+                    <ArrowRightIcon size={16} className="mr-2 text-primary" />
+                    Next Steps
+                  </h4>
+                  <ol className="space-y-2 pl-5 list-decimal">
+                    <li className="text-sm">Review the suggested changes with your legal department</li>
+                    <li className="text-sm">Prepare amendments to address identified issues</li>
+                    <li className="text-sm">Consider scheduling a review meeting with the counterparty</li>
+                    <li className="text-sm">Implement changes through a formal amendment process</li>
+                  </ol>
+                </div>
+              </ScrollArea>
+              <div className="p-4 border-t flex justify-end gap-2">
+                <Button variant="outline" onClick={() => setShowDetailedView(null)}>Close</Button>
+                <Button variant="default">Generate Amendment Draft</Button>
+              </div>
+            </div>
+          </div>
+        );
+      default:
+        return null;
+    }
+  };
+  
+  return (
+    <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+      {/* Document Summary */}
+      <Card className="col-span-full">
+        <CardHeader isExpanded={expandedCards.summary} onToggleExpand={() => toggleCardExpansion('summary')}>
+          <CardTitle>Document Summary</CardTitle>
+          <CardDescription>Key details about the analyzed document</CardDescription>
+        </CardHeader>
+        <CardContent isExpanded={expandedCards.summary}>
+          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
+            <div className="flex flex-col gap-1">
+              <div className="text-xs font-medium uppercase text-muted-foreground">Document Type</div>
+              <div className="text-md font-medium">Contract Agreement</div>
+            </div>
+            <div className="flex flex-col gap-1">
+              <div className="text-xs font-medium uppercase text-muted-foreground">Parties</div>
+              <div className="text-md font-medium">{result.parties.length}</div>
+            </div>
+            <div className="flex flex-col gap-1">
+              <div className="text-xs font-medium uppercase text-muted-foreground">Effective Date</div>
+              <div className="text-md font-medium">
+                {result.keyDates.find(date => date.description === 'Effective Date')?.date || 'Not specified'}
+              </div>
+            </div>
+            <div className="flex flex-col gap-1">
+              <div className="text-xs font-medium uppercase text-muted-foreground">Risk Level</div>
+              <div className={`text-md font-medium ${
+                riskLevel === 'High' ? 'text-red-500' : 
+                riskLevel === 'Moderate' ? 'text-amber-500' : 
+                'text-green-500'
+              }`}>
+                {riskLevel}
+              </div>
+            </div>
+          </div>
+          <div className="mt-6">
+            <div className="text-sm font-medium mb-2">Summary</div>
+            <p className="text-sm text-muted-foreground">{result.summary}</p>
+          </div>
+          <div className="mt-4 flex justify-end">
+            <Button 
+              variant="outline" 
+              size="sm" 
+              className="text-xs" 
+              onClick={() => toggleDetailedView('summary')}
+            >
+              <FileTextIcon size={14} className="mr-1" />
+              <span>View Details</span>
+            </Button>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Summarized Findings */}
+      <Card className="lg:col-span-2">
+        <CardHeader isExpanded={expandedCards.findings} onToggleExpand={() => toggleCardExpansion('findings')}>
+          <CardTitle>Summarized Findings</CardTitle>
+          <CardDescription>Key clauses and provisions in the document</CardDescription>
+        </CardHeader>
+        <CardContent isExpanded={expandedCards.findings}>
+          <div className="space-y-4">
+            {result.clauses.map((clause, index) => (
+              <div key={index} className="border rounded p-3 hover:bg-muted/30 transition-colors cursor-pointer">
+                <div className="font-medium mb-1">{clause.title}</div>
+                <div className="text-xs text-muted-foreground mb-2">Page {clause.page}</div>
+                <p className="text-sm">{clause.content.substring(0, 80)}...</p>
+              </div>
+            ))}
+          </div>
+          <div className="mt-4 flex justify-end">
+            <Button 
+              variant="outline" 
+              size="sm" 
+              className="text-xs" 
+              onClick={() => toggleDetailedView('findings')}
+            >
+              <ClipboardCheckIcon size={14} className="mr-1" />
+              <span>View Details</span>
+            </Button>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Parties */}
+      <Card>
+        <CardHeader isExpanded={expandedCards.parties} onToggleExpand={() => toggleCardExpansion('parties')}>
+          <CardTitle>Parties</CardTitle>
+          <CardDescription>Entities in the document</CardDescription>
+        </CardHeader>
+        <CardContent isExpanded={expandedCards.parties}>
+          <div className="space-y-3">
+            {result.parties.map((party, index) => (
+              <div key={index} className="flex items-center gap-3">
+                <div className="w-8 h-8 rounded-full bg-primary/10 text-primary flex items-center justify-center text-xs">
+                  {party.charAt(0)}
+                </div>
+                <div>
+                  <div className="font-medium text-sm">{party}</div>
+                  <div className="text-xs text-muted-foreground">{index === 0 ? 'First Party' : 'Second Party'}</div>
+                </div>
+              </div>
+            ))}
+          </div>
+          <div className="mt-4 pt-4 border-t">
+            <div className="text-sm font-medium mb-2">Signatories</div>
+            <div className="space-y-3">
+              {result.signatures.map((signature, index) => (
+                <div key={index} className="flex items-center gap-3">
+                  <div className="w-8 h-8 rounded-full bg-muted flex items-center justify-center text-xs">
+                    {signature.name.charAt(0)}
+                  </div>
+                  <div>
+                    <div className="font-medium text-sm">{signature.name}</div>
+                    <div className="text-xs text-muted-foreground">{signature.role}</div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+          <div className="mt-4 flex justify-end">
+            <Button 
+              variant="outline" 
+              size="sm" 
+              className="text-xs" 
+              onClick={() => toggleDetailedView('parties')}
+            >
+              <UsersIcon size={14} className="mr-1" />
+              <span>View Details</span>
+            </Button>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Key Data Extraction */}
+      <Card className="lg:col-span-2">
+        <CardHeader isExpanded={expandedCards.extraction} onToggleExpand={() => toggleCardExpansion('extraction')}>
+          <CardTitle>Key Data Extraction</CardTitle>
+          <CardDescription>Dates, values, and critical information</CardDescription>
+        </CardHeader>
+        <CardContent isExpanded={expandedCards.extraction}>
+          <div className="flex flex-wrap gap-2 mb-4">
+            {result.keyDates.map((date, index) => (
+              <div key={index} className="flex items-center gap-2 text-xs bg-muted/50 p-2 rounded border">
+                <CalendarIcon size={14} className="text-muted-foreground" />
+                <span className="font-medium">{date.description}:</span>
+                <span>{date.date}</span>
+              </div>
+            ))}
+            {extractedData.slice(0, 3).map((item, index) => (
+              <div key={`extracted-${index}`} className="flex items-center gap-2 text-xs bg-muted/50 p-2 rounded border">
+                <DatabaseIcon size={14} className="text-muted-foreground" />
+                <span className="font-medium">{item.label}:</span>
+                <span>{item.value}</span>
+              </div>
+            ))}
+          </div>
+          <div className="text-xs text-muted-foreground italic mb-2">
+            {extractedData.length} data points extracted with high confidence
+          </div>
+          <div className="mt-2 flex justify-end">
+            <Button 
+              variant="outline" 
+              size="sm" 
+              className="text-xs" 
+              onClick={() => toggleDetailedView('extraction')}
+            >
+              <DatabaseIcon size={14} className="mr-1" />
+              <span>View All Extracted Data</span>
+            </Button>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Risk Assessment */}
+      <Card>
+        <CardHeader isExpanded={expandedCards.risks} onToggleExpand={() => toggleCardExpansion('risks')}>
+          <CardTitle>Risk Assessment</CardTitle>
+          <CardDescription>Potential legal and compliance risks</CardDescription>
+        </CardHeader>
+        <CardContent isExpanded={expandedCards.risks}>
+          <div className="p-3 rounded-md border mb-3">
+            <div className="text-sm mb-1">Overall Risk Level</div>
+            <div className={`text-xl font-bold ${
+              riskLevel === 'High' ? 'text-red-500' : 
+              riskLevel === 'Moderate' ? 'text-amber-500' : 
+              'text-green-500'
+            }`}>
+              {riskLevel}
+            </div>
+          </div>
+          <div className="space-y-3">
+            <div className="flex flex-col">
+              <div className="text-xs text-muted-foreground mb-1">Risks Identified</div>
+              <div className="flex items-center gap-2 text-lg font-semibold">
+                <AlertTriangleIcon size={20} className="text-amber-500" />
+                <span>{result.clauses.length}</span>
+              </div>
+            </div>
+            <div className="flex flex-col">
+              <div className="text-xs text-muted-foreground mb-1">High Risk Clauses</div>
+              <div className="flex items-center gap-2 text-lg font-semibold">
+                <AlertTriangleIcon size={20} className="text-red-500" />
+                <span>{highRiskClauseCount}</span>
+              </div>
+            </div>
+            <div className="flex flex-col">
+              <div className="text-xs text-muted-foreground mb-1">Suggested Revisions</div>
+              <div className="flex items-center gap-2 text-lg font-semibold">
+                <EditIcon size={20} className="text-primary" />
+                <span>{suggestedRevisions}</span>
+              </div>
+            </div>
+          </div>
+          <div className="mt-4 flex justify-end">
+            <Button 
+              variant="outline" 
+              size="sm" 
+              className="text-xs" 
+              onClick={() => toggleDetailedView('risks')}
+            >
+              <AlertTriangleIcon size={14} className="mr-1" />
+              <span>View Details</span>
+            </Button>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Comparative Analysis */}
+      <Card className="md:col-span-2">
+        <CardHeader isExpanded={expandedCards.comparison} onToggleExpand={() => toggleCardExpansion('comparison')}>
+          <CardTitle>Comparative Analysis</CardTitle>
+          <CardDescription>Comparison against industry standards</CardDescription>
+        </CardHeader>
+        <CardContent isExpanded={expandedCards.comparison}>
+          <div className="space-y-3">
+            <div>
+              <div className="flex justify-between items-center text-sm mb-1">
+                <div>Completeness</div>
+                <div className="font-medium">90%</div>
+              </div>
+              <div className="w-full bg-muted rounded-full h-2">
+                <div className="bg-green-500 h-2 rounded-full" style={{ width: '90%' }}></div>
+              </div>
+            </div>
+            <div>
+              <div className="flex justify-between items-center text-sm mb-1">
+                <div>Clarity</div>
+                <div className="font-medium">75%</div>
+              </div>
+              <div className="w-full bg-muted rounded-full h-2">
+                <div className="bg-primary h-2 rounded-full" style={{ width: '75%' }}></div>
+              </div>
+            </div>
+            <div>
+              <div className="flex justify-between items-center text-sm mb-1">
+                <div>Risk Level (lower is better)</div>
+                <div className="font-medium">45%</div>
+              </div>
+              <div className="w-full bg-muted rounded-full h-2">
+                <div className="bg-amber-500 h-2 rounded-full" style={{ width: '45%' }}></div>
+              </div>
+            </div>
+            <div>
+              <div className="flex justify-between items-center text-sm mb-1">
+                <div>Overall Rating</div>
+                <div className="font-medium">78%</div>
+              </div>
+              <div className="w-full bg-muted rounded-full h-2">
+                <div className="bg-primary h-2 rounded-full" style={{ width: '78%' }}></div>
+              </div>
+            </div>
+          </div>
+          <div className="mt-4 flex justify-end">
+            <Button 
+              variant="outline" 
+              size="sm" 
+              className="text-xs" 
+              onClick={() => toggleDetailedView('comparison')}
+            >
+              <BarChart2Icon size={14} className="mr-1" />
+              <span>View Details</span>
+            </Button>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Actionable Recommendations */}
+      <Card className="lg:col-span-3">
+        <CardHeader isExpanded={expandedCards.recommendations} onToggleExpand={() => toggleCardExpansion('recommendations')}>
+          <CardTitle>Actionable Recommendations</CardTitle>
+          <CardDescription>Suggested changes and improvements</CardDescription>
+        </CardHeader>
+        <CardContent isExpanded={expandedCards.recommendations}>
+          <div className="space-y-4">
+            {result.clauses.map((clause, index) => (
+              <div key={index} className="border rounded p-3 relative">
+                <div className="absolute top-3 right-3">
+                  <Badge 
+                    variant="outline" 
+                    className={index === 0 ? 'bg-red-100 text-red-700 border-red-200' : 'bg-amber-100 text-amber-700 border-amber-200'}
+                  >
+                    {index === 0 ? 'High Priority' : 'Medium Priority'}
+                  </Badge>
+                </div>
+                <div className="font-medium mb-2 pr-24">{clause.title}</div>
+                <div className="text-sm text-muted-foreground mb-2">
+                  {index === 0 
+                    ? 'Consider revising language to improve clarity and reduce potential for disputes.' 
+                    : 'Add jurisdiction-specific provisions to improve enforceability.'}
+                </div>
+                <div className="text-xs font-medium text-primary">See recommended changes</div>
+              </div>
+            ))}
+          </div>
+          <div className="mt-4 flex justify-between">
+            <div className="text-sm">
+              <span className="font-medium">{result.clauses.length}</span>
+              <span className="text-muted-foreground ml-1">recommendations provided</span>
+            </div>
+            <Button 
+              variant="outline" 
+              size="sm" 
+              className="text-xs" 
+              onClick={() => toggleDetailedView('recommendations')}
+            >
+              <LightbulbIcon size={14} className="mr-1" />
+              <span>View All Recommendations</span>
+            </Button>
+          </div>
+        </CardContent>
+        <CardFooter>
+          <div className="w-full flex justify-end">
+            <DropdownActionMenu entityName="Analysis Results" />
+          </div>
+        </CardFooter>
+      </Card>
+
+      {/* Render the detailed view if one is selected */}
+      {showDetailedView && renderDetailedView()}
+    </div>
+  );
+}

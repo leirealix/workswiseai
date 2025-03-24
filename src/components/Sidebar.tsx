@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { 
   FilesIcon, 
@@ -36,8 +35,7 @@ export default function Sidebar({ className }: SidebarProps) {
     >
       <div className="flex h-14 items-center px-4 border-b">
         {!collapsed && (
-          <div className="flex items-center gap-2">
-            <BriefcaseIcon size={22} className="text-primary" />
+          <div className="flex items-center">
             <h2 className="text-lg font-semibold">Workswise AI</h2>
           </div>
         )}

@@ -1,5 +1,5 @@
 
-import { FileIcon, FileTextIcon, SearchIcon, BrainCogIcon, SparklesIcon, GavelIcon, ScaleIcon } from 'lucide-react';
+import { FileIcon, FileTextIcon, SearchIcon, BrainCogIcon, SparklesIcon, GavelIcon, ScaleIcon, BarChartIcon } from 'lucide-react';
 import LawyerIcon from './LawyerIcon';
 
 export default function WelcomeAnimation() {
@@ -11,7 +11,7 @@ export default function WelcomeAnimation() {
           <div className="w-20 h-20 rounded-full bg-primary/10 flex items-center justify-center animate-pulse">
             <div className="absolute inset-0 w-full h-full rounded-full border-2 border-primary/20 animate-ping" style={{ animationDuration: '3s' }}></div>
             <div className="absolute inset-0 w-full h-full rounded-full border border-primary/10 animate-ping" style={{ animationDuration: '2s', animationDelay: '0.5s' }}></div>
-            <LawyerIcon size={36} className="text-primary animate-bounce" style={{ animationDuration: '2s' }} />
+            <BarChartIcon size={36} className="text-primary animate-bounce" style={{ animationDuration: '2s' }} />
           </div>
         </div>
         

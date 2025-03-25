@@ -1,25 +1,41 @@
 
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Send, Plus, Search, Mic, MoreHorizontal, RefreshCw, FileIcon, XIcon } from 'lucide-react';
+import { Send, Plus, Search, Mic, MoreHorizontal, RefreshCw, FileIcon, XIcon, BookmarkIcon } from 'lucide-react';
 import { Textarea } from '@/components/ui/textarea';
+import { 
+  Popover,
+  PopoverContent,
+  PopoverTrigger 
+} from '@/components/ui/popover';
+import { ScrollArea } from '@/components/ui/scroll-area';
 
 interface ChatInputProps {
   onSendMessage: (message: string) => void;
   onFileUpload: (file: File) => void;
   onNewConversation?: () => void;
   isDisabled?: boolean;
+  savedPrompts?: string[];
+  onSavePrompt?: (prompt: string) => void;
+  onDeletePrompt?: (index: number) => void;
+  onUsePrompt?: (prompt: string) => void;
 }
 
 export default function ChatInput({ 
   onSendMessage, 
   onFileUpload, 
   onNewConversation, 
-  isDisabled = false 
+  isDisabled = false,
+  savedPrompts = [],
+  onSavePrompt,
+  onDeletePrompt,
+  onUsePrompt
 }: ChatInputProps) {
   const [input, setInput] = useState('');
   const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
+  const [isPromptsOpen, setIsPromptsOpen] = useState(false);
+  const inputRef = useRef<HTMLTextAreaElement>(null);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -68,6 +84,28 @@ export default function ChatInput({
     }
   };
 
+  const handleSavePrompt = () => {
+    if (input.trim() && onSavePrompt) {
+      onSavePrompt(input.trim());
+    }
+  };
+
+  const handleUsePrompt = (prompt: string) => {
+    setInput(prompt);
+    setIsPromptsOpen(false);
+    
+    // Focus the textarea and place cursor at the end
+    if (inputRef.current) {
+      inputRef.current.focus();
+      const length = prompt.length;
+      inputRef.current.setSelectionRange(length, length);
+    }
+
+    if (onUsePrompt) {
+      onUsePrompt(prompt);
+    }
+  };
+
   return (
     <form 
       onSubmit={handleSubmit} 
@@ -102,6 +140,7 @@ export default function ChatInput({
       
       <div className="relative w-full">
         <Textarea
+          ref={inputRef}
           value={input}
           onChange={(e) => setInput(e.target.value)}
           placeholder="Complete any work you request"
@@ -144,15 +183,73 @@ export default function ChatInput({
           <span>New</span>
         </Button>
         
-        <Button 
-          type="button" 
-          variant="ghost" 
-          size="sm"
-          className="rounded-full flex items-center gap-1.5 text-muted-foreground hover:text-foreground hover:bg-secondary"
-        >
-          <Search size={16} />
-          <span>Research</span>
-        </Button>
+        <Popover open={isPromptsOpen} onOpenChange={setIsPromptsOpen}>
+          <PopoverTrigger asChild>
+            <Button 
+              type="button" 
+              variant="ghost" 
+              size="sm"
+              className="rounded-full flex items-center gap-1.5 text-muted-foreground hover:text-foreground hover:bg-secondary"
+            >
+              <BookmarkIcon size={16} />
+              <span>Prompts</span>
+            </Button>
+          </PopoverTrigger>
+          <PopoverContent className="w-72 p-2" align="start">
+            <div className="flex flex-col gap-2">
+              <div className="flex items-center justify-between">
+                <h3 className="text-sm font-medium">Saved Prompts</h3>
+                {input.trim() && (
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    onClick={handleSavePrompt}
+                    className="h-7 text-xs"
+                  >
+                    <Plus size={12} className="mr-1" />
+                    Save Current
+                  </Button>
+                )}
+              </div>
+              
+              <ScrollArea className="h-56">
+                {savedPrompts.length > 0 ? (
+                  <div className="flex flex-col gap-1.5">
+                    {savedPrompts.map((prompt, index) => (
+                      <div key={index} className="flex justify-between items-start gap-2 p-2 rounded-md hover:bg-muted group">
+                        <button
+                          type="button"
+                          className="text-sm text-left flex-1 truncate"
+                          onClick={() => handleUsePrompt(prompt)}
+                        >
+                          {prompt}
+                        </button>
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          size="icon"
+                          onClick={() => onDeletePrompt && onDeletePrompt(index)}
+                          className="h-6 w-6 opacity-0 group-hover:opacity-100 transition-opacity"
+                        >
+                          <XIcon size={14} />
+                        </Button>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="flex flex-col items-center justify-center h-full py-6 text-center">
+                    <BookmarkIcon size={24} className="text-muted-foreground mb-2 opacity-50" />
+                    <p className="text-sm text-muted-foreground">No prompts saved yet</p>
+                    <p className="text-xs text-muted-foreground/70 mt-1">
+                      Type a prompt and click Save Current
+                    </p>
+                  </div>
+                )}
+              </ScrollArea>
+            </div>
+          </PopoverContent>
+        </Popover>
         
         <div className="flex-1"></div>
         
@@ -177,3 +274,4 @@ export default function ChatInput({
     </form>
   );
 }
+

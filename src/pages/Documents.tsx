@@ -7,7 +7,8 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { toast } from "@/hooks/use-toast";
 import Sidebar from '@/components/Sidebar';
 
-interface Document {
+// Rename this interface to avoid conflict with the browser's Document interface
+interface DocumentItem {
   id: string;
   title: string;
   createdAt: Date;
@@ -15,7 +16,7 @@ interface Document {
 }
 
 export default function Documents() {
-  const [documents, setDocuments] = useState<Document[]>([]);
+  const [documents, setDocuments] = useState<DocumentItem[]>([]);
 
   useEffect(() => {
     // Load documents from localStorage
@@ -45,15 +46,15 @@ export default function Documents() {
     });
   };
 
-  const downloadDocument = (document: Document) => {
+  const downloadDocument = (document: DocumentItem) => {
     const blob = new Blob([document.content], { type: 'text/plain' });
     const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
+    const a = window.document.createElement('a');
     a.href = url;
     a.download = `${document.title}.txt`;
-    document.body.appendChild(a);
+    window.document.body.appendChild(a);
     a.click();
-    document.body.removeChild(a);
+    window.document.body.removeChild(a);
     URL.revokeObjectURL(url);
     toast({
       title: "Download Started",

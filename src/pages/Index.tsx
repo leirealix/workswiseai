@@ -12,8 +12,9 @@ import Sidebar from '@/components/Sidebar';
 import { useDocumentAnalysis } from '@/hooks/useDocumentAnalysis';
 import { Message } from '@/types';
 import { toast } from '@/hooks/use-toast';
-import { Loader2Icon, RefreshCwIcon, MaximizeIcon, MinimizeIcon } from 'lucide-react';
+import { Loader2Icon, RefreshCwIcon, MaximizeIcon, MinimizeIcon, CodeIcon } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { Switch } from '@/components/ui/switch';
 import { cn } from '@/lib/utils';
 import { ResizablePanelGroup, ResizablePanel, ResizableHandle } from '@/components/ui/resizable';
 import { ScrollArea } from '@/components/ui/scroll-area';
@@ -28,6 +29,7 @@ const Index = () => {
   const conversationIdRef = useRef<string | undefined>(undefined);
   const [showComparison, setShowComparison] = useState<boolean>(false);
   const [showOnlyChatPanel, setShowOnlyChatPanel] = useState<boolean>(true);
+  const [showFullPreview, setShowFullPreview] = useState<boolean>(false);
   
   const handleSendMessage = async (content: string) => {
     const userMessageId = crypto.randomUUID();
@@ -125,6 +127,10 @@ const Index = () => {
     setLeftPanelExpanded(!leftPanelExpanded);
   };
 
+  const toggleViewMode = () => {
+    setShowFullPreview(!showFullPreview);
+  };
+
   useEffect(() => {
     if (state.status === 'complete') {
       toast({
@@ -187,20 +193,33 @@ const Index = () => {
                   leftPanelCollapsed ? "p-2" : "p-4"
                 )}>
                   <div className={leftPanelCollapsed ? "hidden" : "block"}>
-                    <h2 className="text-lg font-medium">
-                      {state.status === 'idle' && 'Preview'}
-                      {state.status === 'uploading' && 'Uploading Document...'}
-                      {state.status === 'thinking' && 'Processing Document...'}
-                      {state.status === 'analyzing' && 'Analyzing Document...'}
-                      {state.status === 'complete' && 'Analysis Results'}
-                      {state.status === 'error' && 'Analysis Error'}
-                    </h2>
+                    <div className="flex items-center">
+                      <h2 className="text-lg font-medium mr-2">
+                        {state.status === 'idle' && 'Preview'}
+                        {state.status === 'uploading' && 'Uploading Document...'}
+                        {state.status === 'thinking' && 'Processing Document...'}
+                        {state.status === 'analyzing' && 'Analyzing Document...'}
+                        {state.status === 'complete' && 'Analysis Results'}
+                        {state.status === 'error' && 'Analysis Error'}
+                      </h2>
+                      {state.status === 'complete' && (
+                        <div className="bg-black/20 rounded-md p-1 flex items-center">
+                          <Switch 
+                            id="view-mode" 
+                            checked={showFullPreview}
+                            onCheckedChange={toggleViewMode}
+                            className="mr-1"
+                          />
+                          <CodeIcon size={16} className="text-primary" />
+                        </div>
+                      )}
+                    </div>
                     <p className="text-sm text-muted-foreground">
                       {state.status === 'idle' && ''}
                       {state.status === 'uploading' && 'Please wait while we upload your document'}
                       {state.status === 'thinking' && 'AI is processing your document'}
                       {state.status === 'analyzing' && 'Extracting insights from your document'}
-                      {state.status === 'complete' && 'Review the extracted information'}
+                      {state.status === 'complete' && (showFullPreview ? 'Full document preview' : 'Review the extracted information')}
                       {state.status === 'error' && 'Something went wrong during analysis'}
                     </p>
                   </div>
@@ -282,7 +301,15 @@ const Index = () => {
                           </ResizablePanel>
                         </ResizablePanelGroup>
                       ) : (
-                        <ResultsPanel result={state.result} />
+                        showFullPreview ? (
+                          <DocumentViewer 
+                            fileName={state.file.name}
+                            result={state.result}
+                            comparison={false}
+                          />
+                        ) : (
+                          <ResultsPanel result={state.result} />
+                        )
                       )}
                     </div>
                   )}

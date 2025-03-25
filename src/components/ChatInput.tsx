@@ -1,9 +1,11 @@
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Send, Plus, Search, Mic, MoreHorizontal, RefreshCw, FileIcon, XIcon } from 'lucide-react';
+import { Send, Plus, Search, Mic, MoreHorizontal, RefreshCw, FileIcon, XIcon, BookmarkIcon } from 'lucide-react';
 import { Textarea } from '@/components/ui/textarea';
+import { toast } from '@/hooks/use-toast';
+import { SavedQuery } from '@/components/SavedQueries';
 
 interface ChatInputProps {
   onSendMessage: (message: string) => void;
@@ -66,6 +68,53 @@ export default function ChatInput({
       setInput('');
       setSelectedFiles([]);
     }
+  };
+
+  const saveCurrentQuery = () => {
+    if (!input.trim()) return;
+    
+    // Get existing saved queries
+    const storedQueries = localStorage.getItem('savedQueries');
+    let savedQueries: SavedQuery[] = [];
+    
+    if (storedQueries) {
+      try {
+        const parsedQueries = JSON.parse(storedQueries);
+        savedQueries = parsedQueries.map((query: any) => ({
+          ...query,
+          createdAt: new Date(query.createdAt)
+        }));
+      } catch (error) {
+        console.error('Error parsing saved queries:', error);
+      }
+    }
+    
+    // Check if query already exists
+    const queryExists = savedQueries.some(q => q.text.toLowerCase() === input.trim().toLowerCase());
+    
+    if (queryExists) {
+      toast({
+        title: "Query Already Saved",
+        description: "This query is already in your saved queries."
+      });
+      return;
+    }
+    
+    // Add new query
+    const newQuery: SavedQuery = {
+      id: crypto.randomUUID(),
+      text: input.trim(),
+      createdAt: new Date(),
+      usageCount: 0
+    };
+    
+    savedQueries.push(newQuery);
+    localStorage.setItem('savedQueries', JSON.stringify(savedQueries));
+    
+    toast({
+      title: "Query Saved",
+      description: "Your query has been saved for future use."
+    });
   };
 
   return (
@@ -149,9 +198,11 @@ export default function ChatInput({
           variant="ghost" 
           size="sm"
           className="rounded-full flex items-center gap-1.5 text-muted-foreground hover:text-foreground hover:bg-secondary"
+          onClick={saveCurrentQuery}
+          disabled={!input.trim()}
         >
-          <Search size={16} />
-          <span>Research</span>
+          <BookmarkIcon size={16} />
+          <span>Save Query</span>
         </Button>
         
         <div className="flex-1"></div>

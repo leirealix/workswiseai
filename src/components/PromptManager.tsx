@@ -73,52 +73,58 @@ export default function PromptManager({ onSelectPrompt }: PromptManagerProps) {
         sideOffset={5}
       >
         <div className="flex flex-col max-h-[400px]">
-          <div className="p-4 border-b">
-            <h3 className="font-medium mb-1">Saved Prompts</h3>
-            <p className="text-sm text-muted-foreground">
+          <div className="p-3 border-b">
+            <h3 className="text-sm font-medium">Saved Prompts</h3>
+            <p className="text-xs text-muted-foreground mt-0.5">
               Create and use prompts for quick actions
             </p>
           </div>
           
-          <div className="p-3 flex gap-2">
+          <div className="p-3 flex gap-2 border-b">
             <Input
               value={newPrompt}
               onChange={(e) => setNewPrompt(e.target.value)}
               placeholder="Enter a new prompt..."
-              className="flex-1"
+              className="flex-1 text-sm h-8"
               onKeyDown={(e) => {
                 if (e.key === 'Enter') {
                   addPrompt();
                 }
               }}
             />
-            <Button onClick={addPrompt} disabled={!newPrompt.trim()}>
+            <Button 
+              onClick={addPrompt} 
+              disabled={!newPrompt.trim()} 
+              size="sm" 
+              className="h-8"
+            >
               Add
             </Button>
           </div>
           
-          <div className="overflow-y-auto max-h-[250px] p-2">
+          <div className="overflow-y-auto max-h-[250px] py-1.5">
             {prompts.length === 0 ? (
-              <div className="text-center py-4 text-sm text-muted-foreground">
-                No prompts saved yet. Add one above.
+              <div className="text-center py-6 text-sm text-muted-foreground">
+                No prompts saved yet
               </div>
             ) : (
-              <div className="space-y-2">
+              <div className="space-y-0.5 px-1">
                 {prompts.map((prompt) => (
                   <div 
                     key={prompt.id} 
-                    className="group flex items-center gap-2 p-2 rounded-md hover:bg-muted cursor-pointer transition-colors"
+                    className="group flex items-center gap-2 px-2 py-1.5 rounded-md hover:bg-muted cursor-pointer transition-colors"
                   >
                     <div 
                       className="flex-1 text-sm truncate"
                       onClick={() => handleSelectPrompt(prompt.content)}
+                      title={prompt.content}
                     >
                       {prompt.content}
                     </div>
                     <Button
                       variant="ghost"
                       size="icon"
-                      className="h-7 w-7 opacity-0 group-hover:opacity-100 transition-opacity"
+                      className="h-6 w-6 opacity-0 group-hover:opacity-100 transition-opacity"
                       onClick={() => deletePrompt(prompt.id)}
                     >
                       <Trash2 size={14} className="text-muted-foreground hover:text-destructive" />

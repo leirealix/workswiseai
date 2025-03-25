@@ -73,9 +73,8 @@ export default function PromptManager({ onSelectPrompt }: PromptManagerProps) {
       <PopoverContent 
         className="w-80 p-0 shadow-md border rounded-2xl" 
         align="start" 
-        alignOffset={-40} 
-        side="top"
-        sideOffset={10}
+        side="bottom"
+        sideOffset={5}
       >
         <div className="flex flex-col max-h-[400px]">
           <div className="p-4 border-b">

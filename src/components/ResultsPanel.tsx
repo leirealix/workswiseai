@@ -1,51 +1,15 @@
 import { useState } from 'react';
+import { ScrollArea } from './ui/scroll-area';
 import { AnalysisResult } from '@/types';
 import { 
   Card, 
-  CardContent, 
-  CardDescription, 
-  CardFooter, 
   CardHeader, 
-  CardTitle 
-} from '@/components/ui/card';
-import { 
-  AlertTriangleIcon, 
-  ArrowRightIcon, 
-  BarChart2Icon,
-  CalendarIcon, 
-  CheckIcon, 
-  ClipboardCheckIcon, 
-  DatabaseIcon,
-  DownloadIcon, 
-  EditIcon, 
-  ExternalLinkIcon, 
-  FileTextIcon, 
-  FlagIcon, 
-  LightbulbIcon,
-  MailIcon, 
-  MinimizeIcon,
-  MaximizeIcon,
-  SearchIcon, 
-  TableIcon,
-  UsersIcon 
-} from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { ScrollArea } from '@/components/ui/scroll-area';
-import { 
-  Collapsible, 
-  CollapsibleContent, 
-  CollapsibleTrigger 
-} from '@/components/ui/collapsible';
-import { DropdownActionMenu } from '@/components/ui/dropdown-action-menu';
-import { 
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow
-} from '@/components/ui/table';
+  CardTitle, 
+  CardDescription, 
+  CardContent 
+} from './ui/card';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from './ui/tabs';
+import { Timeline } from './Timeline';
 
 type RiskLevel = 'Low' | 'Moderate' | 'High';
 
@@ -54,16 +18,12 @@ interface ResultsPanelProps {
 }
 
 export default function ResultsPanel({ result }: ResultsPanelProps) {
-  // Calculate risk level based on clauses
   const riskLevel: RiskLevel = result.clauses.length > 2 ? 'High' : result.clauses.length > 1 ? 'Moderate' : 'Low';
   
-  // Count the number of high risk clauses (for demo purposes)
   const highRiskClauseCount = result.clauses.length > 2 ? 2 : result.clauses.length > 1 ? 1 : 0;
   
-  // Get suggested revisions count (for demo purposes)
   const suggestedRevisions = result.clauses.length;
 
-  // State for card expansion
   const [expandedCards, setExpandedCards] = useState<Record<string, boolean>>({
     'summary': true,
     'findings': true,
@@ -74,7 +34,6 @@ export default function ResultsPanel({ result }: ResultsPanelProps) {
     'recommendations': true
   });
 
-  // Toggle card expansion
   const toggleCardExpansion = (cardKey: string) => {
     setExpandedCards(prev => ({
       ...prev,
@@ -82,10 +41,8 @@ export default function ResultsPanel({ result }: ResultsPanelProps) {
     }));
   };
   
-  // State for detailed view 
   const [showDetailedView, setShowDetailedView] = useState<string | null>(null);
 
-  // Helper function to get risk level styling
   const getRiskLevelStyle = (level: RiskLevel) => {
     switch(level) {
       case 'High':
@@ -99,7 +56,6 @@ export default function ResultsPanel({ result }: ResultsPanelProps) {
     }
   };
 
-  // Helper function to toggle detailed view
   const toggleDetailedView = (cardId: string) => {
     if (showDetailedView === cardId) {
       setShowDetailedView(null);
@@ -108,7 +64,6 @@ export default function ResultsPanel({ result }: ResultsPanelProps) {
     }
   };
 
-  // Mock data for Key Data Extraction
   const extractedData = [
     { type: 'Date', label: 'Effective Date', value: '2023-06-15', page: 1, confidence: 'High' },
     { type: 'Date', label: 'Termination Date', value: '2025-06-14', page: 4, confidence: 'High' },
@@ -366,10 +321,13 @@ export default function ResultsPanel({ result }: ResultsPanelProps) {
   };
 
   return (
-    <div className="h-full flex flex-col">
-      <ScrollArea className="flex-1">
-        <div className="p-4 space-y-4">
-          {/* Summary Card */}
+    <ScrollArea className="h-full">
+      <div className="p-4">
+        <h2 className="text-2xl font-semibold mb-4">Document Analysis</h2>
+        
+        <Timeline keyDates={result.keyDates} />
+        
+        <div className="space-y-4">
           <Card className="border shadow-md">
             <CardHeader isExpanded={expandedCards.summary} onToggleExpand={() => toggleCardExpansion('summary')}>
               <CardTitle className="flex items-center">
@@ -424,7 +382,6 @@ export default function ResultsPanel({ result }: ResultsPanelProps) {
             )}
           </Card>
 
-          {/* Summarized Findings */}
           <Card className="border shadow-md overflow-hidden">
             <CardHeader isExpanded={expandedCards.findings} onToggleExpand={() => toggleCardExpansion('findings')}>
               <CardTitle className="flex items-center">
@@ -471,7 +428,6 @@ export default function ResultsPanel({ result }: ResultsPanelProps) {
             )}
           </Card>
           
-          {/* Parties Information */}
           <Card className="border shadow-md overflow-hidden">
             <CardHeader isExpanded={expandedCards.parties} onToggleExpand={() => toggleCardExpansion('parties')}>
               <CardTitle className="flex items-center">
@@ -526,7 +482,6 @@ export default function ResultsPanel({ result }: ResultsPanelProps) {
             )}
           </Card>
           
-          {/* Key Data Extraction */}
           <Card className="border shadow-md overflow-hidden">
             <CardHeader isExpanded={expandedCards.extraction} onToggleExpand={() => toggleCardExpansion('extraction')}>
               <CardTitle className="flex items-center">
@@ -588,7 +543,6 @@ export default function ResultsPanel({ result }: ResultsPanelProps) {
             )}
           </Card>
           
-          {/* Risk Identification */}
           <Card className="border shadow-md overflow-hidden">
             <CardHeader isExpanded={expandedCards.risks} onToggleExpand={() => toggleCardExpansion('risks')}>
               <CardTitle className="flex items-center">
@@ -650,7 +604,6 @@ export default function ResultsPanel({ result }: ResultsPanelProps) {
             )}
           </Card>
 
-          {/* Comparative Analysis Card */}
           <Card className="border shadow-md overflow-hidden">
             <CardHeader isExpanded={expandedCards.comparison} onToggleExpand={() => toggleCardExpansion('comparison')}>
               <CardTitle className="flex items-center">
@@ -718,7 +671,6 @@ export default function ResultsPanel({ result }: ResultsPanelProps) {
             )}
           </Card>
 
-          {/* Actionable Recommendations Card */}
           <Card className="border shadow-md overflow-hidden">
             <CardHeader isExpanded={expandedCards.recommendations} onToggleExpand={() => toggleCardExpansion('recommendations')}>
               <CardTitle className="flex items-center">
@@ -786,10 +738,9 @@ export default function ResultsPanel({ result }: ResultsPanelProps) {
             )}
           </Card>
         </div>
-      </ScrollArea>
-      
-      {/* Render detailed view if needed */}
-      {showDetailedView && renderDetailedView()}
-    </div>
+      </div>
+    </ScrollArea>
+    
+    {showDetailedView && renderDetailedView()}
   );
 }

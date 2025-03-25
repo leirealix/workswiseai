@@ -1,4 +1,6 @@
+
 import { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { 
   FilesIcon, 
   UsersIcon, 
@@ -7,8 +9,7 @@ import {
   MenuIcon,
   HomeIcon,
   PanelLeftIcon,
-  PanelRightIcon,
-  BriefcaseIcon
+  PanelRightIcon
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
@@ -29,7 +30,7 @@ export default function Sidebar({ className }: SidebarProps) {
     <div
       className={cn(
         "flex flex-col border-r bg-background transition-all duration-300",
-        collapsed ? "w-16" : "w-60",
+        collapsed ? "w-16" : "w-52",
         className
       )}
     >
@@ -54,22 +55,25 @@ export default function Sidebar({ className }: SidebarProps) {
           <NavItem 
             icon={HomeIcon} 
             label="Home" 
+            to="/"
             collapsed={collapsed} 
-            active={true}
           />
           <NavItem 
             icon={FilesIcon} 
             label="Documents" 
+            to="/documents"
             collapsed={collapsed} 
           />
           <NavItem 
             icon={UsersIcon} 
             label="Collaborations" 
+            to="/collaborations"
             collapsed={collapsed} 
           />
           <NavItem 
             icon={HistoryIcon} 
             label="History" 
+            to="/history"
             collapsed={collapsed} 
           />
 
@@ -78,6 +82,7 @@ export default function Sidebar({ className }: SidebarProps) {
           <NavItem 
             icon={SettingsIcon} 
             label="Settings" 
+            to="/settings"
             collapsed={collapsed} 
           />
         </nav>
@@ -89,21 +94,27 @@ export default function Sidebar({ className }: SidebarProps) {
 interface NavItemProps {
   icon: React.ElementType;
   label: string;
+  to: string;
   collapsed: boolean;
-  active?: boolean;
 }
 
-function NavItem({ icon: Icon, label, collapsed, active }: NavItemProps) {
+function NavItem({ icon: Icon, label, to, collapsed }: NavItemProps) {
+  // Check if this link is active based on the current location
+  const isActive = window.location.pathname === to;
+  
   return (
     <Button
-      variant={active ? "secondary" : "ghost"}
+      variant={isActive ? "secondary" : "ghost"}
       className={cn(
         "flex justify-start h-10 py-2",
         collapsed ? "w-12 px-0 justify-center" : "w-full px-3"
       )}
+      asChild
     >
-      <Icon size={20} className={collapsed ? "mx-auto" : "mr-2"} />
-      {!collapsed && <span>{label}</span>}
+      <Link to={to}>
+        <Icon size={20} className={collapsed ? "mx-auto" : "mr-2"} />
+        {!collapsed && <span>{label}</span>}
+      </Link>
     </Button>
   );
 }

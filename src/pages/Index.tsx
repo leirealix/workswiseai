@@ -19,24 +19,6 @@ import { ResizablePanelGroup, ResizablePanel, ResizableHandle } from '@/componen
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { sendMessageToAIAgent } from '@/services/aiAgentService';
 
-const loadSavedPrompts = (): string[] => {
-  try {
-    const savedPrompts = localStorage.getItem('savedPrompts');
-    return savedPrompts ? JSON.parse(savedPrompts) : [];
-  } catch (e) {
-    console.error('Error loading saved prompts:', e);
-    return [];
-  }
-};
-
-const saveSavedPrompts = (prompts: string[]): void => {
-  try {
-    localStorage.setItem('savedPrompts', JSON.stringify(prompts));
-  } catch (e) {
-    console.error('Error saving prompts:', e);
-  }
-};
-
 const Index = () => {
   const [messages, setMessages] = useState<Message[]>([]);
   const { state, uploadFile, resetAnalysis } = useDocumentAnalysis();
@@ -46,12 +28,7 @@ const Index = () => {
   const conversationIdRef = useRef<string | undefined>(undefined);
   const [showComparison, setShowComparison] = useState<boolean>(false);
   const [showOnlyChatPanel, setShowOnlyChatPanel] = useState<boolean>(true);
-  const [savedPrompts, setSavedPrompts] = useState<string[]>([]);
   
-  useEffect(() => {
-    setSavedPrompts(loadSavedPrompts());
-  }, []);
-
   const handleSendMessage = async (content: string) => {
     const userMessageId = crypto.randomUUID();
     const newMessage: Message = {
@@ -99,39 +76,6 @@ const Index = () => {
     } finally {
       setIsWaitingForAI(false);
     }
-  };
-
-  const handleSavePrompt = (prompt: string) => {
-    if (!savedPrompts.includes(prompt)) {
-      const updatedPrompts = [...savedPrompts, prompt];
-      setSavedPrompts(updatedPrompts);
-      saveSavedPrompts(updatedPrompts);
-      
-      toast({
-        title: "Prompt Saved",
-        description: "Your prompt has been saved for quick access."
-      });
-    } else {
-      toast({
-        title: "Duplicate Prompt",
-        description: "This prompt already exists in your saved prompts."
-      });
-    }
-  };
-
-  const handleDeletePrompt = (indexToDelete: number) => {
-    const updatedPrompts = savedPrompts.filter((_, index) => index !== indexToDelete);
-    setSavedPrompts(updatedPrompts);
-    saveSavedPrompts(updatedPrompts);
-    
-    toast({
-      title: "Prompt Deleted",
-      description: "Your prompt has been removed."
-    });
-  };
-
-  const handleUsePrompt = (prompt: string) => {
-    console.log('Using prompt:', prompt);
   };
 
   const handleFileSelect = (file: File) => {
@@ -219,18 +163,6 @@ const Index = () => {
                 onNewConversation={handleNewConversation}
                 isDisabled={isWaitingForAI || state.status === 'uploading' || state.status === 'thinking' || state.status === 'analyzing'} 
               />
-              <div className="w-full max-w-3xl mx-auto">
-                <ChatInput 
-                  onSendMessage={handleSendMessage} 
-                  onFileUpload={handleFileSelect}
-                  onNewConversation={handleNewConversation}
-                  isDisabled={isWaitingForAI || state.status === 'uploading' || state.status === 'thinking' || state.status === 'analyzing'}
-                  savedPrompts={savedPrompts}
-                  onSavePrompt={handleSavePrompt}
-                  onDeletePrompt={handleDeletePrompt}
-                  onUsePrompt={handleUsePrompt}
-                />
-              </div>
             </div>
           </div>
         ) : (
@@ -424,11 +356,7 @@ const Index = () => {
                     onSendMessage={handleSendMessage} 
                     onFileUpload={handleFileSelect}
                     onNewConversation={handleNewConversation}
-                    isDisabled={isWaitingForAI || state.status === 'uploading' || state.status === 'thinking' || state.status === 'analyzing'}
-                    savedPrompts={savedPrompts}
-                    onSavePrompt={handleSavePrompt}
-                    onDeletePrompt={handleDeletePrompt}
-                    onUsePrompt={handleUsePrompt}
+                    isDisabled={isWaitingForAI || state.status === 'uploading' || state.status === 'thinking' || state.status === 'analyzing'} 
                   />
                 </div>
               </div>

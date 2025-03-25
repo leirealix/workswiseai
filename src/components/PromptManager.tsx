@@ -7,7 +7,7 @@ import {
 } from "@/components/ui/popover";
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Plus, X, Trash2 } from 'lucide-react';
+import { Plus, Trash2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 export interface Prompt {
@@ -22,6 +22,7 @@ interface PromptManagerProps {
 export default function PromptManager({ onSelectPrompt }: PromptManagerProps) {
   const [prompts, setPrompts] = useState<Prompt[]>([]);
   const [newPrompt, setNewPrompt] = useState('');
+  const [isOpen, setIsOpen] = useState(false);
   
   // Load prompts from localStorage on component mount
   useEffect(() => {
@@ -47,16 +48,18 @@ export default function PromptManager({ onSelectPrompt }: PromptManagerProps) {
     }
   };
   
-  const deletePrompt = (id: string) => {
+  const deletePrompt = (e: React.MouseEvent, id: string) => {
+    e.stopPropagation(); // Prevent triggering the parent click handler
     setPrompts(prompts.filter(prompt => prompt.id !== id));
   };
   
   const handleSelectPrompt = (content: string) => {
     onSelectPrompt(content);
+    setIsOpen(false); // Close the popover after selection
   };
   
   return (
-    <Popover>
+    <Popover open={isOpen} onOpenChange={setIsOpen}>
       <PopoverTrigger asChild>
         <Button 
           variant="ghost" 
@@ -73,14 +76,14 @@ export default function PromptManager({ onSelectPrompt }: PromptManagerProps) {
         sideOffset={5}
       >
         <div className="flex flex-col max-h-[400px]">
-          <div className="p-3 border-b">
+          <div className="p-2 border-b">
             <h3 className="text-sm font-medium">Saved Prompts</h3>
-            <p className="text-xs text-muted-foreground mt-0.5">
+            <p className="text-xs text-muted-foreground">
               Create and use prompts for quick actions
             </p>
           </div>
           
-          <div className="p-3 flex gap-2 border-b">
+          <div className="p-2 flex gap-2 border-b">
             <Input
               value={newPrompt}
               onChange={(e) => setNewPrompt(e.target.value)}
@@ -102,9 +105,9 @@ export default function PromptManager({ onSelectPrompt }: PromptManagerProps) {
             </Button>
           </div>
           
-          <div className="overflow-y-auto max-h-[250px] py-1.5">
+          <div className="overflow-y-auto max-h-[250px] py-1">
             {prompts.length === 0 ? (
-              <div className="text-center py-6 text-sm text-muted-foreground">
+              <div className="text-center py-4 text-sm text-muted-foreground">
                 No prompts saved yet
               </div>
             ) : (
@@ -113,10 +116,10 @@ export default function PromptManager({ onSelectPrompt }: PromptManagerProps) {
                   <div 
                     key={prompt.id} 
                     className="group flex items-center gap-2 px-2 py-1.5 rounded-md hover:bg-muted cursor-pointer transition-colors"
+                    onClick={() => handleSelectPrompt(prompt.content)}
                   >
                     <div 
                       className="flex-1 text-sm truncate"
-                      onClick={() => handleSelectPrompt(prompt.content)}
                       title={prompt.content}
                     >
                       {prompt.content}
@@ -125,7 +128,7 @@ export default function PromptManager({ onSelectPrompt }: PromptManagerProps) {
                       variant="ghost"
                       size="icon"
                       className="h-6 w-6 opacity-0 group-hover:opacity-100 transition-opacity"
-                      onClick={() => deletePrompt(prompt.id)}
+                      onClick={(e) => deletePrompt(e, prompt.id)}
                     >
                       <Trash2 size={14} className="text-muted-foreground hover:text-destructive" />
                     </Button>

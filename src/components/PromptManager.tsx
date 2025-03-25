@@ -7,7 +7,7 @@ import {
 } from "@/components/ui/popover";
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Plus, X, Trash2 } from 'lucide-react';
+import { Plus, Trash2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 export interface Prompt {
@@ -22,6 +22,7 @@ interface PromptManagerProps {
 export default function PromptManager({ onSelectPrompt }: PromptManagerProps) {
   const [prompts, setPrompts] = useState<Prompt[]>([]);
   const [newPrompt, setNewPrompt] = useState('');
+  const [open, setOpen] = useState(false);
   
   // Load prompts from localStorage on component mount
   useEffect(() => {
@@ -47,16 +48,18 @@ export default function PromptManager({ onSelectPrompt }: PromptManagerProps) {
     }
   };
   
-  const deletePrompt = (id: string) => {
+  const deletePrompt = (id: string, e: React.MouseEvent) => {
+    e.stopPropagation(); // Prevent triggering the parent onClick
     setPrompts(prompts.filter(prompt => prompt.id !== id));
   };
   
   const handleSelectPrompt = (content: string) => {
     onSelectPrompt(content);
+    setOpen(false); // Close the popover after selecting
   };
   
   return (
-    <Popover>
+    <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
         <Button 
           variant="ghost" 
@@ -113,10 +116,10 @@ export default function PromptManager({ onSelectPrompt }: PromptManagerProps) {
                   <div 
                     key={prompt.id} 
                     className="group flex items-center gap-2 px-2 py-1.5 rounded-md hover:bg-muted cursor-pointer transition-colors"
+                    onClick={() => handleSelectPrompt(prompt.content)}
                   >
                     <div 
                       className="flex-1 text-sm truncate"
-                      onClick={() => handleSelectPrompt(prompt.content)}
                       title={prompt.content}
                     >
                       {prompt.content}
@@ -125,7 +128,7 @@ export default function PromptManager({ onSelectPrompt }: PromptManagerProps) {
                       variant="ghost"
                       size="icon"
                       className="h-6 w-6 opacity-0 group-hover:opacity-100 transition-opacity"
-                      onClick={() => deletePrompt(prompt.id)}
+                      onClick={(e) => deletePrompt(prompt.id, e)}
                     >
                       <Trash2 size={14} className="text-muted-foreground hover:text-destructive" />
                     </Button>

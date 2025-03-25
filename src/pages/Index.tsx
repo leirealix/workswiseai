@@ -334,20 +334,6 @@ const Index = () => {
                     <div className="flex-1 w-full max-w-2xl mx-auto">
                       <MessageList messages={messages} isWaiting={isWaitingForAI} />
                     </div>
-                    
-                    {state.status === 'complete' && (
-                      <div className="px-4 py-2 border-t flex items-center gap-2 bg-muted/20 w-full">
-                        <Button 
-                          variant="outline" 
-                          size="sm"
-                          onClick={resetAnalysis}
-                          className="flex items-center gap-1"
-                        >
-                          <RefreshCwIcon size={14} />
-                          <span>New Analysis</span>
-                        </Button>
-                      </div>
-                    )}
                   </div>
                 </ScrollArea>
                 

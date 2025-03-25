@@ -202,7 +202,7 @@ export default function ChatInput({
           disabled={!input.trim()}
         >
           <BookmarkIcon size={16} />
-          <span>Save Query</span>
+          <span>Prompts</span>
         </Button>
         
         <div className="flex-1"></div>

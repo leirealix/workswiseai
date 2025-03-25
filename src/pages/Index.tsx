@@ -332,7 +332,7 @@ const Index = () => {
                 {showSavedQueries && (
                   <div className="absolute right-4 top-4 w-80 h-[70vh] bg-background border rounded-lg shadow-lg z-20 p-4 flex flex-col">
                     <div className="flex items-center justify-between mb-2">
-                      <h3 className="font-medium">Saved Queries</h3>
+                      <h3 className="font-medium">Saved Prompts</h3>
                       <Button 
                         variant="ghost" 
                         size="icon" 
@@ -390,7 +390,7 @@ const Index = () => {
                       className="flex items-center gap-1 text-muted-foreground"
                     >
                       <BookmarkIcon size={16} />
-                      <span>Saved Queries</span>
+                      <span>Prompts</span>
                     </Button>
                   </div>
                   <ChatInput 

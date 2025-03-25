@@ -62,8 +62,8 @@ export default function SavedQueries({ onSelectQuery }: SavedQueriesProps) {
     setIsAdding(false);
     
     toast({
-      title: "Query Saved",
-      description: "Your query has been saved for future use."
+      title: "Prompt Saved",
+      description: "Your prompt has been saved for future use."
     });
   };
 
@@ -73,8 +73,8 @@ export default function SavedQueries({ onSelectQuery }: SavedQueriesProps) {
     saveToLocalStorage(updatedQueries);
     
     toast({
-      title: "Query Deleted",
-      description: "The saved query has been removed."
+      title: "Prompt Deleted",
+      description: "The saved prompt has been removed."
     });
   };
 
@@ -95,7 +95,7 @@ export default function SavedQueries({ onSelectQuery }: SavedQueriesProps) {
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-2">
           <BookmarkIcon size={18} className="text-primary" />
-          <h2 className="text-lg font-medium">Saved Queries</h2>
+          <h2 className="text-lg font-medium">Saved Prompts</h2>
         </div>
         
         {!isAdding && (
@@ -117,7 +117,7 @@ export default function SavedQueries({ onSelectQuery }: SavedQueriesProps) {
             <Input
               value={newQueryText}
               onChange={(e) => setNewQueryText(e.target.value)}
-              placeholder="Enter your query text..."
+              placeholder="Enter your prompt text..."
               className="flex-1"
             />
           </div>
@@ -137,7 +137,7 @@ export default function SavedQueries({ onSelectQuery }: SavedQueriesProps) {
               onClick={addQuery}
               disabled={!newQueryText.trim()}
             >
-              Save Query
+              Save Prompt
             </Button>
           </div>
         </div>
@@ -147,9 +147,9 @@ export default function SavedQueries({ onSelectQuery }: SavedQueriesProps) {
         {savedQueries.length === 0 ? (
           <div className="flex flex-col items-center justify-center h-full py-8 text-center">
             <BookmarkIcon size={48} className="text-muted-foreground mb-4 opacity-30" />
-            <h3 className="text-lg font-medium mb-1">No Saved Queries</h3>
+            <h3 className="text-lg font-medium mb-1">No Saved Prompts</h3>
             <p className="text-sm text-muted-foreground max-w-xs mb-4">
-              Save your frequently used questions to quickly access them in the future.
+              Save your frequently used prompts to quickly access them in the future.
             </p>
             <Button 
               variant="outline" 
@@ -158,7 +158,7 @@ export default function SavedQueries({ onSelectQuery }: SavedQueriesProps) {
               className="flex items-center gap-1"
             >
               <PlusCircleIcon size={14} />
-              <span>Add Your First Query</span>
+              <span>Add Your First Prompt</span>
             </Button>
           </div>
         ) : (

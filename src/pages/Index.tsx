@@ -9,11 +9,10 @@ import AnalysisProgress from '@/components/AnalysisProgress';
 import WelcomeAnimation from '@/components/WelcomeAnimation';
 import ResultsPanel from '@/components/ResultsPanel';
 import Sidebar from '@/components/Sidebar';
-import SavedQueries from '@/components/SavedQueries';
 import { useDocumentAnalysis } from '@/hooks/useDocumentAnalysis';
 import { Message } from '@/types';
 import { toast } from '@/hooks/use-toast';
-import { Loader2Icon, RefreshCwIcon, MaximizeIcon, MinimizeIcon, BookmarkIcon, XIcon } from 'lucide-react';
+import { Loader2Icon, RefreshCwIcon, MaximizeIcon, MinimizeIcon } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { ResizablePanelGroup, ResizablePanel, ResizableHandle } from '@/components/ui/resizable';
@@ -29,7 +28,6 @@ const Index = () => {
   const conversationIdRef = useRef<string | undefined>(undefined);
   const [showComparison, setShowComparison] = useState<boolean>(false);
   const [showOnlyChatPanel, setShowOnlyChatPanel] = useState<boolean>(true);
-  const [showSavedQueries, setShowSavedQueries] = useState<boolean>(false);
   
   const handleSendMessage = async (content: string) => {
     const userMessageId = crypto.randomUUID();
@@ -112,11 +110,6 @@ const Index = () => {
     handleSendMessage(question);
   };
 
-  const handleSavedQuerySelect = (query: string) => {
-    handleSendMessage(query);
-    setShowSavedQueries(false);
-  };
-
   const handleNewConversation = () => {
     setMessages([]);
     resetAnalysis();
@@ -130,10 +123,6 @@ const Index = () => {
 
   const toggleLeftPanel = () => {
     setLeftPanelExpanded(!leftPanelExpanded);
-  };
-
-  const toggleSavedQueries = () => {
-    setShowSavedQueries(!showSavedQueries);
   };
 
   useEffect(() => {
@@ -328,26 +317,7 @@ const Index = () => {
                 leftPanelExpanded && "hidden"
               )}
             >
-              <div className="h-full flex flex-col items-center justify-center relative">
-                {showSavedQueries && (
-                  <div className="absolute right-4 top-4 w-80 h-[70vh] bg-background border rounded-lg shadow-lg z-20 p-4 flex flex-col">
-                    <div className="flex items-center justify-between mb-2">
-                      <h3 className="font-medium">Saved Prompts</h3>
-                      <Button 
-                        variant="ghost" 
-                        size="icon" 
-                        className="h-8 w-8" 
-                        onClick={toggleSavedQueries}
-                      >
-                        <XIcon size={16} />
-                      </Button>
-                    </div>
-                    <div className="flex-1 overflow-hidden">
-                      <SavedQueries onSelectQuery={handleSavedQuerySelect} />
-                    </div>
-                  </div>
-                )}
-
+              <div className="h-full flex flex-col items-center justify-center">
                 <ScrollArea className="flex-1 w-full overflow-hidden">
                   <div className="flex flex-col h-full items-center justify-center">
                     {state.thinkingSteps.length > 0 && (
@@ -382,17 +352,6 @@ const Index = () => {
                 </ScrollArea>
                 
                 <div className="w-full max-w-2xl mx-auto">
-                  <div className="flex items-center px-4 py-2">
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={toggleSavedQueries}
-                      className="flex items-center gap-1 text-muted-foreground"
-                    >
-                      <BookmarkIcon size={16} />
-                      <span>Prompts</span>
-                    </Button>
-                  </div>
                   <ChatInput 
                     onSendMessage={handleSendMessage} 
                     onFileUpload={handleFileSelect}

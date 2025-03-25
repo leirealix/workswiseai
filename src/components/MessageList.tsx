@@ -39,7 +39,7 @@ export default function MessageList({
         <div className="bg-muted/50 rounded-full p-4 mb-4 animate-fade-in">
           <LawyerIcon className="w-8 h-8 text-muted-foreground" />
         </div>
-        <h3 className="text-lg font-medium mb-2 animate-fade-in" style={{ animationDelay: '0.1s' }}>AI Lawyer</h3>
+        <h3 className="text-lg font-medium mb-2 animate-fade-in" style={{ animationDelay: '0.1s' }}>Works Wise</h3>
         <p className="text-muted-foreground max-w-md mb-8 animate-fade-in" style={{ animationDelay: '0.2s' }}>
           I can use various tools, including iManage, emails, legal databases, and more, to help you complete the task.
         </p>

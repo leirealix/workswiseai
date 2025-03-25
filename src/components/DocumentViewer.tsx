@@ -46,20 +46,20 @@ export default function DocumentViewer({ fileName, result, comparison = false }:
     : comparison ? [] : result.signatures;
 
   return (
-    <div className="h-full flex flex-col">
-      <div className="p-4 border-b">
+    <div className="h-full flex flex-col bg-gradient-to-br from-background/90 to-background">
+      <div className="px-4 py-3 border-b bg-background/30 backdrop-blur-sm">
         <div className="flex items-center">
-          <FileText size={20} className="mr-2 text-primary" />
-          <h3 className="font-medium">{fileName}</h3>
+          <FileText size={18} className="mr-2 text-primary" />
+          <h3 className="font-medium text-sm">{fileName}</h3>
         </div>
       </div>
       
       <ScrollArea className="flex-1">
-        <div className="p-4 space-y-6">
+        <div className="p-4 space-y-5">
           {comparison ? (
             // Show only current page in comparison mode
-            <div className="bg-white dark:bg-black/20 border rounded-lg overflow-hidden shadow-sm">
-              <div className="border-b px-3 py-2 bg-muted/30 flex justify-between items-center">
+            <div className="bg-white dark:bg-black/20 border rounded-lg overflow-hidden shadow-md">
+              <div className="border-b px-3 py-2 bg-muted/20 flex justify-between items-center">
                 <span className="text-xs text-muted-foreground">Page {currentPage}</span>
                 <div className="flex items-center gap-1">
                   <Button 
@@ -83,11 +83,11 @@ export default function DocumentViewer({ fileName, result, comparison = false }:
                   </Button>
                 </div>
               </div>
-              <div className="p-4 relative min-h-[300px]" style={{ minHeight: '300px' }}>
+              <div className="p-4 relative min-h-[300px] bg-gradient-to-r from-white/5 to-transparent dark:from-white/2" style={{ minHeight: '300px' }}>
                 {/* Mock document content */}
-                <div className="h-full w-full flex items-center justify-center bg-muted/10 rounded">
+                <div className="h-full w-full flex items-center justify-center bg-muted/5 rounded border border-border/50">
                   <div className="text-muted-foreground">
-                    <File size={24} className="mx-auto mb-2" />
+                    <File size={24} className="mx-auto mb-2 opacity-40" />
                     <span className="text-xs">Document Preview - Page {currentPage}</span>
                   </div>
                 </div>
@@ -97,9 +97,9 @@ export default function DocumentViewer({ fileName, result, comparison = false }:
                   <div
                     key={clause.id}
                     className={cn(
-                      "absolute border-2 rounded cursor-pointer transition-all",
+                      "absolute border-2 rounded cursor-pointer transition-all shadow-sm",
                       selectedClause?.id === clause.id
-                        ? "border-primary bg-primary/10"
+                        ? "border-primary bg-primary/10 ring-2 ring-primary/20 ring-offset-1"
                         : "border-primary/40 bg-primary/5 hover:bg-primary/10"
                     )}
                     style={{
@@ -115,11 +115,11 @@ export default function DocumentViewer({ fileName, result, comparison = false }:
               
               {/* Signature section on the last page */}
               {displaySignatures.length > 0 && (
-                <div className="border-t p-4">
+                <div className="border-t p-4 bg-background/20">
                   <div className="text-sm font-medium mb-2">Signatures</div>
                   <div className="grid grid-cols-2 gap-4">
                     {displaySignatures.map((sig, i) => (
-                      <div key={i} className="border rounded p-3 bg-muted/10">
+                      <div key={i} className="border rounded p-3 bg-card shadow-sm hover:shadow transition-all">
                         <div className="font-medium text-sm">{sig.name}</div>
                         <div className="text-xs text-muted-foreground">{sig.role}</div>
                       </div>
@@ -134,15 +134,15 @@ export default function DocumentViewer({ fileName, result, comparison = false }:
               const pageClauses = result.clauses.filter(clause => clause.page === pageNum);
               
               return (
-                <div key={pageNum} className="bg-white dark:bg-black/20 border rounded-lg overflow-hidden shadow-sm">
-                  <div className="border-b px-3 py-2 bg-muted/30 text-xs text-muted-foreground">
+                <div key={pageNum} className="bg-white dark:bg-black/20 border rounded-lg overflow-hidden shadow-md">
+                  <div className="border-b px-3 py-2 bg-muted/20 text-xs text-muted-foreground">
                     Page {pageNum}
                   </div>
-                  <div className="p-4 relative min-h-[300px]" style={{ minHeight: '300px' }}>
+                  <div className="p-4 relative min-h-[300px] bg-gradient-to-r from-white/5 to-transparent dark:from-white/2" style={{ minHeight: '300px' }}>
                     {/* Mock document content */}
-                    <div className="h-full w-full flex items-center justify-center bg-muted/10 rounded">
+                    <div className="h-full w-full flex items-center justify-center bg-muted/5 rounded border border-border/50">
                       <div className="text-muted-foreground">
-                        <File size={24} className="mx-auto mb-2" />
+                        <File size={24} className="mx-auto mb-2 opacity-40" />
                         <span className="text-xs">Document Preview - Page {pageNum}</span>
                       </div>
                     </div>
@@ -152,9 +152,9 @@ export default function DocumentViewer({ fileName, result, comparison = false }:
                       <div
                         key={clause.id}
                         className={cn(
-                          "absolute border-2 rounded cursor-pointer transition-all",
+                          "absolute border-2 rounded cursor-pointer transition-all shadow-sm",
                           selectedClause?.id === clause.id
-                            ? "border-primary bg-primary/10"
+                            ? "border-primary bg-primary/10 ring-2 ring-primary/20 ring-offset-1"
                             : "border-primary/40 bg-primary/5 hover:bg-primary/10"
                         )}
                         style={{
@@ -170,11 +170,11 @@ export default function DocumentViewer({ fileName, result, comparison = false }:
                   
                   {/* Signature section on the last page */}
                   {pageNum === pages.length && result.signatures.length > 0 && (
-                    <div className="border-t p-4">
+                    <div className="border-t p-4 bg-background/20">
                       <div className="text-sm font-medium mb-2">Signatures</div>
                       <div className="grid grid-cols-2 gap-4">
                         {result.signatures.map((sig, i) => (
-                          <div key={i} className="border rounded p-3 bg-muted/10">
+                          <div key={i} className="border rounded p-3 bg-card shadow-sm hover:shadow transition-all">
                             <div className="font-medium text-sm">{sig.name}</div>
                             <div className="text-xs text-muted-foreground">{sig.role}</div>
                           </div>
@@ -190,7 +190,7 @@ export default function DocumentViewer({ fileName, result, comparison = false }:
       </ScrollArea>
       
       {selectedClause && (
-        <div className="border-t p-4 bg-secondary/50 animate-slide-in-up">
+        <div className="border-t p-4 bg-card/50 backdrop-blur-sm animate-slide-in-up">
           <h4 className="font-medium text-sm">{selectedClause.title}</h4>
           <p className="text-sm text-muted-foreground mt-1">{selectedClause.content}</p>
         </div>

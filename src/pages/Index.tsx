@@ -1,3 +1,4 @@
+
 import { useState, useEffect, useRef } from 'react';
 import ChatInput from '@/components/ChatInput';
 import MessageList from '@/components/MessageList';
@@ -154,7 +155,7 @@ const Index = () => {
   }, []);
 
   return (
-    <div className="h-full w-full overflow-hidden flex items-center justify-center bg-background" style={{ height: '100vh' }}>
+    <div className="h-full w-full overflow-hidden flex items-center justify-center bg-gradient-to-br from-background to-background/90" style={{ height: '100vh' }}>
       <div className="flex h-full w-full">
         <Sidebar />
         
@@ -189,36 +190,38 @@ const Index = () => {
             >
               <div className="h-full flex flex-col">
                 <div className={cn(
-                  "flex items-center justify-between bg-background/80 backdrop-blur-md",
-                  leftPanelCollapsed ? "p-2" : "p-4"
+                  "flex items-center justify-between bg-background/60 backdrop-blur-md border-b",
+                  leftPanelCollapsed ? "p-2" : "px-4 py-3"
                 )}>
                   <div className={leftPanelCollapsed ? "hidden" : "block"}>
-                    <div className="flex items-center">
-                      <h2 className="text-lg font-medium mr-2">
-                        {state.status === 'idle' && 'Preview'}
-                        {state.status === 'uploading' && 'Uploading Document...'}
-                        {state.status === 'thinking' && 'Processing Document...'}
-                        {state.status === 'analyzing' && 'Analyzing Document...'}
-                        {state.status === 'complete' && 'Analysis Results'}
-                        {state.status === 'error' && 'Analysis Error'}
-                      </h2>
-                      {state.status === 'complete' && (
-                        <Switch 
-                          id="view-mode" 
-                          checked={showFullPreview}
-                          onCheckedChange={toggleViewMode}
-                          className="ml-2"
-                        />
-                      )}
+                    <div className="flex items-center gap-2">
+                      <div className="flex-1">
+                        <h2 className="text-base font-medium inline-flex items-center">
+                          {state.status === 'idle' && 'Preview'}
+                          {state.status === 'uploading' && 'Uploading Document...'}
+                          {state.status === 'thinking' && 'Processing Document...'}
+                          {state.status === 'analyzing' && 'Analyzing Document...'}
+                          {state.status === 'complete' && 'Analysis Results'}
+                          {state.status === 'error' && 'Analysis Error'}
+                          {state.status === 'complete' && (
+                            <Switch 
+                              id="view-mode" 
+                              checked={showFullPreview}
+                              onCheckedChange={toggleViewMode}
+                              className="ml-2"
+                            />
+                          )}
+                        </h2>
+                        <p className="text-xs text-muted-foreground">
+                          {state.status === 'idle' && ''}
+                          {state.status === 'uploading' && 'Please wait while we upload your document'}
+                          {state.status === 'thinking' && 'AI is processing your document'}
+                          {state.status === 'analyzing' && 'Extracting insights from your document'}
+                          {state.status === 'complete' && (showFullPreview ? 'Full document preview' : 'Review the extracted information')}
+                          {state.status === 'error' && 'Something went wrong during analysis'}
+                        </p>
+                      </div>
                     </div>
-                    <p className="text-sm text-muted-foreground">
-                      {state.status === 'idle' && ''}
-                      {state.status === 'uploading' && 'Please wait while we upload your document'}
-                      {state.status === 'thinking' && 'AI is processing your document'}
-                      {state.status === 'analyzing' && 'Extracting insights from your document'}
-                      {state.status === 'complete' && (showFullPreview ? 'Full document preview' : 'Review the extracted information')}
-                      {state.status === 'error' && 'Something went wrong during analysis'}
-                    </p>
                   </div>
                   
                   <div className="flex items-center gap-2">
@@ -226,7 +229,7 @@ const Index = () => {
                       variant="ghost" 
                       size="icon"
                       onClick={leftPanelExpanded ? toggleLeftPanel : toggleLeftPanel}
-                      className="flex-shrink-0 ml-2"
+                      className="flex-shrink-0"
                       aria-label={leftPanelExpanded ? "Restore split view" : "Maximize panel"}
                     >
                       {leftPanelExpanded ? <MinimizeIcon size={18} /> : <MaximizeIcon size={18} />}
@@ -379,4 +382,3 @@ const Index = () => {
 };
 
 export default Index;
-

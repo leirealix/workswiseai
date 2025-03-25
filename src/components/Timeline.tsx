@@ -2,7 +2,7 @@
 import { useState } from 'react';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card';
 import { AnalysisResult } from '@/types';
-import { CalendarIcon, ClockIcon, ChevronDownIcon, ChevronRightIcon } from 'lucide-react';
+import { CalendarIcon, ClockIcon, ChevronDownIcon } from 'lucide-react';
 import { Button } from './ui/button';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from './ui/collapsible';
 import { cn } from '@/lib/utils';

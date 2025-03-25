@@ -6,10 +6,38 @@ import {
   CardHeader, 
   CardTitle, 
   CardDescription, 
-  CardContent 
+  CardContent,
+  CardFooter
 } from './ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from './ui/tabs';
 import { Timeline } from './Timeline';
+import { Button } from './ui/button';
+import { Badge } from './ui/badge';
+import { 
+  Table,
+  TableHeader,
+  TableBody,
+  TableHead,
+  TableRow,
+  TableCell
+} from './ui/table';
+import { 
+  FileText as FileTextIcon, 
+  AlertTriangle as AlertTriangleIcon,
+  Edit as EditIcon,
+  Flag as FlagIcon,
+  ClipboardCheck as ClipboardCheckIcon,
+  Users as UsersIcon,
+  Database as DatabaseIcon,
+  BarChart2 as BarChart2Icon,
+  Lightbulb as LightbulbIcon,
+  Check as CheckIcon,
+  Calendar as CalendarIcon,
+  Search as SearchIcon,
+  Minimize as MinimizeIcon,
+  Table as TableIcon,
+} from 'lucide-react';
+import DropdownActionMenu from './ui/dropdown-action-menu';
 
 type RiskLevel = 'Low' | 'Moderate' | 'High';
 

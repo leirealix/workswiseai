@@ -2,7 +2,7 @@
 import { useState } from 'react';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card';
 import { AnalysisResult } from '@/types';
-import { CalendarIcon, ClockIcon, ChevronRightIcon } from 'lucide-react';
+import { CalendarIcon, ClockIcon, ChevronDownIcon, ChevronRightIcon } from 'lucide-react';
 import { Button } from './ui/button';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from './ui/collapsible';
 import { cn } from '@/lib/utils';
@@ -55,10 +55,10 @@ export function Timeline({ keyDates }: TimelineProps) {
             </div>
             <CollapsibleTrigger asChild>
               <Button variant="ghost" size="sm" className="p-0 h-8 w-8">
-                <ChevronRightIcon
+                <ChevronDownIcon
                   className={cn(
                     "h-4 w-4 transition-transform",
-                    isExpanded ? "rotate-90" : "rotate-0"
+                    isExpanded ? "rotate-180" : "rotate-0"
                   )}
                 />
               </Button>

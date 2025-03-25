@@ -6,14 +6,6 @@ export interface Message {
   timestamp: Date;
 }
 
-export interface Conversation {
-  id: string;
-  title: string;
-  snippet: string;
-  messages: Message[];
-  lastUpdated: string;
-}
-
 export interface ThinkingStep {
   id: string;
   description: string;

@@ -1,4 +1,3 @@
-
 import { useState, useEffect, useRef } from 'react';
 import ChatInput from '@/components/ChatInput';
 import MessageList from '@/components/MessageList';
@@ -11,7 +10,7 @@ import WelcomeAnimation from '@/components/WelcomeAnimation';
 import ResultsPanel from '@/components/ResultsPanel';
 import Sidebar from '@/components/Sidebar';
 import { useDocumentAnalysis } from '@/hooks/useDocumentAnalysis';
-import { Message, Conversation } from '@/types';
+import { Message } from '@/types';
 import { toast } from '@/hooks/use-toast';
 import { Loader2Icon, RefreshCwIcon, MaximizeIcon, MinimizeIcon } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -30,71 +29,6 @@ const Index = () => {
   const [showComparison, setShowComparison] = useState<boolean>(false);
   const [showOnlyChatPanel, setShowOnlyChatPanel] = useState<boolean>(true);
   
-  // Manage chat history
-  const saveConversation = (messages: Message[]) => {
-    if (messages.length === 0) return;
-    
-    // Generate a title based on the first few messages
-    let title = "New conversation";
-    const userMessages = messages.filter(m => m.role === 'user');
-    if (userMessages.length > 0) {
-      title = userMessages[0].content.length > 30 
-        ? userMessages[0].content.substring(0, 30) + '...'
-        : userMessages[0].content;
-    }
-    
-    // Create snippet from latest messages
-    const latestMessages = messages.slice(-3);
-    const snippet = latestMessages.map(m => 
-      `${m.role === 'user' ? 'You: ' : 'Works Wise: '}${m.content.substring(0, 50)}${m.content.length > 50 ? '...' : ''}`
-    ).join(' ');
-    
-    // Create or update conversation
-    const conversation: Conversation = {
-      id: conversationIdRef.current || crypto.randomUUID(),
-      title,
-      snippet,
-      messages: [...messages],
-      lastUpdated: new Date().toISOString()
-    };
-    
-    // Save to localStorage
-    const storedConversations = localStorage.getItem('conversations');
-    let conversations: Conversation[] = storedConversations ? JSON.parse(storedConversations) : [];
-    
-    // Check if conversation already exists
-    const existingIndex = conversations.findIndex(c => c.id === conversation.id);
-    if (existingIndex >= 0) {
-      conversations[existingIndex] = conversation;
-    } else {
-      conversations.push(conversation);
-    }
-    
-    localStorage.setItem('conversations', JSON.stringify(conversations));
-    
-    // Ensure conversation ID is set
-    if (!conversationIdRef.current) {
-      conversationIdRef.current = conversation.id;
-    }
-  };
-  
-  const loadConversation = (conversationId: string) => {
-    const storedConversations = localStorage.getItem('conversations');
-    if (!storedConversations) return;
-    
-    const conversations: Conversation[] = JSON.parse(storedConversations);
-    const conversation = conversations.find(c => c.id === conversationId);
-    
-    if (conversation) {
-      setMessages(conversation.messages);
-      conversationIdRef.current = conversationId;
-      toast({
-        title: "Conversation Loaded",
-        description: "Loaded previous conversation history"
-      });
-    }
-  };
-  
   const handleSendMessage = async (content: string) => {
     const userMessageId = crypto.randomUUID();
     const newMessage: Message = {
@@ -104,12 +38,8 @@ const Index = () => {
       timestamp: new Date(),
     };
     
-    const updatedMessages = [...messages, newMessage];
-    setMessages(updatedMessages);
+    setMessages(prev => [...prev, newMessage]);
     setIsWaitingForAI(true);
-    
-    // Save conversation after user message
-    saveConversation(updatedMessages);
     
     if (showOnlyChatPanel) {
       setShowOnlyChatPanel(false);
@@ -127,11 +57,7 @@ const Index = () => {
         timestamp: new Date(),
       };
       
-      const finalMessages = [...updatedMessages, aiResponse];
-      setMessages(finalMessages);
-      
-      // Save conversation after AI response
-      saveConversation(finalMessages);
+      setMessages(prev => [...prev, aiResponse]);
     } catch (error) {
       console.error('Error getting AI response:', error);
       const errorMessage: Message = {
@@ -140,11 +66,7 @@ const Index = () => {
         content: "Sorry, I encountered an error while processing your request. Please try again.",
         timestamp: new Date(),
       };
-      const finalMessages = [...updatedMessages, errorMessage];
-      setMessages(finalMessages);
-      
-      // Save conversation even with error
-      saveConversation(finalMessages);
+      setMessages(prev => [...prev, errorMessage]);
       
       toast({
         variant: "destructive",
@@ -176,11 +98,7 @@ const Index = () => {
       timestamp: new Date(),
     };
     
-    const updatedMessages = [...messages, uploadMessage];
-    setMessages(updatedMessages);
-    
-    // Save conversation after upload
-    saveConversation(updatedMessages);
+    setMessages(prev => [...prev, uploadMessage]);
   };
 
   const handleFileUpload = (file: File) => {
@@ -221,11 +139,7 @@ const Index = () => {
         timestamp: new Date(),
       };
       
-      const updatedMessages = [...messages, completionMessage];
-      setMessages(updatedMessages);
-      
-      // Save conversation after analysis completion
-      saveConversation(updatedMessages);
+      setMessages(prev => [...prev, completionMessage]);
     }
   }, [state.status]);
 
@@ -236,10 +150,7 @@ const Index = () => {
   return (
     <div className="h-full w-full overflow-hidden flex items-center justify-center bg-background" style={{ height: '100vh' }}>
       <div className="flex h-full w-full">
-        <Sidebar 
-          onSelectConversation={loadConversation} 
-          currentConversationId={conversationIdRef.current} 
-        />
+        <Sidebar />
         
         {showOnlyChatPanel ? (
           <div className="h-full w-full max-w-3xl mx-auto flex flex-col items-center justify-center">

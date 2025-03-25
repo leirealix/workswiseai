@@ -71,24 +71,26 @@ export default function PromptManager({ onSelectPrompt }: PromptManagerProps) {
         </Button>
       </PopoverTrigger>
       <PopoverContent 
-        className="w-80 p-0" 
-        align="end" 
-        sideOffset={5}
+        className="w-80 p-0 shadow-md border rounded-2xl" 
+        align="start" 
+        alignOffset={-40} 
+        side="top"
+        sideOffset={10}
       >
         <div className="flex flex-col max-h-[400px]">
-          <div className="p-2 border-b">
-            <h3 className="text-sm font-medium">Saved Prompts</h3>
-            <p className="text-xs text-muted-foreground">
+          <div className="p-4 border-b">
+            <h3 className="text-base font-medium">Saved Prompts</h3>
+            <p className="text-sm text-muted-foreground mt-1">
               Create and use prompts for quick actions
             </p>
           </div>
           
-          <div className="p-2 flex gap-2 border-b">
+          <div className="p-4 flex gap-2 border-b">
             <Input
               value={newPrompt}
               onChange={(e) => setNewPrompt(e.target.value)}
               placeholder="Enter a new prompt..."
-              className="flex-1 text-sm h-8"
+              className="flex-1 h-10 rounded-full text-sm border-[#E5DEFF] focus-visible:ring-[#9b87f5]"
               onKeyDown={(e) => {
                 if (e.key === 'Enter') {
                   addPrompt();
@@ -98,24 +100,23 @@ export default function PromptManager({ onSelectPrompt }: PromptManagerProps) {
             <Button 
               onClick={addPrompt} 
               disabled={!newPrompt.trim()} 
-              size="sm" 
-              className="h-8"
+              className="h-10 px-6 rounded-full bg-[#9b87f5] hover:bg-[#7E69AB]"
             >
               Add
             </Button>
           </div>
           
-          <div className="overflow-y-auto max-h-[250px] py-1">
+          <div className="overflow-y-auto max-h-[250px] py-2">
             {prompts.length === 0 ? (
-              <div className="text-center py-4 text-sm text-muted-foreground">
+              <div className="text-center py-8 text-sm text-muted-foreground">
                 No prompts saved yet
               </div>
             ) : (
-              <div className="space-y-0.5 px-1">
+              <div className="space-y-1 px-2">
                 {prompts.map((prompt) => (
                   <div 
                     key={prompt.id} 
-                    className="group flex items-center gap-2 px-2 py-1.5 rounded-md hover:bg-muted cursor-pointer transition-colors"
+                    className="group flex items-center gap-2 px-3 py-2 rounded-md hover:bg-[#F1F0FB] cursor-pointer transition-colors"
                     onClick={() => handleSelectPrompt(prompt.content)}
                   >
                     <div 

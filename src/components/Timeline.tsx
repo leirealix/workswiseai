@@ -48,12 +48,12 @@ export function Timeline({ keyDates }: TimelineProps) {
     <Card className="mb-4 overflow-hidden">
       <Collapsible open={isExpanded} onOpenChange={setIsExpanded}>
         <CardHeader className="pb-3">
-          <CollapsibleTrigger asChild>
-            <div className="flex items-center justify-between cursor-pointer">
-              <div className="flex items-center space-x-2">
-                <CalendarIcon className="h-5 w-5 text-primary" />
-                <CardTitle>Timeline</CardTitle>
-              </div>
+          <div className="flex items-center justify-between">
+            <div className="flex items-center space-x-2">
+              <CalendarIcon className="h-5 w-5 text-primary" />
+              <CardTitle>Timeline</CardTitle>
+            </div>
+            <CollapsibleTrigger asChild>
               <Button variant="ghost" size="sm" className="p-0 h-8 w-8">
                 <ChevronRightIcon
                   className={cn(
@@ -62,8 +62,8 @@ export function Timeline({ keyDates }: TimelineProps) {
                   )}
                 />
               </Button>
-            </div>
-          </CollapsibleTrigger>
+            </CollapsibleTrigger>
+          </div>
           <CardDescription>
             Key dates and deadlines from the document
           </CardDescription>

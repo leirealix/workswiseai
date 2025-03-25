@@ -4,7 +4,6 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Send, Plus, Mic, MoreHorizontal, RefreshCw, FileIcon, XIcon } from 'lucide-react';
 import { Textarea } from '@/components/ui/textarea';
-import PromptManager from './PromptManager';
 
 interface ChatInputProps {
   onSendMessage: (message: string) => void;
@@ -67,10 +66,6 @@ export default function ChatInput({
       setInput('');
       setSelectedFiles([]);
     }
-  };
-
-  const handleSelectPrompt = (promptContent: string) => {
-    setInput(promptContent);
   };
 
   return (
@@ -148,9 +143,6 @@ export default function ChatInput({
           <RefreshCw size={16} />
           <span>New</span>
         </Button>
-        
-        {/* Replace the standard Button with PromptManager component */}
-        <PromptManager onSelectPrompt={handleSelectPrompt} />
         
         <div className="flex-1"></div>
         

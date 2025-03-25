@@ -16,17 +16,11 @@ const CollapsibleTrigger = React.forwardRef<
     className={cn("group flex items-center justify-between w-full", className)}
     {...props}
   >
-    {props.asChild ? (
-      children
-    ) : (
-      <>
-        <span className="flex-1">{children}</span>
-        {showIcon && (
-          <span className="transition-transform duration-200 ml-4 text-muted-foreground group-hover:text-primary">
-            <ChevronDown className="h-4 w-4 shrink-0" />
-          </span>
-        )}
-      </>
+    <span className="flex-1">{children}</span>
+    {showIcon && (
+      <span className="transition-transform duration-200 ml-4 text-muted-foreground group-hover:text-primary">
+        <ChevronDown className="h-4 w-4 shrink-0" />
+      </span>
     )}
   </CollapsiblePrimitive.CollapsibleTrigger>
 ))

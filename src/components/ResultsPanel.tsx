@@ -38,7 +38,7 @@ import {
   Minimize as MinimizeIcon,
   Table as TableIcon,
 } from 'lucide-react';
-import DropdownActionMenu from './ui/dropdown-action-menu';
+import { DropdownActionMenu } from './ui/dropdown-action-menu';
 
 type RiskLevel = 'Low' | 'Moderate' | 'High';
 
@@ -767,9 +767,9 @@ export default function ResultsPanel({ result }: ResultsPanelProps) {
             )}
           </Card>
         </div>
+        
+        {showDetailedView && renderDetailedView()}
       </div>
-      
-      {showDetailedView && renderDetailedView()}
     </ScrollArea>
   );
 }

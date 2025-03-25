@@ -1,8 +1,7 @@
-
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Send, Plus, Search, Mic, MoreHorizontal, RefreshCw, FileIcon, XIcon } from 'lucide-react';
+import { Send, Plus, Mic, MoreHorizontal, RefreshCw, FileIcon, XIcon } from 'lucide-react';
 import { Textarea } from '@/components/ui/textarea';
 
 interface ChatInputProps {
@@ -150,8 +149,8 @@ export default function ChatInput({
           size="sm"
           className="rounded-full flex items-center gap-1.5 text-muted-foreground hover:text-foreground hover:bg-secondary"
         >
-          <Search size={16} />
-          <span>Research</span>
+          <Plus size={16} />
+          <span>Prompts</span>
         </Button>
         
         <div className="flex-1"></div>

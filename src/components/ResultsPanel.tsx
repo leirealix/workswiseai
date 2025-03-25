@@ -1,3 +1,4 @@
+
 import { useState } from 'react';
 import { ScrollArea } from './ui/scroll-area';
 import { AnalysisResult } from '@/types';
@@ -767,8 +768,8 @@ export default function ResultsPanel({ result }: ResultsPanelProps) {
           </Card>
         </div>
       </div>
+      
+      {showDetailedView && renderDetailedView()}
     </ScrollArea>
-    
-    {showDetailedView && renderDetailedView()}
   );
 }

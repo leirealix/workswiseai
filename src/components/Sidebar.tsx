@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { 
   FilesIcon, 
@@ -14,7 +13,6 @@ import {
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { useNavigate } from 'react-router-dom';
 
 interface SidebarProps {
   className?: string;
@@ -22,7 +20,6 @@ interface SidebarProps {
 
 export default function Sidebar({ className }: SidebarProps) {
   const [collapsed, setCollapsed] = useState(false);
-  const navigate = useNavigate();
 
   const toggleSidebar = () => {
     setCollapsed(!collapsed);
@@ -32,7 +29,7 @@ export default function Sidebar({ className }: SidebarProps) {
     <div
       className={cn(
         "flex flex-col border-r bg-background transition-all duration-300",
-        collapsed ? "w-14" : "w-52",
+        collapsed ? "w-16" : "w-60",
         className
       )}
     >
@@ -58,29 +55,22 @@ export default function Sidebar({ className }: SidebarProps) {
             icon={HomeIcon} 
             label="Home" 
             collapsed={collapsed} 
-            active={location.pathname === '/'}
-            onClick={() => navigate('/')}
+            active={true}
           />
           <NavItem 
             icon={FilesIcon} 
             label="Documents" 
-            collapsed={collapsed}
-            active={location.pathname === '/documents'}
-            onClick={() => navigate('/documents')}
+            collapsed={collapsed} 
           />
           <NavItem 
             icon={UsersIcon} 
             label="Collaborations" 
-            collapsed={collapsed}
-            active={location.pathname === '/collaborations'}
-            onClick={() => navigate('/collaborations')}
+            collapsed={collapsed} 
           />
           <NavItem 
             icon={HistoryIcon} 
             label="History" 
-            collapsed={collapsed}
-            active={location.pathname === '/history'}
-            onClick={() => navigate('/history')}
+            collapsed={collapsed} 
           />
 
           <div className="my-2 border-t mx-2"></div>
@@ -88,9 +78,7 @@ export default function Sidebar({ className }: SidebarProps) {
           <NavItem 
             icon={SettingsIcon} 
             label="Settings" 
-            collapsed={collapsed}
-            active={location.pathname === '/settings'}
-            onClick={() => navigate('/settings')}
+            collapsed={collapsed} 
           />
         </nav>
       </ScrollArea>
@@ -103,18 +91,16 @@ interface NavItemProps {
   label: string;
   collapsed: boolean;
   active?: boolean;
-  onClick?: () => void;
 }
 
-function NavItem({ icon: Icon, label, collapsed, active, onClick }: NavItemProps) {
+function NavItem({ icon: Icon, label, collapsed, active }: NavItemProps) {
   return (
     <Button
       variant={active ? "secondary" : "ghost"}
       className={cn(
         "flex justify-start h-10 py-2",
-        collapsed ? "w-10 px-0 justify-center" : "w-full px-3"
+        collapsed ? "w-12 px-0 justify-center" : "w-full px-3"
       )}
-      onClick={onClick}
     >
       <Icon size={20} className={collapsed ? "mx-auto" : "mr-2"} />
       {!collapsed && <span>{label}</span>}

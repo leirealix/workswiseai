@@ -12,7 +12,7 @@ import Sidebar from '@/components/Sidebar';
 import { useDocumentAnalysis } from '@/hooks/useDocumentAnalysis';
 import { Message } from '@/types';
 import { toast } from '@/hooks/use-toast';
-import { Loader2Icon, RefreshCwIcon, MaximizeIcon, MinimizeIcon, CodeIcon } from 'lucide-react';
+import { Loader2Icon, RefreshCwIcon, MaximizeIcon, MinimizeIcon } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Switch } from '@/components/ui/switch';
 import { cn } from '@/lib/utils';
@@ -203,15 +203,12 @@ const Index = () => {
                         {state.status === 'error' && 'Analysis Error'}
                       </h2>
                       {state.status === 'complete' && (
-                        <div className="bg-black/20 rounded-md p-1 flex items-center">
-                          <Switch 
-                            id="view-mode" 
-                            checked={showFullPreview}
-                            onCheckedChange={toggleViewMode}
-                            className="mr-1"
-                          />
-                          <CodeIcon size={16} className="text-primary" />
-                        </div>
+                        <Switch 
+                          id="view-mode" 
+                          checked={showFullPreview}
+                          onCheckedChange={toggleViewMode}
+                          className="ml-2"
+                        />
                       )}
                     </div>
                     <p className="text-sm text-muted-foreground">
@@ -382,3 +379,4 @@ const Index = () => {
 };
 
 export default Index;
+
